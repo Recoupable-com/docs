@@ -59,7 +59,8 @@
           {
             "group": "Tasks",
             "pages": [
-              "api-reference/tasks/get"
+              "api-reference/tasks/get",
+              "api-reference/tasks/create"
             ]
           },
           {

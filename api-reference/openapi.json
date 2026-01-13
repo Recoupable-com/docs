@@ -153,6 +153,42 @@
             }
           }
         }
+      },
+      "post": {
+        "description": "Create a new scheduled task. All fields are required. The response shape matches the GET endpoint (an array containing the created task).",
+        "requestBody": {
+          "description": "Task to create",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TasksResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/plants/{id}": {
@@ -326,6 +362,39 @@
             "type": "string",
             "nullable": true,
             "description": "Identifier for the trigger schedule associated with this task"
+          }
+        }
+      },
+      "CreateTaskRequest": {
+        "type": "object",
+        "required": ["title", "prompt", "schedule", "account_id", "artist_account_id"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Descriptive title of the task",
+            "example": "Weekly Genre Pulse Check"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Instruction/prompt executed by the task",
+            "example": "Execute this weekly genre analysis workflow and email a summary to the team."
+          },
+          "schedule": {
+            "type": "string",
+            "description": "Cron expression defining when the task runs (e.g., '0 9 * * 4' for Thursdays at 9 AM)",
+            "example": "0 9 * * 4"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the associated account",
+            "example": "848cd58d-700f-4b38-ab4c-d9f52a1b2c3d"
+          },
+          "artist_account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the associated artist account",
+            "example": "1873859c-dd37-4e9a-9bac-80d35a1b2c3d"
           }
         }
       }
