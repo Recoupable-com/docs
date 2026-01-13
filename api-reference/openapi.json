@@ -658,6 +658,54 @@
         }
       }
     },
+    "/api/chat/generate": {
+      "post": {
+        "servers": [
+          {
+            "url": "https://chat.recoupable.com"
+          }
+        ],
+        "description": "Generate AI-powered text responses using the Recoup chat system. This endpoint processes chat requests and returns generated text along with metadata about the generation process.",
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Chat generation request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatGenerateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chat generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatGenerateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatGenerateErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -1581,6 +1629,180 @@
         }
       },
       "CreateChatErrorResponse": {
+        "type": "object",
+        "required": ["status", "message"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "UIMessage": {
+        "type": "object",
+        "description": "A message in the chat conversation. See https://ai-sdk.dev/docs/reference/ai-sdk-core/ui-message for details.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the message"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["user", "assistant", "system"],
+            "description": "The role of the message sender"
+          },
+          "content": {
+            "type": "string",
+            "description": "The text content of the message"
+          }
+        }
+      },
+      "ChatGenerateRequest": {
+        "type": "object",
+        "description": "Request body for chat generation. Exactly one of 'prompt' or 'messages' must be provided.",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Single text prompt for the assistant. Required if 'messages' is not provided."
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UIMessage"
+            },
+            "description": "Array of UIMessage objects for context. Required if 'prompt' is not provided."
+          },
+          "artistId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique identifier of the artist (optional)"
+          },
+          "model": {
+            "type": "string",
+            "description": "The AI model to use for text generation (optional)",
+            "example": "openai/gpt-5-mini"
+          },
+          "excludeTools": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of tool names to exclude from execution",
+            "example": ["create_scheduled_actions"]
+          },
+          "roomId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the chat room. If not provided, one will be generated automatically."
+          }
+        }
+      },
+      "ContentPart": {
+        "type": "object",
+        "description": "A part of the response content. See https://ai-sdk.dev/docs/reference/ai-sdk-core/generate-text#content for details.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["text", "tool-call", "tool-result"],
+            "description": "The type of content part"
+          },
+          "text": {
+            "type": "string",
+            "description": "The text content (present when type is 'text')"
+          }
+        }
+      },
+      "ChatGenerateUsage": {
+        "type": "object",
+        "description": "Token usage information with detailed breakdown",
+        "properties": {
+          "inputTokens": {
+            "type": "integer",
+            "description": "Number of input tokens processed"
+          },
+          "outputTokens": {
+            "type": "integer",
+            "description": "Number of output tokens generated"
+          },
+          "totalTokens": {
+            "type": "integer",
+            "description": "Total tokens used (input + output)"
+          },
+          "reasoningTokens": {
+            "type": "integer",
+            "description": "Number of reasoning tokens used"
+          },
+          "cachedInputTokens": {
+            "type": "integer",
+            "description": "Number of cached input tokens"
+          }
+        }
+      },
+      "ChatGenerateResponseMeta": {
+        "type": "object",
+        "description": "Additional response metadata",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Response messages"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Response headers"
+          },
+          "body": {
+            "type": "object",
+            "description": "Response body"
+          }
+        }
+      },
+      "ChatGenerateResponse": {
+        "type": "object",
+        "description": "Response from the chat generation endpoint",
+        "properties": {
+          "text": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentPart"
+            },
+            "description": "Array of content parts from the AI model response"
+          },
+          "reasoningText": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional reasoning or explanation for the response"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Optional array of sources used for the response"
+          },
+          "finishReason": {
+            "type": "string",
+            "description": "The reason why the generation finished",
+            "example": "stop"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ChatGenerateUsage",
+            "description": "Token usage information"
+          },
+          "response": {
+            "$ref": "#/components/schemas/ChatGenerateResponseMeta",
+            "description": "Additional response metadata"
+          }
+        }
+      },
+      "ChatGenerateErrorResponse": {
         "type": "object",
         "required": ["status", "message"],
         "properties": {
