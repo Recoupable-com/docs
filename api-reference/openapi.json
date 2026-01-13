@@ -338,6 +338,65 @@
         }
       }
     },
+    "/api/artists": {
+      "get": {
+        "description": "Retrieve artists accessible to an account. Supports filtering by organization or showing only personal (non-organization) artists.",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "description": "The account ID (required)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "orgId",
+            "in": "query",
+            "description": "Filter to artists in a specific organization",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "personal",
+            "in": "query",
+            "description": "Set to \"true\" to show only personal (non-org) artists",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["true"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artists retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -708,6 +767,95 @@
         }
       },
       "AccountErrorResponse": {
+        "type": "object",
+        "required": ["status", "message"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "Artist": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the artist account"
+          },
+          "name": {
+            "type": "string",
+            "description": "Artist display name"
+          },
+          "image": {
+            "type": "string",
+            "nullable": true,
+            "description": "Artist profile image URL"
+          },
+          "pinned": {
+            "type": "boolean",
+            "description": "Whether the account has pinned this artist"
+          },
+          "socials": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArtistSocial"
+            },
+            "description": "Social media profiles linked to the artist"
+          }
+        }
+      },
+      "ArtistSocial": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the social profile"
+          },
+          "platform": {
+            "type": "string",
+            "description": "Social media platform (e.g., instagram, twitter, tiktok)"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username on the platform"
+          },
+          "profile_url": {
+            "type": "string",
+            "description": "Full URL to the social media profile"
+          }
+        }
+      },
+      "ArtistsResponse": {
+        "type": "object",
+        "required": ["status", "artists"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "artists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Artist"
+            },
+            "description": "List of artist objects"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message (only present if status is error)"
+          }
+        }
+      },
+      "ArtistsErrorResponse": {
         "type": "object",
         "required": ["status", "message"],
         "properties": {
