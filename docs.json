@@ -88,6 +88,12 @@
             ]
           },
           {
+            "group": "Chat",
+            "pages": [
+              "api-reference/chat/chats"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",

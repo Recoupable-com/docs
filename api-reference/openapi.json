@@ -573,6 +573,55 @@
         }
       }
     },
+    "/api/chats": {
+      "get": {
+        "description": "Retrieve chat rooms (conversations) for a specific account. Provide an account_id to scope the results, and optionally filter by an artist_account_id. The endpoint returns metadata about each room, including the topic, associated artist, and last updated timestamp.",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "UUID of the account whose chats to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "artist_account_id",
+            "in": "query",
+            "description": "Optional. Filter chats to only include those for the specified artist.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chats retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetChatsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetChatsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -1395,6 +1444,71 @@
             "description": "Status of the request"
           },
           "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "ChatRoom": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the chat room"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "UUID of the associated account (can be null if not set)"
+          },
+          "topic": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional topic or description of the room (null if not provided)"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of the last update to the room"
+          },
+          "artist_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "UUID of the associated artist account (null when not applicable)"
+          }
+        }
+      },
+      "GetChatsResponse": {
+        "type": "object",
+        "required": ["status", "chats"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "chats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatRoom"
+            },
+            "description": "Array of chat room objects"
+          }
+        }
+      },
+      "GetChatsErrorResponse": {
+        "type": "object",
+        "required": ["status", "error"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "error": {
             "type": "string",
             "description": "Error message describing what went wrong"
           }
