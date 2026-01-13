@@ -105,6 +105,16 @@
             ]
           },
           {
+            "group": "Spotify",
+            "pages": [
+              "api-reference/spotify/search",
+              "api-reference/spotify/artist",
+              "api-reference/spotify/artist-albums",
+              "api-reference/spotify/artist-top-tracks",
+              "api-reference/spotify/album"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",

@@ -868,6 +868,320 @@
         }
       }
     },
+    "/api/spotify/search": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Search for artists, albums, tracks, and playlists using the Spotify API. This endpoint is a proxy to the official Spotify Search API.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "The search query keywords and optional field filters",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "A comma-separated list of item types to search across: album, artist, playlist, track, show, episode, audiobook",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "description": "An ISO 3166-1 alpha-2 country code or 'from_token'",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of results to return (default: 20, min: 1, max: 50)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The index of the first result to return (default: 0, max: 10000)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "maximum": 10000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpotifySearchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpotifyErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/spotify/artist/": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Get Spotify catalog information for a single artist identified by their unique Spotify ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The Spotify ID of the artist",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpotifyGetArtistResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpotifyErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/spotify/artist/albums": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Get Spotify catalog information about an artist's albums.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The Spotify ID of the artist",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include_groups",
+            "in": "query",
+            "description": "A comma-separated list of keywords to filter the response. Valid values are: album, single, appears_on, compilation",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "description": "An ISO 3166-1 alpha-2 country code. If specified, only content available in that market will be returned",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of items to return (default: 20, min: 1, max: 50)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The index of the first item to return (default: 0)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist albums retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpotifyArtistAlbumsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpotifyErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/spotify/artist/topTracks": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Get an artist's top tracks by country.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The Spotify ID of the artist",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "description": "An ISO 3166-1 alpha-2 country code. If provided, only tracks available in that market are returned",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist top tracks retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpotifyArtistTopTracksResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpotifyErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/spotify/album": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Get Spotify catalog information for a single album.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The Spotify ID of the album",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "description": "An ISO 3166-1 alpha-2 country code. If provided, only content available in that market is returned",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Album retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpotifyAlbum"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpotifyErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -2168,6 +2482,717 @@
             "type": "string",
             "format": "uuid",
             "description": "UUID of the created artist-organization link"
+          }
+        }
+      },
+      "SpotifyImage": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The source URL of the image"
+          },
+          "height": {
+            "type": "integer",
+            "nullable": true,
+            "description": "The image height in pixels"
+          },
+          "width": {
+            "type": "integer",
+            "nullable": true,
+            "description": "The image width in pixels"
+          }
+        }
+      },
+      "SpotifyExternalUrls": {
+        "type": "object",
+        "properties": {
+          "spotify": {
+            "type": "string",
+            "description": "The Spotify URL for the object"
+          }
+        }
+      },
+      "SpotifyFollowers": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string",
+            "nullable": true,
+            "description": "This will always be set to null"
+          },
+          "total": {
+            "type": "integer",
+            "description": "The total number of followers"
+          }
+        }
+      },
+      "SpotifyArtistObject": {
+        "type": "object",
+        "properties": {
+          "external_urls": {
+            "$ref": "#/components/schemas/SpotifyExternalUrls"
+          },
+          "followers": {
+            "$ref": "#/components/schemas/SpotifyFollowers"
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of the genres the artist is associated with"
+          },
+          "href": {
+            "type": "string",
+            "description": "A link to the Web API endpoint providing full details"
+          },
+          "id": {
+            "type": "string",
+            "description": "The Spotify ID for the artist"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifyImage"
+            },
+            "description": "Images of the artist in various sizes"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the artist"
+          },
+          "popularity": {
+            "type": "integer",
+            "description": "The popularity of the artist (0-100)"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["artist"],
+            "description": "The object type, always 'artist'"
+          },
+          "uri": {
+            "type": "string",
+            "description": "The Spotify URI for the artist"
+          }
+        }
+      },
+      "SpotifySimplifiedArtist": {
+        "type": "object",
+        "properties": {
+          "external_urls": {
+            "$ref": "#/components/schemas/SpotifyExternalUrls"
+          },
+          "href": {
+            "type": "string",
+            "description": "A link to the Web API endpoint providing full details"
+          },
+          "id": {
+            "type": "string",
+            "description": "The Spotify ID for the artist"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the artist"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["artist"],
+            "description": "The object type, always 'artist'"
+          },
+          "uri": {
+            "type": "string",
+            "description": "The Spotify URI for the artist"
+          }
+        }
+      },
+      "SpotifyArtistsPaginated": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "A link to the Web API endpoint returning the full result"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifyArtistObject"
+            },
+            "description": "List of artist objects"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "The maximum number of items in the response"
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the next page of items"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "The offset of the items returned"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the previous page of items"
+          },
+          "total": {
+            "type": "integer",
+            "description": "The total number of items available"
+          }
+        }
+      },
+      "SpotifySearchResponse": {
+        "type": "object",
+        "properties": {
+          "artists": {
+            "$ref": "#/components/schemas/SpotifyArtistsPaginated",
+            "description": "Search results for artists (if type includes artist)"
+          },
+          "albums": {
+            "type": "object",
+            "description": "Search results for albums (if type includes album)"
+          },
+          "tracks": {
+            "type": "object",
+            "description": "Search results for tracks (if type includes track)"
+          },
+          "playlists": {
+            "type": "object",
+            "description": "Search results for playlists (if type includes playlist)"
+          }
+        }
+      },
+      "SpotifyGetArtistResponse": {
+        "type": "object",
+        "properties": {
+          "artist": {
+            "$ref": "#/components/schemas/SpotifyArtistObject",
+            "nullable": true,
+            "description": "The Spotify artist object (null if error)"
+          },
+          "error": {
+            "type": "object",
+            "nullable": true,
+            "description": "Error object if request failed (null if successful)"
+          }
+        }
+      },
+      "SpotifySimplifiedAlbum": {
+        "type": "object",
+        "properties": {
+          "album_type": {
+            "type": "string",
+            "enum": ["album", "single", "compilation"],
+            "description": "The type of the album"
+          },
+          "total_tracks": {
+            "type": "integer",
+            "description": "The number of tracks in the album"
+          },
+          "available_markets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Markets in which the album is available"
+          },
+          "external_urls": {
+            "$ref": "#/components/schemas/SpotifyExternalUrls"
+          },
+          "href": {
+            "type": "string",
+            "description": "A link to the Web API endpoint providing full details"
+          },
+          "id": {
+            "type": "string",
+            "description": "The Spotify ID for the album"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifyImage"
+            },
+            "description": "The cover art for the album in various sizes"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the album"
+          },
+          "release_date": {
+            "type": "string",
+            "description": "The date the album was first released"
+          },
+          "release_date_precision": {
+            "type": "string",
+            "enum": ["year", "month", "day"],
+            "description": "The precision with which release_date value is known"
+          },
+          "restrictions": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string",
+                "description": "The reason for the restriction"
+              }
+            },
+            "description": "Included when a content restriction is applied"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["album"],
+            "description": "The object type, always 'album'"
+          },
+          "uri": {
+            "type": "string",
+            "description": "The Spotify URI for the album"
+          },
+          "artists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifySimplifiedArtist"
+            },
+            "description": "The artists of the album"
+          },
+          "album_group": {
+            "type": "string",
+            "enum": ["album", "single", "compilation", "appears_on"],
+            "description": "The field to distinguish albums by various groups"
+          }
+        }
+      },
+      "SpotifyArtistAlbumsResponse": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "A link to the Web API endpoint returning the full result"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "The maximum number of items in the response"
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the next page of items"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "The offset of the items returned"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the previous page of items"
+          },
+          "total": {
+            "type": "integer",
+            "description": "The total number of items available"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifySimplifiedAlbum"
+            },
+            "description": "Array of simplified album objects"
+          }
+        }
+      },
+      "SpotifyTrack": {
+        "type": "object",
+        "properties": {
+          "album": {
+            "$ref": "#/components/schemas/SpotifySimplifiedAlbum",
+            "description": "The album the track appears on"
+          },
+          "artists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifySimplifiedArtist"
+            },
+            "description": "Artists who performed the track"
+          },
+          "available_markets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Markets in which the track is available"
+          },
+          "disc_number": {
+            "type": "integer",
+            "description": "Disc number the track is on"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "description": "Track length in milliseconds"
+          },
+          "explicit": {
+            "type": "boolean",
+            "description": "Whether the track has explicit lyrics"
+          },
+          "external_ids": {
+            "type": "object",
+            "properties": {
+              "isrc": {
+                "type": "string",
+                "description": "International Standard Recording Code"
+              },
+              "ean": {
+                "type": "string",
+                "description": "International Article Number"
+              },
+              "upc": {
+                "type": "string",
+                "description": "Universal Product Code"
+              }
+            },
+            "description": "Known external IDs for the track"
+          },
+          "external_urls": {
+            "$ref": "#/components/schemas/SpotifyExternalUrls"
+          },
+          "href": {
+            "type": "string",
+            "description": "Link to the Web API endpoint with full details"
+          },
+          "id": {
+            "type": "string",
+            "description": "Spotify ID for the track"
+          },
+          "is_playable": {
+            "type": "boolean",
+            "description": "If true, the track is playable in the given market"
+          },
+          "linked_from": {
+            "type": "object",
+            "description": "Information about the originally requested track when track relinking is applied"
+          },
+          "restrictions": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string",
+                "description": "The reason for the restriction"
+              }
+            },
+            "description": "Content restriction information"
+          },
+          "name": {
+            "type": "string",
+            "description": "Track name"
+          },
+          "popularity": {
+            "type": "integer",
+            "description": "Popularity score (0-100)"
+          },
+          "preview_url": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to a 30 second preview, if available"
+          },
+          "track_number": {
+            "type": "integer",
+            "description": "Track number on the album"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["track"],
+            "description": "The object type, always 'track'"
+          },
+          "uri": {
+            "type": "string",
+            "description": "The Spotify URI for the track"
+          },
+          "is_local": {
+            "type": "boolean",
+            "description": "Whether the track is from a local file"
+          }
+        }
+      },
+      "SpotifyArtistTopTracksResponse": {
+        "type": "object",
+        "properties": {
+          "tracks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifyTrack"
+            },
+            "description": "Array of track objects"
+          }
+        }
+      },
+      "SpotifySimplifiedTrack": {
+        "type": "object",
+        "properties": {
+          "artists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifySimplifiedArtist"
+            },
+            "description": "The artists who performed the track"
+          },
+          "available_markets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Markets in which the track is available"
+          },
+          "disc_number": {
+            "type": "integer",
+            "description": "Disc number the track is on"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "description": "Track length in milliseconds"
+          },
+          "explicit": {
+            "type": "boolean",
+            "description": "Whether the track has explicit lyrics"
+          },
+          "external_urls": {
+            "$ref": "#/components/schemas/SpotifyExternalUrls"
+          },
+          "href": {
+            "type": "string",
+            "description": "Link to the Web API endpoint"
+          },
+          "id": {
+            "type": "string",
+            "description": "Spotify ID for the track"
+          },
+          "is_playable": {
+            "type": "boolean",
+            "description": "If true, the track is playable"
+          },
+          "linked_from": {
+            "type": "object",
+            "description": "Track relinking info"
+          },
+          "restrictions": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string"
+              }
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "Track name"
+          },
+          "preview_url": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to a 30 second preview"
+          },
+          "track_number": {
+            "type": "integer",
+            "description": "Track number on the album"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["track"]
+          },
+          "uri": {
+            "type": "string",
+            "description": "Spotify URI for the track"
+          },
+          "is_local": {
+            "type": "boolean",
+            "description": "Whether from a local file"
+          }
+        }
+      },
+      "SpotifyAlbumTracks": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "A link to the Web API endpoint"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "The maximum number of items in the response"
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the next page of items"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "The offset of the items returned"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the previous page"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of items available"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifySimplifiedTrack"
+            },
+            "description": "Array of simplified track objects"
+          }
+        }
+      },
+      "SpotifyCopyright": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The copyright text"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of copyright"
+          }
+        }
+      },
+      "SpotifyAlbum": {
+        "type": "object",
+        "properties": {
+          "album_type": {
+            "type": "string",
+            "enum": ["album", "single", "compilation"],
+            "description": "The type of the album"
+          },
+          "total_tracks": {
+            "type": "integer",
+            "description": "The number of tracks in the album"
+          },
+          "available_markets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Markets in which the album is available"
+          },
+          "external_urls": {
+            "$ref": "#/components/schemas/SpotifyExternalUrls"
+          },
+          "href": {
+            "type": "string",
+            "description": "A link to the Web API endpoint providing full details"
+          },
+          "id": {
+            "type": "string",
+            "description": "The Spotify ID for the album"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifyImage"
+            },
+            "description": "The cover art for the album in various sizes"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the album"
+          },
+          "release_date": {
+            "type": "string",
+            "description": "The date the album was first released"
+          },
+          "release_date_precision": {
+            "type": "string",
+            "enum": ["year", "month", "day"],
+            "description": "The precision with which release_date value is known"
+          },
+          "restrictions": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string"
+              }
+            },
+            "description": "Included when a content restriction is applied"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["album"],
+            "description": "The object type, always 'album'"
+          },
+          "uri": {
+            "type": "string",
+            "description": "The Spotify URI for the album"
+          },
+          "artists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifySimplifiedArtist"
+            },
+            "description": "The artists of the album"
+          },
+          "tracks": {
+            "$ref": "#/components/schemas/SpotifyAlbumTracks",
+            "description": "The tracks of the album"
+          },
+          "copyrights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpotifyCopyright"
+            },
+            "description": "Copyright statements of the album"
+          },
+          "external_ids": {
+            "type": "object",
+            "properties": {
+              "isrc": {
+                "type": "string"
+              },
+              "ean": {
+                "type": "string"
+              },
+              "upc": {
+                "type": "string"
+              }
+            },
+            "description": "Known external IDs for the album"
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Deprecated. Always empty."
+          },
+          "label": {
+            "type": "string",
+            "description": "The label associated with the album"
+          },
+          "popularity": {
+            "type": "integer",
+            "description": "Popularity of the album (0-100)"
+          }
+        }
+      },
+      "SpotifyErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "integer",
+                "description": "HTTP status code"
+              },
+              "message": {
+                "type": "string",
+                "description": "Error message"
+              }
+            },
+            "description": "Error details"
           }
         }
       }
