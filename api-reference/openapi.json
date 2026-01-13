@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://api.recoupable.com"
+      "url": "https://recoup-api.vercel.app"
     }
   ],
   "security": [
@@ -96,15 +96,35 @@
         }
       }
     },
-    "/api/accounts/{id}": {
+    "/api/tasks": {
       "get": {
-        "description": "Retrieve detailed account information by ID. Returns the account with associated profile info, emails, and wallet addresses.",
+        "description": "Retrieve scheduled tasks from the database. Tasks have cron-based execution schedules. Supports filtering by id, account_id, or artist_account_id.",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
-            "description": "The unique identifier of the account (UUID)",
-            "required": true,
+            "in": "query",
+            "description": "Filter by task ID (UUID). Returns a single task matching the provided ID.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "Filter tasks to only include those for the specified account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "artist_account_id",
+            "in": "query",
+            "description": "Filter tasks to only include those for the specified artist account.",
+            "required": false,
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -113,17 +133,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Account retrieved successfully",
+            "description": "Tasks retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AccountResponse"
+                  "$ref": "#/components/schemas/TasksResponse"
                 }
               }
             }
           },
-          "404": {
-            "description": "Account not found",
+          "400": {
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
@@ -245,68 +265,67 @@
           }
         }
       },
-      "AccountResponse": {
+      "TasksResponse": {
         "type": "object",
-        "required": ["status", "account"],
+        "required": ["status", "tasks"],
         "properties": {
           "status": {
             "type": "string",
             "enum": ["success", "error"],
             "description": "Status of the request"
           },
-          "account": {
-            "$ref": "#/components/schemas/Account"
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            },
+            "description": "Array of task objects"
           },
-          "message": {
+          "error": {
             "type": "string",
             "description": "Error message (only present if status is error)"
           }
         }
       },
-      "Account": {
+      "Task": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid",
-            "description": "Unique identifier"
+            "description": "Unique identifier for the task"
           },
-          "name": {
+          "title": {
             "type": "string",
-            "description": "Account display name"
+            "description": "Descriptive title or name of the task"
           },
-          "image": {
+          "prompt": {
             "type": "string",
-            "nullable": true,
-            "description": "Profile image URL"
+            "description": "Detailed instruction or prompt for task execution"
           },
-          "instruction": {
+          "schedule": {
             "type": "string",
-            "nullable": true,
-            "description": "Custom AI instructions"
+            "description": "Cron expression defining when the task should execute (e.g., '0 10 * * *')"
           },
-          "knowledges": {
-            "type": "array",
-            "nullable": true,
-            "description": "Knowledge base files attached to this account",
-            "items": {
-              "type": "object",
-              "properties": {
-                "url": { "type": "string" },
-                "name": { "type": "string" },
-                "type": { "type": "string" }
-              }
-            }
-          },
-          "email": {
+          "account_id": {
             "type": "string",
-            "nullable": true,
-            "description": "Primary email address"
+            "format": "uuid",
+            "description": "Unique identifier for the associated account"
           },
-          "wallet_address": {
+          "artist_account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the associated artist account"
+          },
+          "enabled": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Whether the task is enabled. Defaults to true."
+          },
+          "trigger_schedule_id": {
             "type": "string",
             "nullable": true,
-            "description": "Connected wallet address"
+            "description": "Identifier for the trigger schedule associated with this task"
           }
         }
       }

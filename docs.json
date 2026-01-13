@@ -57,9 +57,9 @@
             ]
           },
           {
-            "group": "Accounts",
+            "group": "Tasks",
             "pages": [
-              "api-reference/accounts/get"
+              "api-reference/tasks/get"
             ]
           },
           {
