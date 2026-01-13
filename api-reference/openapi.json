@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://api.recoupable.com"
     }
   ],
   "security": [
@@ -85,6 +85,45 @@
           },
           "400": {
             "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/{id}": {
+      "get": {
+        "description": "Retrieve detailed account information by ID. Returns the account with associated profile info, emails, and wallet addresses.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The unique identifier of the account (UUID)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -203,6 +242,71 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      },
+      "AccountResponse": {
+        "type": "object",
+        "required": ["status", "account"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "account": {
+            "$ref": "#/components/schemas/Account"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message (only present if status is error)"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Account display name"
+          },
+          "image": {
+            "type": "string",
+            "nullable": true,
+            "description": "Profile image URL"
+          },
+          "instruction": {
+            "type": "string",
+            "nullable": true,
+            "description": "Custom AI instructions"
+          },
+          "knowledges": {
+            "type": "array",
+            "nullable": true,
+            "description": "Knowledge base files attached to this account",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": { "type": "string" },
+                "name": { "type": "string" },
+                "type": { "type": "string" }
+              }
+            }
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "Primary email address"
+          },
+          "wallet_address": {
+            "type": "string",
+            "nullable": true,
+            "description": "Connected wallet address"
           }
         }
       }
