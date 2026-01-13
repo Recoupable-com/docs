@@ -1554,6 +1554,67 @@
         }
       }
     },
+    "/api/apify/scraper": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Check the status and retrieve results from Apify scraper runs. This endpoint uses the Apify API Client to fetch the current status of a scraper run and its results if available. Use the runId returned from endpoints like Instagram Comments, Instagram Profiles, Social Scrape, or Artist Socials Scrape to poll for results.",
+        "parameters": [
+          {
+            "name": "runId",
+            "in": "query",
+            "description": "The ID of the Apify run to check status for. This is returned when starting a scrape via Instagram Comments, Instagram Profiles, Social Scrape, or Artist Socials Scrape endpoints.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "abc123xyz"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scraper run status retrieved successfully. Returns status info for in-progress runs, or status info plus data for completed runs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ApifyScraperInProgressResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ApifyScraperCompletedResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required runId parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApifyScraperErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error - failed to fetch run status from Apify",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApifyScraperErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/x/search": {
       "get": {
         "servers": [
@@ -2980,6 +3041,76 @@
           "message": {
             "type": "string",
             "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "ApifyScraperInProgressResponse": {
+        "type": "object",
+        "required": ["status", "datasetId"],
+        "description": "Response when the Apify run is still in progress",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Current status of the Apify run (e.g., 'RUNNING', 'READY')",
+            "example": "RUNNING"
+          },
+          "datasetId": {
+            "type": "string",
+            "description": "ID of the dataset that will contain the results when the run completes",
+            "example": "def456uvw"
+          }
+        }
+      },
+      "ApifyScraperCompletedResponse": {
+        "type": "object",
+        "required": ["status", "datasetId", "data"],
+        "description": "Response when the Apify run has completed successfully",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Final status of the Apify run (typically 'SUCCEEDED')",
+            "example": "SUCCEEDED"
+          },
+          "datasetId": {
+            "type": "string",
+            "description": "ID of the dataset containing the results",
+            "example": "def456uvw"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "Array of dataset items returned by the scraper. The structure of each item varies depending on the scraper type (Instagram Profile, Instagram Comments, etc.)",
+            "example": [
+              {
+                "id": "123456789",
+                "username": "example_user",
+                "fullName": "Example User",
+                "biography": "This is a sample biography",
+                "followersCount": 1000,
+                "followsCount": 500,
+                "profilePicUrl": "https://example.com/profile.jpg"
+              }
+            ]
+          }
+        }
+      },
+      "ApifyScraperErrorResponse": {
+        "type": "object",
+        "required": ["status", "message"],
+        "description": "Error response from the Apify scraper results endpoint",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status indicating an error occurred"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "runId is required"
           }
         }
       },

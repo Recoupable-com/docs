@@ -195,6 +195,12 @@
             "pages": [
               "api-reference/subscriptions/get"
             ]
+          },
+          {
+            "group": "Apify",
+            "pages": [
+              "api-reference/apify/scraper"
+            ]
           }
         ]
       }
