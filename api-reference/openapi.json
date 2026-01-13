@@ -534,6 +534,45 @@
         }
       }
     },
+    "/api/artist-profile": {
+      "get": {
+        "description": "Retrieve comprehensive profile information for an artist across all connected social media platforms, including profile details and post metrics.",
+        "parameters": [
+          {
+            "name": "artist_account_id",
+            "in": "query",
+            "description": "The unique identifier of the artist account to fetch profile data for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistProfileErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -1245,6 +1284,121 @@
           "$ref": "#/components/schemas/ApifyRunResult"
         },
         "description": "Array of Apify run results, one for each social profile scraped"
+      },
+      "ArtistProfileSocialProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the social profile"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username on the platform"
+          },
+          "profile_url": {
+            "type": "string",
+            "description": "Direct URL to the profile"
+          },
+          "avatar": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the profile avatar image"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true,
+            "description": "Profile biography or description"
+          },
+          "follower_count": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of followers on this platform"
+          },
+          "following_count": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of accounts followed on this platform"
+          },
+          "post_count": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of posts on this platform"
+          },
+          "region": {
+            "type": "string",
+            "nullable": true,
+            "description": "Geographic region of the profile"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the profile was last updated"
+          }
+        }
+      },
+      "ArtistProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the artist"
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArtistProfileSocialProfile"
+            },
+            "description": "List of social media profiles"
+          },
+          "total_followers": {
+            "type": "integer",
+            "description": "Sum of followers across all platforms"
+          },
+          "total_following": {
+            "type": "integer",
+            "description": "Sum of following across all platforms"
+          },
+          "total_posts": {
+            "type": "integer",
+            "description": "Sum of posts across all platforms"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the data was last updated"
+          }
+        }
+      },
+      "ArtistProfileResponse": {
+        "type": "object",
+        "required": ["status", "profile"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/ArtistProfile",
+            "description": "The artist's comprehensive profile information"
+          }
+        }
+      },
+      "ArtistProfileErrorResponse": {
+        "type": "object",
+        "required": ["status", "message"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
       }
     },
     "securitySchemes": {
