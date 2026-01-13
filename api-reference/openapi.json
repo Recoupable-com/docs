@@ -768,6 +768,71 @@
         }
       }
     },
+    "/api/post/comments": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve comments for a specific social media post. This endpoint should be called after obtaining post IDs from the Social Posts endpoint. Returns detailed information about each commenter including their profile data, follower counts, and geographic region.",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "query",
+            "description": "The unique identifier of the post to fetch comments for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of records per page (default: 20, max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post comments retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostCommentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostCommentsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/chats": {
       "get": {
         "description": "Retrieve chat rooms (conversations) for a specific account. Provide an account_id to scope the results, and optionally filter by an artist_account_id. The endpoint returns metadata about each room, including the topic, associated artist, and last updated timestamp.",
@@ -5443,6 +5508,131 @@
         }
       },
       "ArtistPostsErrorResponse": {
+        "type": "object",
+        "required": ["status", "error"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "PostComment": {
+        "type": "object",
+        "required": ["id", "post_id", "social_id", "comment", "commented_at", "username", "profile_url", "post_url"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the comment record"
+          },
+          "post_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the post this comment belongs to"
+          },
+          "social_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the social profile that made the comment"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Text content of the comment"
+          },
+          "commented_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the comment was posted"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username of the commenter"
+          },
+          "avatar": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the commenter's avatar image"
+          },
+          "profile_url": {
+            "type": "string",
+            "description": "URL to the commenter's profile"
+          },
+          "post_url": {
+            "type": "string",
+            "description": "URL to the post where the comment was made"
+          },
+          "region": {
+            "type": "string",
+            "nullable": true,
+            "description": "Geographic region of the commenter"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true,
+            "description": "Commenter's biography or description"
+          },
+          "follower_count": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of followers the commenter has"
+          },
+          "following_count": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of accounts the commenter follows"
+          }
+        }
+      },
+      "PostCommentsPagination": {
+        "type": "object",
+        "properties": {
+          "total_count": {
+            "type": "integer",
+            "description": "Total number of comments available"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of comments per page"
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages available"
+          }
+        }
+      },
+      "PostCommentsResponse": {
+        "type": "object",
+        "required": ["status", "comments", "pagination"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostComment"
+            },
+            "description": "List of comments for the specified post"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PostCommentsPagination",
+            "description": "Pagination metadata for the response"
+          }
+        }
+      },
+      "PostCommentsErrorResponse": {
         "type": "object",
         "required": ["status", "error"],
         "properties": {
