@@ -90,7 +90,8 @@
           {
             "group": "Chat",
             "pages": [
-              "api-reference/chat/chats"
+              "api-reference/chat/chats",
+              "api-reference/chat/create"
             ]
           },
           {

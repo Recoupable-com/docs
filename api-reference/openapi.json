@@ -620,6 +620,42 @@
             }
           }
         }
+      },
+      "post": {
+        "description": "Create a new chat room. Optionally associate it with an artist and/or provide a client-generated chat ID.",
+        "requestBody": {
+          "description": "Chat creation parameters",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChatRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chat created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateChatResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - failed to create chat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateChatErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/plants/{id}": {
@@ -1509,6 +1545,51 @@
             "description": "Status of the request"
           },
           "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "CreateChatRequest": {
+        "type": "object",
+        "properties": {
+          "artistId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the artist account the chat is associated with"
+          },
+          "chatId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID for the new chat (client-generated). If not provided, one will be generated automatically."
+          }
+        }
+      },
+      "CreateChatResponse": {
+        "type": "object",
+        "required": ["status", "chat"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "chat": {
+            "$ref": "#/components/schemas/ChatRoom",
+            "description": "The created chat room object"
+          }
+        }
+      },
+      "CreateChatErrorResponse": {
+        "type": "object",
+        "required": ["status", "message"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
             "type": "string",
             "description": "Error message describing what went wrong"
           }
