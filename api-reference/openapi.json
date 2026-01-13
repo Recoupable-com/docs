@@ -189,6 +189,42 @@
             }
           }
         }
+      },
+      "patch": {
+        "description": "Update an existing scheduled task. Only the id field is required; any additional fields you include will be updated on the task. The response shape matches the GET endpoint (an array containing the updated task).",
+        "requestBody": {
+          "description": "Task fields to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TasksResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/plants/{id}": {
@@ -395,6 +431,51 @@
             "format": "uuid",
             "description": "UUID of the associated artist account",
             "example": "1873859c-dd37-4e9a-9bac-80d35a1b2c3d"
+          }
+        }
+      },
+      "UpdateTaskRequest": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the task to update",
+            "example": "aade2bce-55c7-468e-a606-c4e76fb2ea2a"
+          },
+          "title": {
+            "type": "string",
+            "description": "New descriptive title of the task",
+            "example": "Weekly Genre Pulse Check (Updated)"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "New instruction/prompt executed by the task",
+            "example": "Execute this weekly genre analysis workflow and email a summary to the team."
+          },
+          "schedule": {
+            "type": "string",
+            "description": "New cron expression defining when the task runs",
+            "example": "0 10 * * 4"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "New UUID of the associated account",
+            "example": "848cd58d-700f-4b38-ab4c-d9f52a1b2c3d"
+          },
+          "artist_account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "New UUID of the associated artist account",
+            "example": "1873859c-dd37-4e9a-9bac-80d35a1b2c3d"
+          },
+          "enabled": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Whether the task is enabled. Can be true, false, or null.",
+            "example": true
           }
         }
       }
