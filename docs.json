@@ -97,6 +97,14 @@
             ]
           },
           {
+            "group": "Organizations",
+            "pages": [
+              "api-reference/organizations/list",
+              "api-reference/organizations/create",
+              "api-reference/organizations/add-artist"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",

@@ -755,6 +755,119 @@
         }
       }
     },
+    "/api/organizations": {
+      "get": {
+        "description": "Retrieve all organizations that an account belongs to. Used for organization selector dropdowns and access control.",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "description": "The unique identifier of the account",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organizations retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrganizationsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new organization. The creator is automatically added as a member of the organization.",
+        "requestBody": {
+          "description": "Organization creation parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Organization created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrganizationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organizations/artists": {
+      "post": {
+        "description": "Add an artist to an organization. This allows organization members to access and manage the artist. This endpoint is idempotent - calling it multiple times with the same artistId and organizationId will not create duplicate records.",
+        "requestBody": {
+          "description": "Artist-organization association parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddArtistToOrganizationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Artist added to organization successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddArtistToOrganizationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -1918,6 +2031,143 @@
           "message": {
             "type": "string",
             "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the membership record"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the organization account"
+          },
+          "organization_name": {
+            "type": "string",
+            "description": "Display name of the organization"
+          },
+          "organization_image": {
+            "type": "string",
+            "nullable": true,
+            "description": "Organization logo/image URL"
+          }
+        }
+      },
+      "GetOrganizationsResponse": {
+        "type": "object",
+        "required": ["status", "organizations"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "organizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Organization"
+            },
+            "description": "List of organizations the account belongs to"
+          }
+        }
+      },
+      "OrganizationsErrorResponse": {
+        "type": "object",
+        "required": ["status", "message"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "CreateOrganizationRequest": {
+        "type": "object",
+        "required": ["name", "accountId"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the organization to create",
+            "example": "My New Label"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The account ID of the creator",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "CreatedOrganization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the new organization account"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the organization"
+          }
+        }
+      },
+      "CreateOrganizationResponse": {
+        "type": "object",
+        "required": ["status", "organization"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/CreatedOrganization",
+            "description": "The created organization"
+          }
+        }
+      },
+      "AddArtistToOrganizationRequest": {
+        "type": "object",
+        "required": ["artistId", "organizationId"],
+        "properties": {
+          "artistId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The account ID of the artist to add",
+            "example": "artist-account-uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The account ID of the organization",
+            "example": "org-account-uuid"
+          }
+        }
+      },
+      "AddArtistToOrganizationResponse": {
+        "type": "object",
+        "required": ["status", "id"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the created artist-organization link"
           }
         }
       }
