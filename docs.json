@@ -61,7 +61,8 @@
             "pages": [
               "api-reference/tasks/get",
               "api-reference/tasks/create",
-              "api-reference/tasks/update"
+              "api-reference/tasks/update",
+              "api-reference/tasks/delete"
             ]
           },
           {

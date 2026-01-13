@@ -225,6 +225,42 @@
             }
           }
         }
+      },
+      "delete": {
+        "description": "Delete an existing scheduled task by its ID. Returns the status of the delete operation.",
+        "requestBody": {
+          "description": "Task to delete",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/plants/{id}": {
@@ -476,6 +512,33 @@
             "nullable": true,
             "description": "Whether the task is enabled. Can be true, false, or null.",
             "example": true
+          }
+        }
+      },
+      "DeleteTaskRequest": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the task to delete",
+            "example": "aade2bce-55c7-468e-a606-c4e76fb2ea2a"
+          }
+        }
+      },
+      "DeleteTaskResponse": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the delete operation"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (only present if status is error)"
           }
         }
       }
