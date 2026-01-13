@@ -115,6 +115,13 @@
             ]
           },
           {
+            "group": "Instagram",
+            "pages": [
+              "api-reference/instagram/comments",
+              "api-reference/instagram/profiles"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",

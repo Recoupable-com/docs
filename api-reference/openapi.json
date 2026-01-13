@@ -1182,6 +1182,121 @@
         }
       }
     },
+    "/api/instagram/comments": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Fetch Instagram comments for multiple post URLs using Apify's Instagram Comment Scraper. The actual comment data will be available in the Apify dataset after the run completes.",
+        "parameters": [
+          {
+            "name": "postUrls",
+            "in": "query",
+            "description": "Array of Instagram post URLs to fetch comments for",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "resultsLimit",
+            "in": "query",
+            "description": "Maximum number of comments to fetch (default: 10000)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10000
+            }
+          },
+          {
+            "name": "isNewestComments",
+            "in": "query",
+            "description": "Whether to fetch newest comments first. Set to true for newest first, false for oldest first, or omit for platform default sorting",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Apify scraper run started successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApifyRunResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstagramErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/instagram/profiles": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Fetch Instagram profile information for multiple handles using Apify's Instagram Profile Scraper. The actual profile data will be available in the Apify dataset after the run completes.",
+        "parameters": [
+          {
+            "name": "handles",
+            "in": "query",
+            "description": "Array of Instagram handles to fetch profiles for",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Apify scraper run started successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApifyRunResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstagramErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -1884,6 +1999,20 @@
             "type": "string",
             "nullable": true,
             "description": "Error message if the run failed (null if successful)"
+          }
+        }
+      },
+      "InstagramErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
           }
         }
       },
