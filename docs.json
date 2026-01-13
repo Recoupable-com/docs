@@ -66,6 +66,13 @@
             ]
           },
           {
+            "group": "Accounts",
+            "pages": [
+              "api-reference/accounts/get",
+              "api-reference/accounts/id"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",

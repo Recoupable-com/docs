@@ -263,6 +263,81 @@
         }
       }
     },
+    "/api/accounts/{id}": {
+      "get": {
+        "description": "Retrieve detailed account information by ID. Returns the account with associated profile info, emails, and wallet addresses.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The unique identifier (UUID) of the account",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAccountResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/id": {
+      "get": {
+        "description": "Retrieve the ID of the authenticated account associated with the provided credentials. This is useful when you have an API key or access token but do not yet know the corresponding accountId.",
+        "parameters": [],
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account ID retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAccountIdResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -541,12 +616,123 @@
             "description": "Error message (only present if status is error)"
           }
         }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the account"
+          },
+          "name": {
+            "type": "string",
+            "description": "Account display name"
+          },
+          "image": {
+            "type": "string",
+            "nullable": true,
+            "description": "Profile image URL"
+          },
+          "instruction": {
+            "type": "string",
+            "nullable": true,
+            "description": "Custom AI instructions for this account"
+          },
+          "knowledges": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Knowledge"
+            },
+            "description": "Knowledge base files attached to this account"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "Primary email address"
+          },
+          "wallet_address": {
+            "type": "string",
+            "nullable": true,
+            "description": "Connected wallet address"
+          }
+        }
+      },
+      "Knowledge": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to the knowledge file"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the knowledge file"
+          },
+          "type": {
+            "type": "string",
+            "description": "MIME type of the file"
+          }
+        }
+      },
+      "GetAccountResponse": {
+        "type": "object",
+        "required": ["status", "account"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "account": {
+            "$ref": "#/components/schemas/Account",
+            "description": "The account details"
+          }
+        }
+      },
+      "GetAccountIdResponse": {
+        "type": "object",
+        "required": ["status", "accountId"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique identifier (UUID) of the authenticated account"
+          }
+        }
+      },
+      "AccountErrorResponse": {
+        "type": "object",
+        "required": ["status", "message"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
       }
     },
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "Your Recoup API key"
       }
     }
   }
