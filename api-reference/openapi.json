@@ -573,6 +573,71 @@
         }
       }
     },
+    "/api/segment/fans": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve all social profiles from fans within a specific segment. This endpoint should be called after obtaining segment IDs from the Artist Segments endpoint. Supports pagination for large fan lists.",
+        "parameters": [
+          {
+            "name": "segment_id",
+            "in": "query",
+            "description": "The unique identifier of the segment to fetch fans for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of records per page (default: 20, max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Segment fans retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SegmentFansResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SegmentFansErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/chats": {
       "get": {
         "description": "Retrieve chat rooms (conversations) for a specific account. Provide an account_id to scope the results, and optionally filter by an artist_account_id. The endpoint returns metadata about each room, including the topic, associated artist, and last updated timestamp.",
@@ -5025,6 +5090,121 @@
               "$ref": "#/components/schemas/DeleteCatalogSongInput"
             },
             "description": "Array of songs for batch deletes"
+          }
+        }
+      },
+      "SegmentFan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the fan_segments record"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username or handle on the platform"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "URL to the fan's avatar/profile image"
+          },
+          "profile_url": {
+            "type": "string",
+            "description": "Full URL to the fan's profile on the platform"
+          },
+          "segment_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the fan's segments record"
+          },
+          "segment_name": {
+            "type": "string",
+            "description": "Name of the segment (e.g., 'Twitter Followers')"
+          },
+          "fan_social_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the fan's socials media profile account"
+          },
+          "region": {
+            "type": "string",
+            "description": "Geographic region or location of the fan"
+          },
+          "bio": {
+            "type": "string",
+            "description": "Fan's biography or profile description"
+          },
+          "follower_count": {
+            "type": "integer",
+            "description": "Number of followers the fan has"
+          },
+          "following_count": {
+            "type": "integer",
+            "description": "Number of accounts the fan is following"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the fan data was last updated"
+          }
+        }
+      },
+      "SegmentFansPagination": {
+        "type": "object",
+        "properties": {
+          "total_count": {
+            "type": "integer",
+            "description": "Total number of records available"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of records per page"
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages available"
+          }
+        }
+      },
+      "SegmentFansResponse": {
+        "type": "object",
+        "required": ["status", "fans", "pagination"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "fans": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SegmentFan"
+            },
+            "description": "List of social profiles from fans in the segment"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/SegmentFansPagination",
+            "description": "Pagination metadata for the response"
+          }
+        }
+      },
+      "SegmentFansErrorResponse": {
+        "type": "object",
+        "required": ["status", "error"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
           }
         }
       }

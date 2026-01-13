@@ -88,6 +88,12 @@
             ]
           },
           {
+            "group": "Segment",
+            "pages": [
+              "api-reference/segment/fans"
+            ]
+          },
+          {
             "group": "Chat",
             "pages": [
               "api-reference/chat/chats",
