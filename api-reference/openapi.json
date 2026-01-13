@@ -1631,6 +1631,412 @@
         }
       }
     },
+    "/api/songs": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve songs from the database with optional filtering by ISRC (International Standard Recording Code) or artist account. This endpoint joins the songs table with song_artists and accounts tables to provide comprehensive song information.",
+        "parameters": [
+          {
+            "name": "isrc",
+            "in": "query",
+            "description": "International Standard Recording Code to filter by specific song",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "artist_account_id",
+            "in": "query",
+            "description": "Artist account ID to filter songs by artist",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Songs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongsErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No songs found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Bulk create or fetch songs by ISRC. For each song, the API attempts to look up metadata via internal search. If no data is found, optional fallback fields (name, album, notes, artists) are used.",
+        "requestBody": {
+          "description": "Array of songs to create or fetch",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSongsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Songs created or fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalogs": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve catalogs associated with a specific account. The endpoint joins account_catalogs with catalogs to return catalog metadata for the specified account.",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "The unique identifier of the account to query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catalogs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing or invalid account_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogsErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account not found or no catalogs found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Create new catalogs or link existing catalogs to an account. If catalog_id is provided, links the existing catalog. If name is provided without catalog_id, creates a new catalog. If both are provided, catalog_id takes priority.",
+        "requestBody": {
+          "description": "Array of catalogs to create or link",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCatalogsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Catalogs created or linked successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters or catalog_id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Unlink catalogs from an account. If no other accounts are linked to a catalog after removal, the catalog is automatically deleted (cascading to catalog_songs). Otherwise, only the account-catalog relationship is removed.",
+        "requestBody": {
+          "description": "Array of catalog-account pairs to remove",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteCatalogsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Catalogs unlinked successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing catalog_id or account_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/catalogs/songs": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve songs within a specific catalog with pagination support. This endpoint joins catalog_songs with songs, song_artists, and accounts to provide comprehensive song information for a given catalog.",
+        "parameters": [
+          {
+            "name": "catalog_id",
+            "in": "query",
+            "description": "The unique identifier of the catalog to query songs for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "artistName",
+            "in": "query",
+            "description": "Optional. Filters songs to only include those with matching artist name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of songs per page (default: 20, max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catalog songs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogSongsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing or invalid catalog_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogSongsErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Catalog not found or no songs in catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogSongsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Batch add songs to a catalog by ISRC. For each song, the API attempts to look up metadata via internal search. If no data is found, optional fallback fields (name, album, notes, artists) are used.",
+        "requestBody": {
+          "description": "Array of songs to add to catalog",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCatalogSongsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Songs added to catalog successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogSongsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogSongsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Batch remove songs from a catalog by ISRC. Deletes the relationship in catalog_songs for each catalog_id and ISRC pair.",
+        "requestBody": {
+          "description": "Array of songs to remove from catalog",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteCatalogSongsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Songs removed from catalog successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogSongsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing catalog_id or isrc",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogSongsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -4187,6 +4593,438 @@
           "error": {
             "type": "string",
             "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "SongArtist": {
+        "type": "object",
+        "description": "Artist associated with a song",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the artist account"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of the artist (can be null)"
+          },
+          "timestamp": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Timestamp associated with the artist account (can be null)"
+          }
+        }
+      },
+      "Song": {
+        "type": "object",
+        "description": "A song with its metadata and associated artists",
+        "properties": {
+          "isrc": {
+            "type": "string",
+            "description": "International Standard Recording Code (primary key)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the song"
+          },
+          "album": {
+            "type": "string",
+            "description": "Name of the album the song belongs to"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes for the song"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the song data was last updated"
+          },
+          "artists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SongArtist"
+            },
+            "description": "Array of artist objects associated with this song"
+          }
+        }
+      },
+      "SongsResponse": {
+        "type": "object",
+        "description": "Response containing songs data",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "songs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Song"
+            },
+            "description": "Array of song objects with artist information"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (only present if status is 'error')"
+          }
+        }
+      },
+      "SongsErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "CreateSongInput": {
+        "type": "object",
+        "required": ["isrc"],
+        "properties": {
+          "isrc": {
+            "type": "string",
+            "description": "International Standard Recording Code of the song to create or fetch"
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional. Song name, applied only if internal search cannot find valid info"
+          },
+          "album": {
+            "type": "string",
+            "description": "Optional. Album name, applied only if internal search cannot find valid info"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional. Notes for the song, applied only if internal search cannot find valid info"
+          },
+          "artists": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional array of artist names, applied only if internal search cannot find valid info"
+          }
+        }
+      },
+      "CreateSongsRequest": {
+        "type": "object",
+        "required": ["songs"],
+        "properties": {
+          "songs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateSongInput"
+            },
+            "description": "Array of song inputs for bulk create/fetch"
+          }
+        }
+      },
+      "Catalog": {
+        "type": "object",
+        "description": "A catalog with its metadata",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the catalog"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the catalog"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the catalog was created"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the catalog was last updated"
+          }
+        }
+      },
+      "CatalogsResponse": {
+        "type": "object",
+        "description": "Response containing catalogs data",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "catalogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Catalog"
+            },
+            "description": "Array of catalog objects"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (only present if status is 'error')"
+          }
+        }
+      },
+      "CatalogsErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "CreateCatalogInput": {
+        "type": "object",
+        "required": ["account_id"],
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The account to associate the catalog with"
+          },
+          "name": {
+            "type": "string",
+            "description": "Catalog name to create if catalog_id is omitted"
+          },
+          "catalog_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Existing catalog ID to link to the account"
+          }
+        }
+      },
+      "CreateCatalogsRequest": {
+        "type": "object",
+        "required": ["catalogs"],
+        "properties": {
+          "catalogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateCatalogInput"
+            },
+            "description": "Array of catalog inputs for bulk create/link operations"
+          }
+        }
+      },
+      "DeleteCatalogInput": {
+        "type": "object",
+        "required": ["catalog_id", "account_id"],
+        "properties": {
+          "catalog_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Catalog ID to remove"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Account ID whose relationship will be removed"
+          }
+        }
+      },
+      "DeleteCatalogsRequest": {
+        "type": "object",
+        "required": ["catalogs"],
+        "properties": {
+          "catalogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeleteCatalogInput"
+            },
+            "description": "Array of catalog-account pairs to remove"
+          }
+        }
+      },
+      "CatalogSong": {
+        "type": "object",
+        "description": "A song within a catalog with its metadata and associated artists",
+        "properties": {
+          "catalog_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Catalog ID this song entry is associated with"
+          },
+          "isrc": {
+            "type": "string",
+            "description": "International Standard Recording Code (primary key)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the song"
+          },
+          "album": {
+            "type": "string",
+            "description": "Name of the album the song belongs to"
+          },
+          "lyrics": {
+            "type": "string",
+            "description": "Full lyrics of the song"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the song data was last updated"
+          },
+          "artists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SongArtist"
+            },
+            "description": "Array of artist objects associated with this song"
+          }
+        }
+      },
+      "CatalogSongsPagination": {
+        "type": "object",
+        "description": "Pagination metadata for catalog songs response",
+        "properties": {
+          "total_count": {
+            "type": "integer",
+            "description": "Total number of songs in the catalog"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of songs per page"
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages available"
+          }
+        }
+      },
+      "CatalogSongsResponse": {
+        "type": "object",
+        "description": "Response containing catalog songs data with pagination",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "songs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CatalogSong"
+            },
+            "description": "Array of song objects with artist information"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/CatalogSongsPagination",
+            "description": "Pagination metadata for the response"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (only present if status is 'error')"
+          }
+        }
+      },
+      "CatalogSongsErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "AddCatalogSongInput": {
+        "type": "object",
+        "required": ["catalog_id", "isrc"],
+        "properties": {
+          "catalog_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Catalog ID to which the song will be added"
+          },
+          "isrc": {
+            "type": "string",
+            "description": "Song ISRC to associate to the catalog"
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional. Applied only if internal search cannot find valid info for ISRC"
+          },
+          "album": {
+            "type": "string",
+            "description": "Optional. Applied only if internal search cannot find valid info for ISRC"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional. Applied only if internal search cannot find valid info for ISRC"
+          },
+          "artists": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional array of artist names. Applied only if internal search lacks info"
+          }
+        }
+      },
+      "AddCatalogSongsRequest": {
+        "type": "object",
+        "required": ["songs"],
+        "properties": {
+          "songs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AddCatalogSongInput"
+            },
+            "description": "Array of songs for batch updates"
+          }
+        }
+      },
+      "DeleteCatalogSongInput": {
+        "type": "object",
+        "required": ["catalog_id", "isrc"],
+        "properties": {
+          "catalog_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Catalog ID from which the song will be removed"
+          },
+          "isrc": {
+            "type": "string",
+            "description": "Song ISRC to remove from the catalog"
+          }
+        }
+      },
+      "DeleteCatalogSongsRequest": {
+        "type": "object",
+        "required": ["songs"],
+        "properties": {
+          "songs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeleteCatalogSongInput"
+            },
+            "description": "Array of songs for batch deletes"
           }
         }
       }
