@@ -496,6 +496,44 @@
         }
       }
     },
+    "/api/artist/socials/scrape": {
+      "post": {
+        "description": "Trigger scrape jobs for all social profiles linked to an artist. Provide an artist_account_id, and the API will look up the artist's socials and invoke a scraping job for each social profile. Each scrape returns Apify run metadata so you can poll for status and retrieve results.",
+        "requestBody": {
+          "description": "Artist to scrape socials for",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtistSocialsScrapeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scrape jobs triggered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistSocialsScrapeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistSocialsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -1170,6 +1208,43 @@
             "description": "Error message describing what went wrong"
           }
         }
+      },
+      "ArtistSocialsScrapeRequest": {
+        "type": "object",
+        "required": ["artist_account_id"],
+        "properties": {
+          "artist_account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the artist account to scrape socials for",
+            "example": "1873859c-dd37-4e9a-9bac-80d35a1b2c3d"
+          }
+        }
+      },
+      "ApifyRunResult": {
+        "type": "object",
+        "properties": {
+          "runId": {
+            "type": "string",
+            "description": "Unique identifier for the Apify run"
+          },
+          "datasetId": {
+            "type": "string",
+            "description": "Unique identifier for the dataset containing scraped data"
+          },
+          "error": {
+            "type": "string",
+            "nullable": true,
+            "description": "Error message if the run failed (null if successful)"
+          }
+        }
+      },
+      "ArtistSocialsScrapeResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ApifyRunResult"
+        },
+        "description": "Array of Apify run results, one for each social profile scraped"
       }
     },
     "securitySchemes": {

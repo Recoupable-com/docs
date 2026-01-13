@@ -82,7 +82,8 @@
             "group": "Artist",
             "pages": [
               "api-reference/artist/segments",
-              "api-reference/artist/socials"
+              "api-reference/artist/socials",
+              "api-reference/artist/socials-scrape"
             ]
           },
           {
