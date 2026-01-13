@@ -94,6 +94,12 @@
             ]
           },
           {
+            "group": "Fans",
+            "pages": [
+              "api-reference/fans/get"
+            ]
+          },
+          {
             "group": "Chat",
             "pages": [
               "api-reference/chat/chats",

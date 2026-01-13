@@ -638,6 +638,71 @@
         }
       }
     },
+    "/api/fans": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve all social profiles from fans of an artist across all platforms. This endpoint aggregates fan data from all connected social media platforms. Supports pagination for large fan lists.",
+        "parameters": [
+          {
+            "name": "artist_account_id",
+            "in": "query",
+            "description": "The unique identifier of the artist account to fetch fans for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of records per page (default: 20, max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist fans retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistFansResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistFansErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/chats": {
       "get": {
         "description": "Retrieve chat rooms (conversations) for a specific account. Provide an account_id to scope the results, and optionally filter by an artist_account_id. The endpoint returns metadata about each room, including the topic, associated artist, and last updated timestamp.",
@@ -5090,6 +5155,106 @@
               "$ref": "#/components/schemas/DeleteCatalogSongInput"
             },
             "description": "Array of songs for batch deletes"
+          }
+        }
+      },
+      "ArtistFan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the fan's social profile"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username or handle on the platform"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "URL to the fan's avatar/profile image"
+          },
+          "profile_url": {
+            "type": "string",
+            "description": "Full URL to the fan's profile on the platform"
+          },
+          "region": {
+            "type": "string",
+            "description": "Geographic region or location of the fan"
+          },
+          "bio": {
+            "type": "string",
+            "description": "Fan's biography or profile description"
+          },
+          "followerCount": {
+            "type": "integer",
+            "description": "Number of followers the fan has"
+          },
+          "followingCount": {
+            "type": "integer",
+            "description": "Number of accounts the fan is following"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the fan data was last updated"
+          }
+        }
+      },
+      "ArtistFansPagination": {
+        "type": "object",
+        "properties": {
+          "total_count": {
+            "type": "integer",
+            "description": "Total number of records available"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of records per page"
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages available"
+          }
+        }
+      },
+      "ArtistFansResponse": {
+        "type": "object",
+        "required": ["status", "fans", "pagination"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "fans": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArtistFan"
+            },
+            "description": "List of social profiles from fans across all platforms"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/ArtistFansPagination",
+            "description": "Pagination metadata for the response"
+          }
+        }
+      },
+      "ArtistFansErrorResponse": {
+        "type": "object",
+        "required": ["status", "error"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
           }
         }
       },
