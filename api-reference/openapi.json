@@ -1392,6 +1392,124 @@
         }
       }
     },
+    "/api/social/scrape": {
+      "post": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Trigger a social profile scraping job for a given social_id. Use the Get Artist Socials endpoint first to retrieve the social_id values. The response returns Apify run metadata for polling status and retrieving results via the Apify Scraper Results API.",
+        "requestBody": {
+          "description": "Social profile to scrape",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SocialScrapeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scrape job triggered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApifyRunResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/social/posts": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve all social media posts from a specific social profile. Call the Artist Socials endpoint first to obtain social IDs.",
+        "parameters": [
+          {
+            "name": "social_id",
+            "in": "query",
+            "description": "The unique identifier (UUID) of the social profile to fetch posts for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "latestFirst",
+            "in": "query",
+            "description": "Sort posts by most recent first (default: true)",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of records per page (default: 20, max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Posts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialPostsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -3570,6 +3688,101 @@
         }
       },
       "TwitterErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          }
+        }
+      },
+      "SocialScrapeRequest": {
+        "type": "object",
+        "required": ["social_id"],
+        "properties": {
+          "social_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the social profile to scrape. Obtain this from the Get Artist Socials API."
+          }
+        }
+      },
+      "SocialPost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the social's social_posts record"
+          },
+          "post_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the social's posts record"
+          },
+          "social_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the social's socials record"
+          },
+          "post_url": {
+            "type": "string",
+            "description": "Direct URL to the post on the platform"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the post data was last updated"
+          }
+        }
+      },
+      "SocialPostsPagination": {
+        "type": "object",
+        "properties": {
+          "total_count": {
+            "type": "integer",
+            "description": "Total number of posts available"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of posts per page"
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages available"
+          }
+        }
+      },
+      "SocialPostsResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "posts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SocialPost"
+            },
+            "description": "List of social media posts"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/SocialPostsPagination"
+          }
+        }
+      },
+      "SocialErrorResponse": {
         "type": "object",
         "properties": {
           "status": {

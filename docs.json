@@ -129,6 +129,13 @@
             ]
           },
           {
+            "group": "Social",
+            "pages": [
+              "api-reference/social/scrape",
+              "api-reference/social/posts"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",
