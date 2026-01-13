@@ -183,15 +183,6 @@
               "api-reference/songs/catalog-songs-add",
               "api-reference/songs/catalog-songs-delete"
             ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
           }
         ]
       }
