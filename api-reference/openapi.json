@@ -1563,6 +1563,74 @@
         }
       }
     },
+    "/api/transcribe": {
+      "post": {
+        "description": "Transcribe audio files using OpenAI Whisper. The API saves both the original audio file and the generated markdown transcript to the customer's files in Supabase Storage.",
+        "requestBody": {
+          "description": "Audio transcription request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranscribeAudioRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Audio transcribed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscribeAudioResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required fields or invalid audio URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscribeAudioErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Audio file exceeds the 25MB limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscribeAudioErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscribeAudioErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error - OpenAI API key not configured",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscribeAudioErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -4028,6 +4096,93 @@
       },
       "ImageGenerationErrorResponse": {
         "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "TranscribeAudioRequest": {
+        "type": "object",
+        "required": ["audio_url", "account_id", "artist_account_id"],
+        "properties": {
+          "audio_url": {
+            "type": "string",
+            "description": "Public URL to the audio file (mp3, wav, m4a, webm)",
+            "example": "https://example.com/song.mp3"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Owner account ID for file storage",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "artist_account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Artist account ID for file storage",
+            "example": "550e8400-e29b-41d4-a716-446655440001"
+          },
+          "title": {
+            "type": "string",
+            "description": "Optional title for the audio and transcription files",
+            "example": "My Song"
+          },
+          "include_timestamps": {
+            "type": "boolean",
+            "description": "Whether to include timestamps in the markdown transcript",
+            "default": false
+          }
+        }
+      },
+      "TranscribeFileInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the file record in the database"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "Name of the saved file"
+          },
+          "storageKey": {
+            "type": "string",
+            "description": "Storage path in Supabase Storage"
+          }
+        }
+      },
+      "TranscribeAudioResponse": {
+        "type": "object",
+        "required": ["success", "audioFile", "transcriptFile", "text"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the transcription was successful"
+          },
+          "audioFile": {
+            "$ref": "#/components/schemas/TranscribeFileInfo",
+            "description": "Information about the saved audio file"
+          },
+          "transcriptFile": {
+            "$ref": "#/components/schemas/TranscribeFileInfo",
+            "description": "Information about the saved transcript file"
+          },
+          "text": {
+            "type": "string",
+            "description": "The full transcription text"
+          },
+          "language": {
+            "type": "string",
+            "description": "Detected language code (e.g., 'en', 'es', 'fr')"
+          }
+        }
+      },
+      "TranscribeAudioErrorResponse": {
+        "type": "object",
+        "required": ["error"],
         "properties": {
           "error": {
             "type": "string",
