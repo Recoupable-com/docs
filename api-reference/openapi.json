@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://recoup-api.vercel.app"
     }
   ],
   "security": [
@@ -85,6 +85,65 @@
           },
           "400": {
             "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tasks": {
+      "get": {
+        "description": "Retrieve scheduled tasks from the database. Tasks have cron-based execution schedules. Supports filtering by id, account_id, or artist_account_id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Filter by task ID (UUID). Returns a single task matching the provided ID.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "Filter tasks to only include those for the specified account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "artist_account_id",
+            "in": "query",
+            "description": "Filter tasks to only include those for the specified artist account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tasks retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TasksResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
@@ -203,6 +262,70 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      },
+      "TasksResponse": {
+        "type": "object",
+        "required": ["status", "tasks"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            },
+            "description": "Array of task objects"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (only present if status is error)"
+          }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the task"
+          },
+          "title": {
+            "type": "string",
+            "description": "Descriptive title or name of the task"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Detailed instruction or prompt for task execution"
+          },
+          "schedule": {
+            "type": "string",
+            "description": "Cron expression defining when the task should execute (e.g., '0 10 * * *')"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the associated account"
+          },
+          "artist_account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the associated artist account"
+          },
+          "enabled": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Whether the task is enabled. Defaults to true."
+          },
+          "trigger_schedule_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Identifier for the trigger schedule associated with this task"
           }
         }
       }

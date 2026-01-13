@@ -57,6 +57,12 @@
             ]
           },
           {
+            "group": "Tasks",
+            "pages": [
+              "api-reference/tasks/get"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",
