@@ -703,6 +703,71 @@
         }
       }
     },
+    "/api/posts": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve all social media posts from an artist across all platforms. This endpoint aggregates posts from all connected social media profiles for the specified artist. Supports pagination for large post collections.",
+        "parameters": [
+          {
+            "name": "artist_account_id",
+            "in": "query",
+            "description": "The unique identifier of the artist account to fetch posts for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of records per page (default: 20, max: 100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist posts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistPostsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtistPostsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/chats": {
       "get": {
         "description": "Retrieve chat rooms (conversations) for a specific account. Provide an account_id to scope the results, and optionally filter by an artist_account_id. The endpoint returns metadata about each room, including the topic, associated artist, and last updated timestamp.",
@@ -5312,6 +5377,83 @@
             "type": "string",
             "format": "date-time",
             "description": "ISO timestamp of when the fan data was last updated"
+          }
+        }
+      },
+      "ArtistPost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the post"
+          },
+          "post_url": {
+            "type": "string",
+            "description": "Direct URL to the post on the social platform"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of when the post was last updated"
+          }
+        }
+      },
+      "ArtistPostsPagination": {
+        "type": "object",
+        "properties": {
+          "total_count": {
+            "type": "integer",
+            "description": "Total number of posts available"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of posts per page"
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages available"
+          }
+        }
+      },
+      "ArtistPostsResponse": {
+        "type": "object",
+        "required": ["status", "posts", "pagination"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "posts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArtistPost"
+            },
+            "description": "List of posts from the artist across all social platforms"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/ArtistPostsPagination",
+            "description": "Pagination metadata for the response"
+          }
+        }
+      },
+      "ArtistPostsErrorResponse": {
+        "type": "object",
+        "required": ["status", "error"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
           }
         }
       },
