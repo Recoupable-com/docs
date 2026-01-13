@@ -79,6 +79,12 @@
             ]
           },
           {
+            "group": "Artist",
+            "pages": [
+              "api-reference/artist/segments"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",
