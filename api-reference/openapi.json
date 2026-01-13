@@ -1510,6 +1510,59 @@
         }
       }
     },
+    "/api/image/generate": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://recoup-api.vercel.app"
+          }
+        ],
+        "description": "Generate high-quality images using AI models. Images are automatically stored on Arweave and include In Process moment metadata for provenance and ownership tracking.",
+        "parameters": [
+          {
+            "name": "prompt",
+            "in": "query",
+            "description": "Text description of the image you want to generate",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "The unique identifier of the account generating the image",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageGenerationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters or invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageGenerationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -3793,6 +3846,192 @@
           "message": {
             "type": "string",
             "description": "Error message"
+          }
+        }
+      },
+      "GeneratedImage": {
+        "type": "object",
+        "description": "A generated image file from the AI model",
+        "properties": {
+          "base64": {
+            "type": "string",
+            "description": "Image file as a base64 encoded string"
+          },
+          "uint8Array": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Image file as a Uint8Array (represented as array of numbers in JSON)"
+          },
+          "mediaType": {
+            "type": "string",
+            "description": "The IANA media type of the file (e.g., 'image/png', 'image/jpeg')"
+          }
+        }
+      },
+      "ImageResponseMeta": {
+        "type": "object",
+        "description": "Response metadata from the AI provider",
+        "properties": {
+          "finishReason": {
+            "type": "string",
+            "description": "Reason the generation finished (e.g., 'stop')"
+          }
+        }
+      },
+      "ImageProviderMetadata": {
+        "type": "object",
+        "description": "Metadata from the AI provider about the generation",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "The AI model used for generation (e.g., 'dall-e-3', 'gpt-image-1')"
+          },
+          "size": {
+            "type": "string",
+            "description": "The size of the generated image (e.g., '1024x1024')"
+          }
+        }
+      },
+      "ImageUsage": {
+        "type": "object",
+        "description": "Token usage information for the image generation",
+        "properties": {
+          "promptTokens": {
+            "type": "integer",
+            "description": "Number of tokens used in the prompt"
+          },
+          "completionTokens": {
+            "type": "integer",
+            "description": "Number of tokens used in the completion (typically 0 for image generation)"
+          },
+          "totalTokens": {
+            "type": "integer",
+            "description": "Total tokens used"
+          }
+        }
+      },
+      "ArweaveTransaction": {
+        "type": "object",
+        "description": "Arweave transaction object for the stored image",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the Arweave transaction"
+          },
+          "last_tx": {
+            "type": "string",
+            "description": "Last transaction reference"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner address of the transaction"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Tags associated with the transaction"
+          },
+          "target": {
+            "type": "string",
+            "description": "Target address (empty for data transactions)"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Amount transferred (typically '0' for data transactions)"
+          },
+          "data": {
+            "type": "string",
+            "description": "Transaction data (may be empty in response)"
+          },
+          "reward": {
+            "type": "string",
+            "description": "Mining reward for the transaction"
+          },
+          "signature": {
+            "type": "string",
+            "description": "Transaction signature"
+          },
+          "format": {
+            "type": "integer",
+            "description": "Transaction format version"
+          }
+        }
+      },
+      "InProcessMoment": {
+        "type": "object",
+        "description": "In Process moment metadata for provenance and ownership tracking",
+        "properties": {
+          "contractAddress": {
+            "type": "string",
+            "description": "Smart contract address for the moment"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "Token ID of the minted moment"
+          },
+          "hash": {
+            "type": "string",
+            "description": "Transaction hash of the moment mint"
+          },
+          "chainId": {
+            "type": "integer",
+            "description": "Chain ID (e.g., 8453 for Base)"
+          }
+        }
+      },
+      "ImageGenerationResponse": {
+        "type": "object",
+        "description": "Response from the image generation endpoint, extending Experimental_GenerateImageResult from the AI SDK",
+        "properties": {
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GeneratedImage"
+            },
+            "description": "Array of generated image objects"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of warning messages, if any"
+          },
+          "responses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImageResponseMeta"
+            },
+            "description": "Array of response metadata from the AI provider"
+          },
+          "providerMetadata": {
+            "$ref": "#/components/schemas/ImageProviderMetadata"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ImageUsage"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Permanent Arweave URL where the image is stored"
+          },
+          "arweaveResult": {
+            "$ref": "#/components/schemas/ArweaveTransaction"
+          },
+          "moment": {
+            "$ref": "#/components/schemas/InProcessMoment"
+          }
+        }
+      },
+      "ImageGenerationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
           }
         }
       }

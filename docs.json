@@ -136,6 +136,12 @@
             ]
           },
           {
+            "group": "Image",
+            "pages": [
+              "api-reference/image/generation"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",
