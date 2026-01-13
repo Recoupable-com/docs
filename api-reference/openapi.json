@@ -1297,6 +1297,101 @@
         }
       }
     },
+    "/api/x/search": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Search for tweets using the Twitter Search API, powered by agent-twitter-client (no Twitter API key required). Supports various search modes including Top, Latest, Photos, Videos, and Users.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "The search query. Any Twitter-compatible query format can be used (e.g., '#nodejs', 'from:username', etc.)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "maxTweets",
+            "in": "query",
+            "description": "The maximum number of tweets to return",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "searchMode",
+            "in": "query",
+            "description": "The category filter to apply to the search",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["Top", "Latest", "Photos", "Videos", "Users"],
+              "default": "Latest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tweets retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwitterSearchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwitterErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/x/trends": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve the current trending topics from Twitter using the getTrends method from agent-twitter-client (no Twitter API key required).",
+        "responses": {
+          "200": {
+            "description": "Trends retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwitterTrendsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwitterErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -3322,6 +3417,169 @@
               }
             },
             "description": "Error details"
+          }
+        }
+      },
+      "TwitterPhoto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Photo ID"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL of the photo"
+          }
+        }
+      },
+      "TwitterVideo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Video ID"
+          },
+          "preview": {
+            "type": "string",
+            "description": "URL of the video preview image"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL of the video"
+          }
+        }
+      },
+      "Tweet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Tweet ID"
+          },
+          "text": {
+            "type": "string",
+            "description": "Tweet text content"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username of the tweet author"
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "Unix timestamp (ms) of when the tweet was posted"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO timestamp of when the tweet was posted"
+          },
+          "isReply": {
+            "type": "boolean",
+            "description": "Whether the tweet is a reply"
+          },
+          "isRetweet": {
+            "type": "boolean",
+            "description": "Whether the tweet is a retweet"
+          },
+          "likes": {
+            "type": "integer",
+            "description": "Number of likes"
+          },
+          "retweetCount": {
+            "type": "integer",
+            "description": "Number of retweets"
+          },
+          "replies": {
+            "type": "integer",
+            "description": "Number of replies"
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TwitterPhoto"
+            },
+            "description": "Array of photo objects"
+          },
+          "videos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TwitterVideo"
+            },
+            "description": "Array of video objects"
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of URLs included in the tweet"
+          },
+          "permanentUrl": {
+            "type": "string",
+            "description": "Permanent URL to the tweet"
+          },
+          "quotedStatusId": {
+            "type": "string",
+            "description": "ID of the quoted tweet (if applicable)"
+          },
+          "inReplyToStatusId": {
+            "type": "string",
+            "description": "ID of the tweet this is replying to (if applicable)"
+          },
+          "hashtags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of hashtags in the tweet"
+          }
+        }
+      },
+      "TwitterSearchResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of the request",
+            "enum": ["success", "error"]
+          },
+          "tweets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tweet"
+            },
+            "description": "List of tweet objects"
+          }
+        }
+      },
+      "TwitterTrendsResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of the request",
+            "enum": ["success", "error"]
+          },
+          "trends": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of current trending topics on Twitter"
+          }
+        }
+      },
+      "TwitterErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
           }
         }
       }

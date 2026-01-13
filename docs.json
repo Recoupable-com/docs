@@ -122,6 +122,13 @@
             ]
           },
           {
+            "group": "X (Twitter)",
+            "pages": [
+              "api-reference/x/search",
+              "api-reference/x/trends"
+            ]
+          },
+          {
             "group": "Endpoint examples",
             "pages": [
               "api-reference/endpoint/get",
