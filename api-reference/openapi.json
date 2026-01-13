@@ -706,6 +706,55 @@
         }
       }
     },
+    "/api/chat": {
+      "post": {
+        "servers": [
+          {
+            "url": "https://chat.recoupable.com"
+          }
+        ],
+        "description": "Stream AI-powered chat responses using the Recoup chat system. This endpoint mirrors the request payload of the Chat Generate API but returns a streaming response compatible with the Vercel AI SDK `createUIMessageStreamResponse`. The stream emits UI message parts encoded as data chunks that can be parsed with `createUIMessageStreamParser`.",
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Chat stream request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatStreamRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Streaming response with UI message parts. Events include: message-start (assistant begins message), message-delta (incremental updates), message-end (assistant finishes message), error (stream error), and metadata (usage data).",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string",
+                  "description": "Server-Sent Events stream containing UI message parts"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatStreamErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants/{id}": {
       "delete": {
         "description": "Deletes a single plant based on the ID supplied",
@@ -1803,6 +1852,61 @@
         }
       },
       "ChatGenerateErrorResponse": {
+        "type": "object",
+        "required": ["status", "message"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "ChatStreamRequest": {
+        "type": "object",
+        "description": "Request body for chat streaming. Exactly one of 'prompt' or 'messages' must be provided.",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Single text prompt for the assistant. Required if 'messages' is not provided."
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UIMessage"
+            },
+            "description": "Array of UIMessage objects for context. Required if 'prompt' is not provided."
+          },
+          "artistId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique identifier of the artist (optional)"
+          },
+          "model": {
+            "type": "string",
+            "description": "The AI model to use for text generation (optional)",
+            "example": "openai/gpt-5-mini"
+          },
+          "excludeTools": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of tool names to exclude from execution",
+            "example": ["create_scheduled_actions"]
+          },
+          "roomId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the chat room. If not provided, one will be generated automatically."
+          }
+        }
+      },
+      "ChatStreamErrorResponse": {
         "type": "object",
         "required": ["status", "message"],
         "properties": {
