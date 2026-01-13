@@ -2293,6 +2293,67 @@
           }
         }
       }
+    },
+    "/api/subscriptions": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve subscription information for an account. For accounts with enterprise plans, returns a simplified response indicating enterprise status. For standard accounts, returns the full Stripe subscription object.",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "description": "The unique identifier of the account to query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subscription information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/SubscriptionResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EnterpriseSubscriptionResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing or invalid accountId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5684,6 +5745,171 @@
         }
       },
       "SegmentFansErrorResponse": {
+        "type": "object",
+        "required": ["status", "error"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "StripeSubscription": {
+        "type": "object",
+        "description": "A Stripe subscription object. For detailed information about all available properties, see the Stripe Subscription API documentation: https://docs.stripe.com/api/subscriptions/retrieve",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the subscription"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["subscription"],
+            "description": "String representing the object's type"
+          },
+          "customer": {
+            "type": "string",
+            "description": "ID of the customer who owns this subscription"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "canceled", "incomplete", "incomplete_expired", "past_due", "trialing", "unpaid"],
+            "description": "The status of the subscription"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Three-letter ISO currency code"
+          },
+          "current_period_start": {
+            "type": "integer",
+            "description": "Start of the current period (Unix timestamp)"
+          },
+          "current_period_end": {
+            "type": "integer",
+            "description": "End of the current period (Unix timestamp)"
+          },
+          "cancel_at_period_end": {
+            "type": "boolean",
+            "description": "If true, the subscription will be canceled at the end of the current period"
+          },
+          "created": {
+            "type": "integer",
+            "description": "Time at which the subscription was created (Unix timestamp)"
+          },
+          "items": {
+            "type": "object",
+            "description": "List of subscription items, each with an attached price",
+            "properties": {
+              "object": {
+                "type": "string",
+                "enum": ["list"]
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "object": {
+                      "type": "string",
+                      "enum": ["subscription_item"]
+                    },
+                    "price": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "unit_amount": {
+                          "type": "integer",
+                          "description": "Price amount in cents"
+                        },
+                        "recurring": {
+                          "type": "object",
+                          "properties": {
+                            "interval": {
+                              "type": "string",
+                              "enum": ["day", "week", "month", "year"]
+                            },
+                            "interval_count": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "quantity": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "total_count": {
+                "type": "integer"
+              }
+            }
+          },
+          "latest_invoice": {
+            "type": "string",
+            "description": "ID of the most recent invoice for this subscription"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "Indicates if in live mode (true) or test mode (false)"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Set of key-value pairs attached to the subscription"
+          }
+        }
+      },
+      "SubscriptionResponse": {
+        "type": "object",
+        "required": ["status", "subscription"],
+        "description": "Response for standard accounts with Stripe subscriptions",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "subscription": {
+            "$ref": "#/components/schemas/StripeSubscription",
+            "description": "The full Stripe subscription object"
+          }
+        }
+      },
+      "EnterpriseSubscriptionResponse": {
+        "type": "object",
+        "required": ["status", "isEnterprise"],
+        "description": "Response for accounts with enterprise plans",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "isEnterprise": {
+            "type": "boolean",
+            "enum": [true],
+            "description": "Indicates that the account has an enterprise plan"
+          }
+        }
+      },
+      "SubscriptionErrorResponse": {
         "type": "object",
         "required": ["status", "error"],
         "properties": {

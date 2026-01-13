@@ -189,6 +189,12 @@
               "api-reference/songs/catalog-songs-add",
               "api-reference/songs/catalog-songs-delete"
             ]
+          },
+          {
+            "group": "Subscriptions",
+            "pages": [
+              "api-reference/subscriptions/get"
+            ]
           }
         ]
       }
