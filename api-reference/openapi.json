@@ -691,6 +691,80 @@
         }
       }
     },
+    "/api/comments": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://api.recoupable.com"
+          }
+        ],
+        "description": "Retrieve comments associated with an artist or a specific post, with support for pagination. This endpoint returns raw comment data including the comment text, associated post, and commenter's social profile reference.",
+        "parameters": [
+          {
+            "name": "artist_account_id",
+            "in": "query",
+            "description": "The unique identifier of the artist account to fetch comments for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "post_id",
+            "in": "query",
+            "description": "Filter comments by specific post",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of comments per page (default: 10)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comments retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/post/comments": {
       "get": {
         "servers": [
@@ -5465,6 +5539,93 @@
         }
       },
       "PostCommentsErrorResponse": {
+        "type": "object",
+        "required": ["status", "error"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the comment"
+          },
+          "post_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the associated post"
+          },
+          "social_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the social profile who made the comment"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Comment text content"
+          },
+          "commented_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp with timezone of when the comment was made"
+          }
+        }
+      },
+      "CommentsPagination": {
+        "type": "object",
+        "properties": {
+          "total_count": {
+            "type": "integer",
+            "description": "Total number of comments available"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of comments per page"
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages available"
+          }
+        }
+      },
+      "CommentsResponse": {
+        "type": "object",
+        "required": ["status", "comments", "pagination"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            },
+            "description": "List of comments for the specified artist or post"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/CommentsPagination",
+            "description": "Pagination metadata for the response"
+          }
+        }
+      },
+      "CommentsErrorResponse": {
         "type": "object",
         "required": ["status", "error"],
         "properties": {

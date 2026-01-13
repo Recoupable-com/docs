@@ -112,6 +112,12 @@
             ]
           },
           {
+            "group": "Comments",
+            "pages": [
+              "api-reference/comments/get"
+            ]
+          },
+          {
             "group": "Chat",
             "pages": [
               "api-reference/chat/chats",
