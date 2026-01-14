@@ -255,5 +255,10 @@
       "github": "https://github.com/recoupable-com",
       "linkedin": "https://www.linkedin.com/company/recoupable"
     }
+  },
+  "metatags": {
+    "og:image": "/images/icon-with-background.png",
+    "og:site_name": "Recoup",
+    "twitter:card": "summary_large_image"
   }
 }
