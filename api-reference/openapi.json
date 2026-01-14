@@ -15,7 +15,7 @@
   ],
   "security": [
     {
-      "bearerAuth": []
+      "apiKeyAuth": []
     }
   ],
   "paths": {
@@ -879,7 +879,7 @@
         }
       },
       "post": {
-        "description": "Create a new chat room. Optionally associate it with an artist and/or provide a client-generated chat ID.",
+        "description": "Create a new chat room. Optionally associate it with an artist and/or provide a client-generated chat ID. Organization API keys can create chats on behalf of other accounts within their organization by specifying an accountId.",
         "requestBody": {
           "description": "Chat creation parameters",
           "required": false,
@@ -904,6 +904,16 @@
           },
           "400": {
             "description": "Bad request - failed to create chat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateChatErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - API key does not have access to the specified accountId",
             "content": {
               "application/json": {
                 "schema": {
@@ -3313,6 +3323,11 @@
             "type": "string",
             "format": "uuid",
             "description": "UUID for the new chat (client-generated). If not provided, one will be generated automatically."
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the account to create the chat for. Only applicable for organization API keys - org keys can specify an accountId for any account within their organization. The Recoup admin organization can specify any accountId. If not provided, the chat is created for the API key's own account."
           }
         }
       },
