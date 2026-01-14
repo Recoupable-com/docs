@@ -32,12 +32,12 @@ Copy and securely store your API key immediately - it will only be shown once!
 
 ### Step 3: Use Your API Key
 
-Once you have your API key, include it in the `x-api-key` header for all authenticated requests:
+Once you have your API key, include it in the `x-api-key` header for all authenticated requests. Here's a simple example that retrieves your scheduled tasks:
 
 <CodeGroup>
 
 ```bash cURL
-curl -X GET "https://api.recoupable.com/api/fans?artist_account_id=YOUR_ARTIST_ACCOUNT_ID" \
+curl -X GET "https://api.recoupable.com/api/tasks" \
   -H "Content-Type: application/json" \
   -H "x-api-key: YOUR_API_KEY"
 ```
@@ -51,37 +51,73 @@ headers = {
 }
 
 response = requests.get(
-    "https://api.recoupable.com/api/fans",
-    params={"artist_account_id": "YOUR_ARTIST_ACCOUNT_ID"},
+    "https://api.recoupable.com/api/tasks",
     headers=headers
 )
+print(response.json())
 ```
 
 ```javascript JavaScript
-const response = await fetch(
-  "https://api.recoupable.com/api/fans?artist_account_id=YOUR_ARTIST_ACCOUNT_ID",
-  {
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": "YOUR_API_KEY",
-    },
-  }
-);
+const response = await fetch("https://api.recoupable.com/api/tasks", {
+  headers: {
+    "Content-Type": "application/json",
+    "x-api-key": "YOUR_API_KEY",
+  },
+});
+const data = await response.json();
+console.log(data);
 ```
 
 ```typescript TypeScript
-const response = await fetch(
-  "https://api.recoupable.com/api/fans?artist_account_id=YOUR_ARTIST_ACCOUNT_ID",
-  {
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": "YOUR_API_KEY",
-    },
-  }
-);
+interface Task {
+  id: string;
+  title: string;
+  prompt: string;
+  schedule: string;
+  account_id: string;
+  artist_account_id: string;
+  enabled: boolean;
+}
+
+interface TasksResponse {
+  status: "success" | "error";
+  tasks: Task[];
+}
+
+const response = await fetch("https://api.recoupable.com/api/tasks", {
+  headers: {
+    "Content-Type": "application/json",
+    "x-api-key": "YOUR_API_KEY",
+  },
+});
+const data: TasksResponse = await response.json();
+console.log(data.tasks);
 ```
 
 </CodeGroup>
+
+**Example Response:**
+
+```json
+{
+  "status": "success",
+  "tasks": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "Daily Fan Report",
+      "prompt": "Generate a summary of new fans from the past 24 hours",
+      "schedule": "0 9 * * *",
+      "account_id": "123e4567-e89b-12d3-a456-426614174000",
+      "artist_account_id": "987fcdeb-51a2-3b4c-d5e6-789012345678",
+      "enabled": true
+    }
+  ]
+}
+```
+
+<Info>
+For full documentation on the Tasks API including filtering options, see the [Tasks API Reference](/api-reference/tasks/get).
+</Info>
 
 ## Next Steps
 
