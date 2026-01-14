@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Recoup",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#345A5D",
+    "light": "#4A7A7D",
+    "dark": "#1E3A3D"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -208,14 +208,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Recoup App",
+          "href": "https://app.recoupable.com",
+          "icon": "rocket"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Website",
+          "href": "https://recoupable.com",
+          "icon": "globe"
         }
       ]
     }
@@ -228,13 +228,13 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@recoupable.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://app.recoupable.com"
     }
   },
   "contextual": {
@@ -251,9 +251,9 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/recoupai",
+      "github": "https://github.com/recoupable-com",
+      "linkedin": "https://www.linkedin.com/company/recoupable"
     }
   }
 }
