@@ -1,28 +1,67 @@
 ---
 title: 'Introduction'
-description: 'API documentation for the Recoup platform'
+description: 'API documentation for the Recoup platform - AI agents for the music industry'
 ---
 
 ## Welcome
 
-Welcome to the Recoup API documentation. Recoup is an AI agent platform for the music industry that provides artist analytics, fan segmentation, and AI-powered chat assistants.
+Welcome to the Recoup API documentation. Recoup is an AI agent platform for the music industry that provides artist analytics, fan segmentation, and AI-powered chat assistants. Build smarter song rollouts, create unforgettable fan experiences, and drive lasting artist growth.
 
 <Card
-  title="Recoup API Endpoints"
+  title="View OpenAPI Specification"
   icon="code"
-  href="https://github.com/recoupable/docs/blob/main/api-reference/openapi.json"
+  href="https://github.com/sweetmantech/docs/blob/main/api-reference/openapi.json"
 >
-  View the OpenAPI specification file
+  View the OpenAPI specification file on GitHub
 </Card>
+
+## Base URL
+
+All API requests should be made to:
+
+```bash
+https://api.recoupable.com/api
+```
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens.
+All API endpoints are authenticated using an API key passed in the `x-api-key` header.
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+### Getting Your API Key
+
+1. Navigate to the [API Keys Management Page](https://chat.recoupable.com/keys)
+2. Sign in with your account
+3. Create a new API key and copy it immediately (it's only shown once)
+
+### Using Your API Key
+
+Include your API key in the `x-api-key` header for all requests:
+
+```bash
+curl -X GET "https://api.recoupable.com/api/artists?accountId=YOUR_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY"
 ```
+
+<Warning>
+Keep your API key secure. Do not share it publicly or commit it to version control.
+</Warning>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Quickstart"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Get started with your first API request
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/artists/list"
+  >
+    Explore all available endpoints
+  </Card>
+</CardGroup>
