@@ -191,6 +191,11 @@
           "anchor": "Website",
           "href": "https://recoupable.com",
           "icon": "globe"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://research.recoupable.com/",
+          "icon": "newspaper"
         }
       ]
     }
