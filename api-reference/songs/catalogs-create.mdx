@@ -1,0 +1,8 @@
+---
+title: Create Catalogs
+openapi: post /api/catalogs
+---
+
+<Note>
+  If `catalog_id` is provided, the existing catalog is linked to the account. If `name` is provided without `catalog_id`, a new catalog is created. If both are provided, `catalog_id` takes priority.
+</Note>

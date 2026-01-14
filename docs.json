@@ -59,16 +59,147 @@
           {
             "group": "Tasks",
             "pages": [
-              "api-reference/tasks/get"
+              "api-reference/tasks/get",
+              "api-reference/tasks/create",
+              "api-reference/tasks/update",
+              "api-reference/tasks/delete"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Accounts",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/accounts/get",
+              "api-reference/accounts/id"
+            ]
+          },
+          {
+            "group": "Artists",
+            "pages": [
+              "api-reference/artists/list"
+            ]
+          },
+          {
+            "group": "Artist",
+            "pages": [
+              "api-reference/artist/segments",
+              "api-reference/artist/socials",
+              "api-reference/artist/socials-scrape",
+              "api-reference/artist/profile"
+            ]
+          },
+          {
+            "group": "Segment",
+            "pages": [
+              "api-reference/segment/fans"
+            ]
+          },
+          {
+            "group": "Fans",
+            "pages": [
+              "api-reference/fans/get"
+            ]
+          },
+          {
+            "group": "Posts",
+            "pages": [
+              "api-reference/posts/get"
+            ]
+          },
+          {
+            "group": "Post",
+            "pages": [
+              "api-reference/post/comments"
+            ]
+          },
+          {
+            "group": "Comments",
+            "pages": [
+              "api-reference/comments/get"
+            ]
+          },
+          {
+            "group": "Chat",
+            "pages": [
+              "api-reference/chat/chats",
+              "api-reference/chat/create",
+              "api-reference/chat/generate",
+              "api-reference/chat/stream"
+            ]
+          },
+          {
+            "group": "Organizations",
+            "pages": [
+              "api-reference/organizations/list",
+              "api-reference/organizations/create",
+              "api-reference/organizations/add-artist"
+            ]
+          },
+          {
+            "group": "Spotify",
+            "pages": [
+              "api-reference/spotify/search",
+              "api-reference/spotify/artist",
+              "api-reference/spotify/artist-albums",
+              "api-reference/spotify/artist-top-tracks",
+              "api-reference/spotify/album"
+            ]
+          },
+          {
+            "group": "Instagram",
+            "pages": [
+              "api-reference/instagram/comments",
+              "api-reference/instagram/profiles"
+            ]
+          },
+          {
+            "group": "X (Twitter)",
+            "pages": [
+              "api-reference/x/search",
+              "api-reference/x/trends"
+            ]
+          },
+          {
+            "group": "Social",
+            "pages": [
+              "api-reference/social/scrape",
+              "api-reference/social/posts"
+            ]
+          },
+          {
+            "group": "Image",
+            "pages": [
+              "api-reference/image/generation"
+            ]
+          },
+          {
+            "group": "Transcribe",
+            "pages": [
+              "api-reference/transcribe/audio"
+            ]
+          },
+          {
+            "group": "Songs & Catalogs",
+            "pages": [
+              "api-reference/songs/songs",
+              "api-reference/songs/create",
+              "api-reference/songs/catalogs",
+              "api-reference/songs/catalogs-create",
+              "api-reference/songs/catalogs-delete",
+              "api-reference/songs/catalog-songs",
+              "api-reference/songs/catalog-songs-add",
+              "api-reference/songs/catalog-songs-delete"
+            ]
+          },
+          {
+            "group": "Subscriptions",
+            "pages": [
+              "api-reference/subscriptions/get"
+            ]
+          },
+          {
+            "group": "Apify",
+            "pages": [
+              "api-reference/apify/scraper"
             ]
           }
         ]

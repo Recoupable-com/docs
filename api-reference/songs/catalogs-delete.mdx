@@ -1,0 +1,8 @@
+---
+title: Delete Catalogs
+openapi: delete /api/catalogs
+---
+
+<Note>
+  When unlinking a catalog from an account, if no other accounts remain linked to the catalog, the catalog is automatically deleted (cascading to catalog_songs). Otherwise, only the account-catalog relationship is removed.
+</Note>
