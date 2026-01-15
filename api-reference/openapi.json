@@ -2867,6 +2867,11 @@
             "type": "string",
             "format": "uuid",
             "description": "The UUID of the owner account that will have access to this artist"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Optional organization ID to link the new artist to"
           }
         }
       },
