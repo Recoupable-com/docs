@@ -929,7 +929,7 @@
       "post": {
         "servers": [
           {
-            "url": "https://chat.recoupable.com"
+            "url": "https://recoup-api.vercel.app"
           }
         ],
         "description": "Generate AI-powered text responses using the Recoup chat system. This endpoint processes chat requests and returns generated text along with metadata about the generation process.",
@@ -977,7 +977,7 @@
       "post": {
         "servers": [
           {
-            "url": "https://chat.recoupable.com"
+            "url": "https://recoup-api.vercel.app"
           }
         ],
         "description": "Stream AI-powered chat responses using the Recoup chat system. This endpoint mirrors the request payload of the Chat Generate API but returns a streaming response compatible with the Vercel AI SDK `createUIMessageStreamResponse`. The stream emits UI message parts encoded as data chunks that can be parsed with `createUIMessageStreamParser`.",
