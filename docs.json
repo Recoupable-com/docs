@@ -50,7 +50,8 @@
           {
             "group": "Artists",
             "pages": [
-              "api-reference/artists/list"
+              "api-reference/artists/list",
+              "api-reference/artists/create"
             ]
           },
           {
