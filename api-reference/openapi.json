@@ -6272,7 +6272,7 @@
         "type": "apiKey",
         "in": "header",
         "name": "x-api-key",
-        "description": "Your Recoup API key"
+        "description": "Your Recoup API key. [Learn more](/quickstart#api-keys)."
       }
     }
   }
