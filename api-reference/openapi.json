@@ -318,9 +318,7 @@
             }
           }
         }
-      }
-    },
-    "/api/artist": {
+      },
       "post": {
         "description": "Create a new artist account and associate it with an owner account. The artist will be accessible to the owner account and can optionally be linked to an organization.",
         "requestBody": {
