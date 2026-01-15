@@ -32,6 +32,15 @@
             ]
           },
           {
+            "group": "Chat",
+            "pages": [
+              "api-reference/chat/chats",
+              "api-reference/chat/create",
+              "api-reference/chat/generate",
+              "api-reference/chat/stream"
+            ]
+          },
+          {
             "group": "Tasks",
             "pages": [
               "api-reference/tasks/get",
@@ -86,15 +95,6 @@
             "group": "Comments",
             "pages": [
               "api-reference/comments/get"
-            ]
-          },
-          {
-            "group": "Chat",
-            "pages": [
-              "api-reference/chat/chats",
-              "api-reference/chat/create",
-              "api-reference/chat/generate",
-              "api-reference/chat/stream"
             ]
           },
           {
