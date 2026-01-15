@@ -32,6 +32,15 @@
             ]
           },
           {
+            "group": "Chat",
+            "pages": [
+              "api-reference/chat/chats",
+              "api-reference/chat/create",
+              "api-reference/chat/generate",
+              "api-reference/chat/stream"
+            ]
+          },
+          {
             "group": "Tasks",
             "pages": [
               "api-reference/tasks/get",
@@ -50,12 +59,8 @@
           {
             "group": "Artists",
             "pages": [
-              "api-reference/artists/list"
-            ]
-          },
-          {
-            "group": "Artist",
-            "pages": [
+              "api-reference/artists/list",
+              "api-reference/artists/create",
               "api-reference/artist/segments",
               "api-reference/artist/socials",
               "api-reference/artist/socials-scrape",
@@ -90,15 +95,6 @@
             "group": "Comments",
             "pages": [
               "api-reference/comments/get"
-            ]
-          },
-          {
-            "group": "Chat",
-            "pages": [
-              "api-reference/chat/chats",
-              "api-reference/chat/create",
-              "api-reference/chat/generate",
-              "api-reference/chat/stream"
             ]
           },
           {
