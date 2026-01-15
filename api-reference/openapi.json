@@ -320,6 +320,54 @@
         }
       }
     },
+    "/api/artist": {
+      "post": {
+        "description": "Create a new artist account and associate it with an owner account. The artist will be accessible to the owner account and can optionally be linked to an organization.",
+        "requestBody": {
+          "description": "Artist creation parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArtistRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Artist created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateArtistResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error or invalid JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateArtistError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/artist/segments": {
       "get": {
         "description": "Retrieve all segments associated with an artist. This endpoint should be called before using the Segment Fans endpoint to obtain the necessary segment IDs. Supports pagination.",
@@ -2805,6 +2853,147 @@
           "message": {
             "type": "string",
             "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "CreateArtistRequest": {
+        "type": "object",
+        "required": ["name", "account_id"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The name of the artist to create"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The UUID of the owner account that will have access to this artist"
+          }
+        }
+      },
+      "CreateArtistResponse": {
+        "type": "object",
+        "required": ["artist"],
+        "properties": {
+          "artist": {
+            "$ref": "#/components/schemas/CreatedArtist"
+          }
+        }
+      },
+      "CreatedArtist": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the created artist account"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the artist account (same as id)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the artist"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "ISO timestamp of when the artist was created"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "ISO timestamp of when the artist was last updated"
+          },
+          "image": {
+            "type": "string",
+            "nullable": true,
+            "description": "Artist profile image URL"
+          },
+          "instruction": {
+            "type": "string",
+            "nullable": true,
+            "description": "Custom AI instruction for this artist"
+          },
+          "knowledges": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "description": "Knowledge base references for this artist"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true,
+            "description": "Record label name"
+          },
+          "organization": {
+            "type": "string",
+            "nullable": true,
+            "description": "Organization name"
+          },
+          "company_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Company name"
+          },
+          "job_title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Job title"
+          },
+          "role_type": {
+            "type": "string",
+            "nullable": true,
+            "description": "Role type"
+          },
+          "onboarding_status": {
+            "type": "string",
+            "nullable": true,
+            "description": "Onboarding status"
+          },
+          "onboarding_data": {
+            "nullable": true,
+            "description": "Onboarding data"
+          },
+          "account_info": {
+            "type": "array",
+            "description": "Account info records"
+          },
+          "account_socials": {
+            "type": "array",
+            "description": "Linked social media accounts"
+          }
+        }
+      },
+      "CreateArtistError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "missing_fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of missing or invalid field names"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing the validation failure"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message (for invalid JSON or other errors)"
           }
         }
       },
