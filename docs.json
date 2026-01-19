@@ -106,6 +106,12 @@
             ]
           },
           {
+            "group": "Workspaces",
+            "pages": [
+              "api-reference/workspaces/create"
+            ]
+          },
+          {
             "group": "Spotify",
             "pages": [
               "api-reference/spotify/search",
