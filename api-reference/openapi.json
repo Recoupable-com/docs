@@ -2471,6 +2471,64 @@
           }
         }
       }
+    },
+    "/api/workspaces": {
+      "post": {
+        "description": "Create a new workspace account. Workspaces can optionally be linked to an organization.",
+        "requestBody": {
+          "description": "Workspace creation parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWorkspaceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Workspace created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWorkspaceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - access denied to organization",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3882,6 +3940,50 @@
           "organization": {
             "$ref": "#/components/schemas/CreatedOrganization",
             "description": "The created organization"
+          }
+        }
+      },
+      "CreateWorkspaceRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the workspace (defaults to \"Untitled\")"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the account to create the workspace for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, the workspace is created for the API key's own account."
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Organization to link the workspace to"
+          }
+        }
+      },
+      "CreateWorkspaceResponse": {
+        "type": "object",
+        "required": ["workspace"],
+        "properties": {
+          "workspace": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "account_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "isWorkspace": {
+                "type": "boolean"
+              }
+            }
           }
         }
       },
