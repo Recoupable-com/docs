@@ -261,6 +261,118 @@
         }
       }
     },
+    "/api/accounts": {
+      "post": {
+        "description": "Create a new account or retrieve an existing account by email or wallet address. If an account with the provided email or wallet already exists, returns that account. Otherwise creates a new account and initializes credits.",
+        "requestBody": {
+          "description": "Account credentials to create or lookup",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account created or retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - failed to create account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update an existing account's profile information including name, organization, image, instruction, job title, role type, company name, and knowledges.",
+        "requestBody": {
+          "description": "Account fields to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - account not found or update failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/artists": {
+      "post": {
+        "description": "Add an artist to an account's list of associated artists. If the artist is already associated with the account, returns success without modification.",
+        "requestBody": {
+          "description": "Account and artist identifiers",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddArtistToAccountRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Artist added to account successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddArtistSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - account not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/artists": {
       "get": {
         "description": "Retrieve artists accessible to an account. Supports filtering by organization or showing only personal (non-organization) artists.",
@@ -2820,6 +2932,165 @@
           "message": {
             "type": "string",
             "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "CreateAccountRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address to associate with the account. If an account with this email exists, it will be returned."
+          },
+          "wallet": {
+            "type": "string",
+            "description": "Wallet address to associate with the account. If an account with this wallet exists, it will be returned."
+          }
+        },
+        "description": "At least one of email or wallet should be provided to identify or create an account."
+      },
+      "UpdateAccountRequest": {
+        "type": "object",
+        "required": ["accountId"],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique identifier of the account to update"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name for the account"
+          },
+          "instruction": {
+            "type": "string",
+            "description": "Custom instruction or bio for the account"
+          },
+          "organization": {
+            "type": "string",
+            "description": "Organization name associated with the account"
+          },
+          "image": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the account's profile image"
+          },
+          "jobTitle": {
+            "type": "string",
+            "description": "Job title of the account holder"
+          },
+          "roleType": {
+            "type": "string",
+            "description": "Role type within the organization"
+          },
+          "companyName": {
+            "type": "string",
+            "description": "Company name associated with the account"
+          },
+          "knowledges": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of knowledge areas or expertise"
+          }
+        }
+      },
+      "AddArtistToAccountRequest": {
+        "type": "object",
+        "required": ["email", "artistId"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the account to add the artist to"
+          },
+          "artistId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique identifier of the artist to add"
+          }
+        }
+      },
+      "AccountDataResponse": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AccountData",
+            "description": "The account data"
+          }
+        }
+      },
+      "AccountData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique identifier of the account"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The account ID (same as id, for consistency)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the account"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address associated with the account"
+          },
+          "wallet": {
+            "type": "string",
+            "description": "Wallet address associated with the account"
+          },
+          "image": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the account's profile image"
+          },
+          "instruction": {
+            "type": "string",
+            "description": "Custom instruction or bio"
+          },
+          "organization": {
+            "type": "string",
+            "description": "Organization name"
+          },
+          "job_title": {
+            "type": "string",
+            "description": "Job title"
+          },
+          "role_type": {
+            "type": "string",
+            "description": "Role type"
+          },
+          "company_name": {
+            "type": "string",
+            "description": "Company name"
+          },
+          "knowledges": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of knowledge areas"
+          }
+        }
+      },
+      "AddArtistSuccessResponse": {
+        "type": "object",
+        "required": ["success"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [true],
+            "description": "Indicates the artist was successfully added"
           }
         }
       },
