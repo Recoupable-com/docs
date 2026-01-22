@@ -53,7 +53,10 @@
             "group": "Accounts",
             "pages": [
               "api-reference/accounts/get",
-              "api-reference/accounts/id"
+              "api-reference/accounts/id",
+              "api-reference/accounts/create",
+              "api-reference/accounts/update",
+              "api-reference/accounts/add-artist"
             ]
           },
           {
