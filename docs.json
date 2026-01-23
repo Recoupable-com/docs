@@ -181,6 +181,12 @@
             "pages": [
               "api-reference/apify/scraper"
             ]
+          },
+          {
+            "group": "Sandbox",
+            "pages": [
+              "api-reference/sandbox/create"
+            ]
           }
         ]
       }
