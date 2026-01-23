@@ -1783,6 +1783,47 @@
         }
       }
     },
+    "/api/sandbox": {
+      "post": {
+        "description": "Create a new ephemeral sandbox environment. Sandboxes are isolated Linux microVMs that can be used to evaluate user-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period.",
+        "requestBody": {
+          "description": "No request body required. Authentication is handled via the x-api-key header.",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Sandbox created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxCreatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - failed to create sandbox",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/x/search": {
       "get": {
         "servers": [
@@ -6632,6 +6673,46 @@
           "error": {
             "type": "string",
             "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "SandboxCreatedResponse": {
+        "type": "object",
+        "required": ["sandboxId", "status", "timeout", "createdAt"],
+        "description": "Response when a sandbox is successfully created",
+        "properties": {
+          "sandboxId": {
+            "type": "string",
+            "description": "Unique identifier for the created sandbox",
+            "example": "sbx_abc123def456"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "running", "stopping", "stopped", "failed"],
+            "description": "Current lifecycle state of the sandbox",
+            "example": "running"
+          },
+          "timeout": {
+            "type": "integer",
+            "description": "Milliseconds remaining before the sandbox stops automatically",
+            "example": 300000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the sandbox was created",
+            "example": "2024-01-15T10:30:00.000Z"
+          }
+        }
+      },
+      "SandboxErrorResponse": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "Failed to create sandbox"
           }
         }
       }
