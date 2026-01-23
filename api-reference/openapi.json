@@ -1785,11 +1785,7 @@
     },
     "/api/sandbox": {
       "post": {
-        "description": "Create a new ephemeral sandbox environment. Sandboxes are isolated Linux microVMs that can be used to evaluate user-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period.",
-        "requestBody": {
-          "description": "No request body required. Authentication is handled via the x-api-key header.",
-          "required": false
-        },
+        "description": "Create a new ephemeral sandbox environment. Sandboxes are isolated Linux microVMs that can be used to evaluate user-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. Authentication is handled via the x-api-key header.",
         "responses": {
           "200": {
             "description": "Sandbox created successfully",
