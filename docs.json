@@ -50,6 +50,13 @@
             ]
           },
           {
+            "group": "Pulse",
+            "pages": [
+              "api-reference/pulse/get",
+              "api-reference/pulse/update"
+            ]
+          },
+          {
             "group": "Accounts",
             "pages": [
               "api-reference/accounts/get",
