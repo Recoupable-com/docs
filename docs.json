@@ -41,19 +41,19 @@
             ]
           },
           {
+            "group": "Pulse",
+            "pages": [
+              "api-reference/pulse/get",
+              "api-reference/pulse/update"
+            ]
+          },
+          {
             "group": "Tasks",
             "pages": [
               "api-reference/tasks/get",
               "api-reference/tasks/create",
               "api-reference/tasks/update",
               "api-reference/tasks/delete"
-            ]
-          },
-          {
-            "group": "Pulse",
-            "pages": [
-              "api-reference/pulse/get",
-              "api-reference/pulse/update"
             ]
           },
           {
