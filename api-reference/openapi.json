@@ -2678,6 +2678,101 @@
           }
         }
       }
+    },
+    "/api/pulse": {
+      "get": {
+        "description": "Retrieve pulse information for the authenticated account.",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "UUID of the account to retrieve the pulse for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, returns the pulse for the API key's own account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pulse retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PulseResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update the pulse settings for the authenticated account. Use this to enable or disable the pulse.",
+        "requestBody": {
+          "description": "Pulse fields to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePulseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pulse updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PulseResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -6709,6 +6804,60 @@
             "type": "string",
             "description": "Error message describing what went wrong",
             "example": "Failed to create sandbox"
+          }
+        }
+      },
+      "Pulse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the pulse"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the associated account"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether the pulse is active (defaults to true)"
+          }
+        }
+      },
+      "PulseResponse": {
+        "type": "object",
+        "required": ["status", "pulse"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "pulse": {
+            "$ref": "#/components/schemas/Pulse",
+            "description": "The pulse object"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (only present if status is error)"
+          }
+        }
+      },
+      "UpdatePulseRequest": {
+        "type": "object",
+        "required": ["active"],
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "description": "Whether to enable or disable the pulse",
+            "example": true
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the account to update the pulse for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, updates the pulse for the API key's own account."
           }
         }
       }
