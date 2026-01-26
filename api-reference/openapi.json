@@ -2682,7 +2682,18 @@
     "/api/pulse": {
       "get": {
         "description": "Retrieve pulse information for the authenticated account. The pulse contains the account's notification and activity settings.",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "UUID of the account to retrieve the pulse for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, returns the pulse for the API key's own account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Pulse retrieved successfully",
