@@ -6811,17 +6811,7 @@
           },
           "active": {
             "type": "boolean",
-            "description": "Whether the pulse is active"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Timestamp when the pulse was created"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Timestamp when the pulse was last updated"
+            "description": "Whether the pulse is active (defaults to true)"
           }
         }
       },
