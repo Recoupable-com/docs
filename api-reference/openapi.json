@@ -2681,7 +2681,7 @@
     },
     "/api/pulse": {
       "get": {
-        "description": "Retrieve pulse information for the authenticated account. The pulse contains the account's notification and activity settings.",
+        "description": "Retrieve pulse information for the authenticated account.",
         "parameters": [
           {
             "name": "account_id",
