@@ -41,10 +41,10 @@
             ]
           },
           {
-            "group": "Pulse",
+            "group": "Pulses",
             "pages": [
-              "api-reference/pulse/get",
-              "api-reference/pulse/update"
+              "api-reference/pulses/list",
+              "api-reference/pulses/update"
             ]
           },
           {
