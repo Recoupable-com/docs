@@ -2679,34 +2679,44 @@
         }
       }
     },
-    "/api/pulse": {
+    "/api/pulses": {
       "get": {
-        "description": "Retrieve pulse information for the authenticated account.",
+        "description": "Retrieve pulse information for accounts. For personal API keys, returns an array with a single pulse for the key owner's account. For organization API keys, returns pulses for all accounts within the organization.",
         "parameters": [
           {
             "name": "account_id",
             "in": "query",
-            "description": "UUID of the account to retrieve the pulse for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, returns the pulse for the API key's own account.",
+            "description": "Filter to a specific account. Only applicable for organization API keys - org keys can filter to any account within their organization. Personal keys cannot use this parameter.",
             "required": false,
             "schema": {
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "description": "Filter by active status. Set to 'true' to return only active pulses, 'false' for inactive pulses. If not provided, returns all pulses regardless of active status.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"]
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Pulse retrieved successfully",
+            "description": "Pulses retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PulseResponse"
+                  "$ref": "#/components/schemas/PulsesResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request",
+            "description": "Bad request - invalid query parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -2724,11 +2734,21 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden - account_id is not a member of the organization or personal key tried to filter by account_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
       "patch": {
-        "description": "Update the pulse settings for the authenticated account. Use this to enable or disable the pulse.",
+        "description": "Update the pulse settings for an account. Use this to enable or disable the pulse.",
         "requestBody": {
           "description": "Pulse fields to update",
           "required": true,
@@ -6838,6 +6858,28 @@
           "pulse": {
             "$ref": "#/components/schemas/Pulse",
             "description": "The pulse object"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (only present if status is error)"
+          }
+        }
+      },
+      "PulsesResponse": {
+        "type": "object",
+        "required": ["status", "pulses"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "pulses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Pulse"
+            },
+            "description": "Array of pulse objects. For personal keys, contains one pulse. For org keys, contains pulses for all accounts in the organization."
           },
           "error": {
             "type": "string",
