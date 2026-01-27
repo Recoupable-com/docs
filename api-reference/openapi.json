@@ -2748,7 +2748,7 @@
         }
       },
       "patch": {
-        "description": "Update the pulse settings for an account. Use this to enable or disable the pulse.",
+        "description": "Update the pulse settings for an account. Use this to enable or disable the pulse. Returns an array of pulses for consistency with the GET endpoint.",
         "requestBody": {
           "description": "Pulse fields to update",
           "required": true,
@@ -2766,7 +2766,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PulseResponse"
+                  "$ref": "#/components/schemas/PulsesResponse"
                 }
               }
             }
