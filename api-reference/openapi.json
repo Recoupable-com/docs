@@ -993,9 +993,9 @@
         "description": "Retrieve chat rooms (conversations) for accounts. For personal API keys, returns chats for the key owner's account. For organization API keys, returns chats for all accounts within the organization. Optionally filter by an artist_account_id. The endpoint returns metadata about each room, including the topic, associated artist, and last updated timestamp.",
         "parameters": [
           {
-            "name": "account_id",
+            "name": "artist_account_id",
             "in": "query",
-            "description": "Filter to a specific account. Only applicable for organization API keys - org keys can filter to any account within their organization. Personal keys cannot use this parameter.",
+            "description": "Optional. Filter chats to only include those for the specified artist.",
             "required": false,
             "schema": {
               "type": "string",
@@ -1003,9 +1003,9 @@
             }
           },
           {
-            "name": "artist_account_id",
+            "name": "account_id",
             "in": "query",
-            "description": "Optional. Filter chats to only include those for the specified artist.",
+            "description": "Filter to a specific account. Only applicable for organization API keys - org keys can filter to any account within their organization. Personal keys cannot use this parameter.",
             "required": false,
             "schema": {
               "type": "string",
