@@ -1103,6 +1103,64 @@
         }
       }
     },
+    "/api/chats/compact": {
+      "post": {
+        "description": "Compact one or more chat conversations into summarized versions. This reduces the size of chat history while preserving key information. Optionally provide a prompt to control what information gets preserved in the compacted summary.",
+        "requestBody": {
+          "description": "Chat compaction parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompactChatsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chats compacted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompactChatsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - one or more chat IDs do not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/chat/generate": {
       "post": {
         "servers": [
@@ -2830,6 +2888,52 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      },
+      "CompactChatsRequest": {
+        "type": "object",
+        "required": ["chatId"],
+        "properties": {
+          "chatId": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Array of chat IDs to compact"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Optional prompt to control what information gets preserved in the compacted summary"
+          }
+        }
+      },
+      "CompactChatsResponse": {
+        "type": "object",
+        "required": ["chats"],
+        "properties": {
+          "chats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompactedChat"
+            },
+            "description": "Array of compacted chat results"
+          }
+        }
+      },
+      "CompactedChat": {
+        "type": "object",
+        "required": ["chatId", "compacted"],
+        "properties": {
+          "chatId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the chat that was compacted"
+          },
+          "compacted": {
+            "type": "string",
+            "description": "The compacted summary text of the chat"
           }
         }
       },
