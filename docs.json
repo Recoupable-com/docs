@@ -37,7 +37,8 @@
               "api-reference/chat/chats",
               "api-reference/chat/create",
               "api-reference/chat/generate",
-              "api-reference/chat/stream"
+              "api-reference/chat/stream",
+              "api-reference/chat/compact"
             ]
           },
           {
