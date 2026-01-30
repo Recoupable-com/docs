@@ -1881,7 +1881,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SandboxCreatedResponse"
+                  "$ref": "#/components/schemas/SandboxesResponse"
                 }
               }
             }
@@ -6936,17 +6936,17 @@
           }
         }
       },
-      "SandboxCreatedResponse": {
+      "Sandbox": {
         "type": "object",
-        "required": ["sandboxId", "status", "timeout", "createdAt"],
-        "description": "Response when a sandbox is successfully created",
+        "required": ["sandboxId", "sandboxStatus", "timeout", "createdAt"],
+        "description": "A sandbox environment instance",
         "properties": {
           "sandboxId": {
             "type": "string",
-            "description": "Unique identifier for the created sandbox",
+            "description": "Unique identifier for the sandbox",
             "example": "sbx_abc123def456"
           },
-          "status": {
+          "sandboxStatus": {
             "type": "string",
             "enum": ["pending", "running", "stopping", "stopped", "failed"],
             "description": "Current lifecycle state of the sandbox",
@@ -6962,6 +6962,29 @@
             "format": "date-time",
             "description": "ISO 8601 timestamp when the sandbox was created",
             "example": "2024-01-15T10:30:00.000Z"
+          }
+        }
+      },
+      "SandboxesResponse": {
+        "type": "object",
+        "required": ["status", "sandboxes"],
+        "description": "Response when sandboxes are successfully created",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "sandboxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sandbox"
+            },
+            "description": "Array of sandbox objects"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (only present if status is error)"
           }
         }
       },
