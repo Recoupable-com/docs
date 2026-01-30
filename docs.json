@@ -191,9 +191,9 @@
             ]
           },
           {
-            "group": "Sandbox",
+            "group": "Sandboxes",
             "pages": [
-              "api-reference/sandbox/create"
+              "api-reference/sandboxes/create"
             ]
           }
         ]

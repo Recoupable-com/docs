@@ -1861,9 +1861,20 @@
         }
       }
     },
-    "/api/sandbox": {
+    "/api/sandboxes": {
       "post": {
         "description": "Create a new ephemeral sandbox environment. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. Authentication is handled via the x-api-key header.",
+        "requestBody": {
+          "description": "Sandbox creation parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSandboxRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Sandbox created successfully",
@@ -6909,6 +6920,19 @@
           "error": {
             "type": "string",
             "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "CreateSandboxRequest": {
+        "type": "object",
+        "required": ["prompt"],
+        "description": "Request body for creating a new sandbox",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The prompt to send to Claude Code in the sandbox. This prompt will be executed in an isolated Linux microVM with Claude Code CLI and the Anthropic SDK pre-installed.",
+            "example": "Create a simple Express server that returns 'Hello World' on the root endpoint"
           }
         }
       },
