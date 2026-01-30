@@ -6932,7 +6932,7 @@
             "type": "string",
             "minLength": 1,
             "description": "The prompt to send to Claude Code in the sandbox. This prompt will be executed in an isolated Linux microVM with Claude Code CLI and the Anthropic SDK pre-installed.",
-            "example": "Create a simple Express server that returns 'Hello World' on the root endpoint"
+            "example": "Create a new txt document copied from our master marketing document for a new campaign for Xcelencia."
           }
         }
       },
