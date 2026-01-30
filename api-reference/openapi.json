@@ -1861,16 +1861,27 @@
         }
       }
     },
-    "/api/sandbox": {
+    "/api/sandboxes": {
       "post": {
         "description": "Create a new ephemeral sandbox environment. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. Authentication is handled via the x-api-key header.",
+        "requestBody": {
+          "description": "Sandbox creation parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSandboxRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Sandbox created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SandboxCreatedResponse"
+                  "$ref": "#/components/schemas/SandboxesResponse"
                 }
               }
             }
@@ -6912,17 +6923,30 @@
           }
         }
       },
-      "SandboxCreatedResponse": {
+      "CreateSandboxRequest": {
         "type": "object",
-        "required": ["sandboxId", "status", "timeout", "createdAt"],
-        "description": "Response when a sandbox is successfully created",
+        "required": ["prompt"],
+        "description": "Request body for creating a new sandbox",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The prompt to send to Claude Code in the sandbox. This prompt will be executed in an isolated Linux microVM with Claude Code CLI and the Anthropic SDK pre-installed.",
+            "example": "Create a new txt document copied from our master marketing document for a new campaign for Xcelencia."
+          }
+        }
+      },
+      "Sandbox": {
+        "type": "object",
+        "required": ["sandboxId", "sandboxStatus", "timeout", "createdAt"],
+        "description": "A sandbox environment instance",
         "properties": {
           "sandboxId": {
             "type": "string",
-            "description": "Unique identifier for the created sandbox",
+            "description": "Unique identifier for the sandbox",
             "example": "sbx_abc123def456"
           },
-          "status": {
+          "sandboxStatus": {
             "type": "string",
             "enum": ["pending", "running", "stopping", "stopped", "failed"],
             "description": "Current lifecycle state of the sandbox",
@@ -6938,6 +6962,29 @@
             "format": "date-time",
             "description": "ISO 8601 timestamp when the sandbox was created",
             "example": "2024-01-15T10:30:00.000Z"
+          }
+        }
+      },
+      "SandboxesResponse": {
+        "type": "object",
+        "required": ["status", "sandboxes"],
+        "description": "Response when sandboxes are successfully created",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the request"
+          },
+          "sandboxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sandbox"
+            },
+            "description": "Array of sandbox objects"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (only present if status is error)"
           }
         }
       },
