@@ -193,6 +193,7 @@
           {
             "group": "Sandboxes",
             "pages": [
+              "api-reference/sandboxes/list",
               "api-reference/sandboxes/create"
             ]
           }

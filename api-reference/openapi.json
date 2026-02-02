@@ -1862,6 +1862,31 @@
       }
     },
     "/api/sandboxes": {
+      "get": {
+        "description": "List all sandboxes associated with the authenticated account and their current statuses. Returns sandbox details including lifecycle state, timeout remaining, and creation timestamp. Authentication is handled via the x-api-key header or Authorization Bearer token.",
+        "responses": {
+          "200": {
+            "description": "Sandboxes retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "description": "Create a new ephemeral sandbox environment. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. Authentication is handled via the x-api-key header.",
         "requestBody": {
@@ -6968,7 +6993,7 @@
       "SandboxesResponse": {
         "type": "object",
         "required": ["status", "sandboxes"],
-        "description": "Response when sandboxes are successfully created",
+        "description": "Response containing sandbox information",
         "properties": {
           "status": {
             "type": "string",
