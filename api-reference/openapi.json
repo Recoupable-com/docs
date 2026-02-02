@@ -1869,7 +1869,7 @@
             "name": "sandbox_id",
             "in": "query",
             "required": false,
-            "description": "Filter by a specific sandbox ID. When provided, returns only the sandbox matching this ID.",
+            "description": "Filter by a specific sandbox ID. When provided, returns only the sandbox matching this ID. Must be a sandbox that your account or organization is an admin of.",
             "schema": {
               "type": "string",
               "example": "sbx_abc123def456"
