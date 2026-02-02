@@ -1864,6 +1864,18 @@
     "/api/sandboxes": {
       "get": {
         "description": "List all sandboxes associated with the authenticated account and their current statuses. Returns sandbox details including lifecycle state, timeout remaining, and creation timestamp. Authentication is handled via the x-api-key header or Authorization Bearer token.",
+        "parameters": [
+          {
+            "name": "sandbox_id",
+            "in": "query",
+            "required": false,
+            "description": "Filter by a specific sandbox ID. When provided, returns only the sandbox matching this ID.",
+            "schema": {
+              "type": "string",
+              "example": "sbx_abc123def456"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Sandboxes retrieved successfully",
