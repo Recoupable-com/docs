@@ -2024,9 +2024,9 @@
         }
       },
       "post": {
-        "description": "Create a new ephemeral sandbox environment. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. Authentication is handled via the x-api-key header.",
+        "description": "Create a new ephemeral sandbox environment and execute a command. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. Authentication is handled via the x-api-key header.",
         "requestBody": {
-          "description": "Sandbox creation parameters",
+          "description": "Command execution parameters",
           "required": true,
           "content": {
             "application/json": {
@@ -7145,20 +7145,33 @@
       },
       "CreateSandboxRequest": {
         "type": "object",
-        "required": ["prompt"],
+        "required": ["command"],
         "description": "Request body for creating a new sandbox",
         "properties": {
-          "prompt": {
+          "command": {
             "type": "string",
             "minLength": 1,
-            "description": "The prompt to send to Claude Code in the sandbox. This prompt will be executed in an isolated Linux microVM with Claude Code CLI and the Anthropic SDK pre-installed.",
-            "example": "Create a new txt document copied from our master marketing document for a new campaign for Xcelencia."
+            "description": "The command to execute in the sandbox environment.",
+            "example": "ls"
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional arguments to pass to the command.",
+            "example": ["-la", "/home"]
+          },
+          "cwd": {
+            "type": "string",
+            "description": "Optional working directory for command execution.",
+            "example": "/home/user"
           }
         }
       },
       "Sandbox": {
         "type": "object",
-        "required": ["sandboxId", "sandboxStatus", "timeout", "createdAt"],
+        "required": ["sandboxId", "sandboxStatus", "timeout", "createdAt", "runId"],
         "description": "A sandbox environment instance",
         "properties": {
           "sandboxId": {
@@ -7182,6 +7195,11 @@
             "format": "date-time",
             "description": "ISO 8601 timestamp when the sandbox was created",
             "example": "2024-01-15T10:30:00.000Z"
+          },
+          "runId": {
+            "type": "string",
+            "description": "Unique identifier for the command execution run",
+            "example": "run_xyz789abc123"
           }
         }
       },
