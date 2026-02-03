@@ -53,6 +53,7 @@
             "group": "Tasks",
             "pages": [
               "api-reference/tasks/get",
+              "api-reference/tasks/runs",
               "api-reference/tasks/create",
               "api-reference/tasks/update",
               "api-reference/tasks/delete"
