@@ -36,6 +36,7 @@
             "pages": [
               "api-reference/chat/chats",
               "api-reference/chat/create",
+              "api-reference/chat/update",
               "api-reference/chat/generate",
               "api-reference/chat/stream",
               "api-reference/chat/compact"
