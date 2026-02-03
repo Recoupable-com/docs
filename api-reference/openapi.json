@@ -4376,6 +4376,10 @@
             "type": "string",
             "format": "uuid",
             "description": "UUID of the chat room. If not provided, one will be generated automatically."
+          },
+          "topic": {
+            "type": "string",
+            "description": "Topic name for the new chat room (e.g., 'Pulse Feb 2'). Only applies when creating a new room - ignored if room already exists. To edit the topic of an existing room, use [PATCH /api/chats](/api-reference/chat/update)."
           }
         }
       },
@@ -4531,6 +4535,10 @@
             "type": "string",
             "format": "uuid",
             "description": "UUID of the chat room. If not provided, one will be generated automatically."
+          },
+          "topic": {
+            "type": "string",
+            "description": "Topic name for the new chat room (e.g., 'Pulse Feb 2'). Only applies when creating a new room - ignored if room already exists. To edit the topic of an existing room, use [PATCH /api/chats](/api-reference/chat/update)."
           }
         }
       },
