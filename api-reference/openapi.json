@@ -1101,6 +1101,72 @@
             }
           }
         }
+      },
+      "patch": {
+        "description": "Update a chat room's topic (display name). The chatId is required; the topic field will be updated. Topic must be between 3 and 50 characters.",
+        "requestBody": {
+          "description": "Chat fields to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateChatRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chat updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateChatResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid parameters or validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateChatErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - API key does not have access to this chat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - chat room does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateChatErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/chats/compact": {
@@ -4193,6 +4259,53 @@
         }
       },
       "CreateChatErrorResponse": {
+        "type": "object",
+        "required": ["status", "message"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "UpdateChatRequest": {
+        "type": "object",
+        "required": ["chatId", "topic"],
+        "properties": {
+          "chatId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique identifier (UUID) of the chat room to update"
+          },
+          "topic": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "description": "The new display name for the chat room. Must be between 3 and 50 characters."
+          }
+        }
+      },
+      "UpdateChatResponse": {
+        "type": "object",
+        "required": ["status", "chat"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the request"
+          },
+          "chat": {
+            "$ref": "#/components/schemas/ChatRoom",
+            "description": "The updated chat room object"
+          }
+        }
+      },
+      "UpdateChatErrorResponse": {
         "type": "object",
         "required": ["status", "message"],
         "properties": {
