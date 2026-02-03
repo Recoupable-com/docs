@@ -2012,6 +2012,54 @@
         }
       }
     },
+    "/api/sandboxes/snapshot": {
+      "patch": {
+        "description": "Set a custom snapshot ID for the authenticated account. This allows the account to use a specific sandbox snapshot when creating new sandboxes, enabling reproducible environments with pre-configured tools, dependencies, and files.",
+        "requestBody": {
+          "description": "Snapshot configuration parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSnapshotRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Snapshot ID updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateSnapshotResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid snapshot ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/x/search": {
       "get": {
         "servers": [
@@ -7158,6 +7206,33 @@
             "type": "string",
             "description": "Error message describing what went wrong",
             "example": "Failed to create sandbox"
+          }
+        }
+      },
+      "UpdateSnapshotRequest": {
+        "type": "object",
+        "required": ["snapshotId"],
+        "properties": {
+          "snapshotId": {
+            "type": "string",
+            "description": "The snapshot ID to set for the account. This snapshot will be used as the base environment when creating new sandboxes.",
+            "example": "snap_abc123def456"
+          }
+        }
+      },
+      "UpdateSnapshotResponse": {
+        "type": "object",
+        "required": ["success", "snapshotId"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the snapshot ID was updated successfully",
+            "example": true
+          },
+          "snapshotId": {
+            "type": "string",
+            "description": "The snapshot ID that was set for the account",
+            "example": "snap_abc123def456"
           }
         }
       },
