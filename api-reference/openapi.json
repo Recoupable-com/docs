@@ -2010,9 +2010,7 @@
             }
           }
         }
-      }
-    },
-    "/api/sandboxes/snapshot": {
+      },
       "patch": {
         "description": "Set a custom snapshot ID for the authenticated account. This allows the account to use a specific sandbox snapshot when creating new sandboxes, enabling reproducible environments with pre-configured tools, dependencies, and files.",
         "requestBody": {
