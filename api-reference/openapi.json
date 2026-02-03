@@ -4379,7 +4379,7 @@
           },
           "topic": {
             "type": "string",
-            "description": "Topic name for the new chat room (e.g., 'Pulse Feb 2'). Only applies when creating a new room - ignored if roomId is provided. To edit the topic of an existing room, use [PATCH /api/chats](/api-reference/chat/update)."
+            "description": "Topic name for the new chat room (e.g., 'Pulse Feb 2'). Only applies when creating a new room - ignored if room already exists. To edit the topic of an existing room, use [PATCH /api/chats](/api-reference/chat/update)."
           }
         }
       },
@@ -4538,7 +4538,7 @@
           },
           "topic": {
             "type": "string",
-            "description": "Topic name for the new chat room (e.g., 'Pulse Feb 2'). Only applies when creating a new room - ignored if roomId is provided. To edit the topic of an existing room, use [PATCH /api/chats](/api-reference/chat/update)."
+            "description": "Topic name for the new chat room (e.g., 'Pulse Feb 2'). Only applies when creating a new room - ignored if room already exists. To edit the topic of an existing room, use [PATCH /api/chats](/api-reference/chat/update)."
           }
         }
       },
