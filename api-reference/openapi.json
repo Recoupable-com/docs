@@ -7326,14 +7326,14 @@
       },
       "TaskRunCompleteResponse": {
         "type": "object",
-        "required": ["status", "taskResponse"],
+        "required": ["status", "data"],
         "properties": {
           "status": {
             "type": "string",
             "enum": ["complete"],
             "description": "Indicates the task run completed successfully"
           },
-          "taskResponse": {
+          "data": {
             "description": "The response data from the completed task. Structure varies based on the task type."
           }
         }
