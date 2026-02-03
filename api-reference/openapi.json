@@ -186,6 +186,64 @@
         }
       }
     },
+    "/api/tasks/runs": {
+      "get": {
+        "description": "Check the status of a triggered task run. Returns the current status and, if complete, the task response data.",
+        "parameters": [
+          {
+            "name": "runId",
+            "in": "query",
+            "description": "The unique identifier of the task run to check",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task run status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/TaskRunPendingResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TaskRunCompleteResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TaskRunFailedResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing or invalid runId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task run not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/accounts/{id}": {
       "get": {
         "description": "Retrieve detailed account information by ID. Returns the account with associated profile info, emails, and wallet addresses.",
@@ -7140,7 +7198,7 @@
           },
           "runId": {
             "type": "string",
-            "description": "Unique identifier for the command execution run",
+            "description": "Unique identifier for the command execution run. Use this with [GET /api/tasks/runs](/api-reference/tasks/runs) to check the status and retrieve results.",
             "example": "run_xyz789abc123"
           }
         }
@@ -7252,6 +7310,46 @@
             "type": "string",
             "format": "uuid",
             "description": "UUID of the account to update the pulse for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, updates the pulse for the API key's own account."
+          }
+        }
+      },
+      "TaskRunPendingResponse": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["pending"],
+            "description": "Indicates the task run is still in progress"
+          }
+        }
+      },
+      "TaskRunCompleteResponse": {
+        "type": "object",
+        "required": ["status", "data"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["complete"],
+            "description": "Indicates the task run completed successfully"
+          },
+          "data": {
+            "description": "The response data from the completed task. Structure varies based on the task type."
+          }
+        }
+      },
+      "TaskRunFailedResponse": {
+        "type": "object",
+        "required": ["status", "error"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["failed"],
+            "description": "Indicates the task run failed"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing why the task run failed"
           }
         }
       }
