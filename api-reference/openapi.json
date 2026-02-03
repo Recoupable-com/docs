@@ -4240,6 +4240,10 @@
             "type": "string",
             "format": "uuid",
             "description": "UUID of the account to create the chat for. Only applicable for organization API keys - org keys can specify an accountId for any account within their organization. The Recoup admin organization can specify any accountId. If not provided, the chat is created for the API key's own account."
+          },
+          "topic": {
+            "type": "string",
+            "description": "Topic name for the new chat room (e.g., 'Pulse Feb 2'). To edit the topic of an existing room, use [PATCH /api/chats](/api-reference/chat/update)."
           }
         }
       },
