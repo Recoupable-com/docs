@@ -2024,9 +2024,9 @@
         }
       },
       "post": {
-        "description": "Create a new ephemeral sandbox environment and execute a command. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. Authentication is handled via the x-api-key header.",
+        "description": "Create a new ephemeral sandbox environment. Optionally executes a command if provided. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. If no command is provided, the sandbox is created without triggering any background task. Authentication is handled via the x-api-key header.",
         "requestBody": {
-          "description": "Command execution parameters",
+          "description": "Optional command execution parameters. If command is omitted, sandbox is created without running any command.",
           "required": true,
           "content": {
             "application/json": {
@@ -7201,13 +7201,12 @@
       },
       "CreateSandboxRequest": {
         "type": "object",
-        "required": ["command"],
-        "description": "Request body for creating a new sandbox",
+        "description": "Request body for creating a new sandbox. All fields are optional - if no command is provided, sandbox is created without triggering a command execution task.",
         "properties": {
           "command": {
             "type": "string",
             "minLength": 1,
-            "description": "The command to execute in the sandbox environment.",
+            "description": "The command to execute in the sandbox environment. If omitted, the sandbox is created without running any command.",
             "example": "ls"
           },
           "args": {
@@ -7227,7 +7226,7 @@
       },
       "Sandbox": {
         "type": "object",
-        "required": ["sandboxId", "sandboxStatus", "timeout", "createdAt", "runId"],
+        "required": ["sandboxId", "sandboxStatus", "timeout", "createdAt"],
         "description": "A sandbox environment instance",
         "properties": {
           "sandboxId": {
@@ -7254,7 +7253,7 @@
           },
           "runId": {
             "type": "string",
-            "description": "Unique identifier for the command execution run. Use this with [GET /api/tasks/runs](/api-reference/tasks/runs) to check the status and retrieve results.",
+            "description": "Unique identifier for the command execution run. Only present if a command was provided when creating the sandbox. Use this with [GET /api/tasks/runs](/api-reference/tasks/runs) to check the status and retrieve results.",
             "example": "run_xyz789abc123"
           }
         }
