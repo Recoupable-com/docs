@@ -7275,6 +7275,18 @@
             },
             "description": "Array of sandbox objects"
           },
+          "snapshot_id": {
+            "type": "string",
+            "description": "The account's saved snapshot ID used for creating new sandboxes. Null if no snapshot has been saved.",
+            "example": "snap_abc123def456",
+            "nullable": true
+          },
+          "github_repo": {
+            "type": "string",
+            "description": "The GitHub repository URL associated with the account's sandbox environment. Used as the filesystem source when restoring sandboxes.",
+            "example": "https://github.com/username/repo",
+            "nullable": true
+          },
           "error": {
             "type": "string",
             "description": "Error message (only present if status is error)"
