@@ -1987,7 +1987,7 @@
     },
     "/api/sandboxes": {
       "get": {
-        "description": "List all sandboxes associated with the authenticated account and their current statuses. Returns sandbox details including lifecycle state, timeout remaining, and creation timestamp. Authentication is handled via the x-api-key header or Authorization Bearer token.",
+        "description": "List all sandboxes associated with the authenticated account and their current statuses. Returns sandbox details including lifecycle state, timeout remaining, and creation timestamp. For personal API keys, returns sandboxes for the key owner's account. For organization API keys, returns sandboxes for the authenticated account unless account_id is specified. Authentication is handled via the x-api-key header or Authorization Bearer token.",
         "parameters": [
           {
             "name": "sandbox_id",
@@ -1997,6 +1997,16 @@
             "schema": {
               "type": "string",
               "example": "sbx_abc123def456"
+            }
+          },
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "Filter to a specific account. Only applicable for organization API keys - org keys can filter to any account within their organization. Personal keys cannot use this parameter.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -2013,6 +2023,16 @@
           },
           "401": {
             "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - account_id is not a member of the organization or personal key tried to filter by account_id",
             "content": {
               "application/json": {
                 "schema": {
