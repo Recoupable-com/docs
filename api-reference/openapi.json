@@ -2070,7 +2070,7 @@
         }
       },
       "patch": {
-        "description": "Set a custom snapshot ID for the authenticated account. This allows the account to use a specific sandbox snapshot when creating new sandboxes, enabling reproducible environments with pre-configured tools, dependencies, and files.",
+        "description": "Set a custom snapshot ID for an account. For personal API keys, this updates the key owner's account. Organization API keys may specify account_id to target any account within their organization. This allows accounts to use a specific sandbox snapshot when creating new sandboxes, enabling reproducible environments with pre-configured tools, dependencies, and files.",
         "requestBody": {
           "description": "Snapshot configuration parameters",
           "required": true,
@@ -2105,6 +2105,16 @@
           },
           "401": {
             "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - account_id is not a member of the organization or personal key tried to use account_id",
             "content": {
               "application/json": {
                 "schema": {
@@ -7291,6 +7301,11 @@
             "type": "string",
             "description": "The snapshot ID to set for the account. This snapshot will be used as the base environment when creating new sandboxes.",
             "example": "snap_abc123def456"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the account to update the snapshot for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, updates the snapshot for the API key's own account."
           }
         }
       },
