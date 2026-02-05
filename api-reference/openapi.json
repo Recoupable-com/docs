@@ -7348,17 +7348,37 @@
       },
       "UpdateSnapshotResponse": {
         "type": "object",
-        "required": ["success", "snapshotId"],
+        "required": ["account_id", "snapshot_id", "expires_at", "github_repo", "created_at"],
         "properties": {
-          "success": {
-            "type": "boolean",
-            "description": "Whether the snapshot ID was updated successfully",
-            "example": true
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The account ID this snapshot belongs to",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
           },
-          "snapshotId": {
+          "snapshot_id": {
             "type": "string",
             "description": "The snapshot ID that was set for the account",
             "example": "snap_abc123def456"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the snapshot expires",
+            "example": "2027-01-01T00:00:00.000Z"
+          },
+          "github_repo": {
+            "type": "string",
+            "nullable": true,
+            "description": "The GitHub repository URL associated with the sandbox",
+            "example": "https://github.com/org/repo"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the snapshot record was created",
+            "example": "2025-01-01T00:00:00.000Z"
           }
         }
       },
