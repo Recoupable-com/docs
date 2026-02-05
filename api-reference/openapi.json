@@ -7333,6 +7333,12 @@
             "description": "The snapshot ID to set for the account. This snapshot will be used as the base environment when creating new sandboxes.",
             "example": "snap_abc123def456"
           },
+          "github_repo": {
+            "type": "string",
+            "format": "uri",
+            "description": "The GitHub repository URL to associate with the account's sandbox environment. Must be a valid URL.",
+            "example": "https://github.com/org/repo"
+          },
           "account_id": {
             "type": "string",
             "format": "uuid",
