@@ -2,3 +2,14 @@
 title: 'Disconnect Connector'
 openapi: 'DELETE /api/connectors'
 ---
+
+## Overview
+
+Revoke an OAuth connection and remove stored credentials for a third-party service.
+
+### Disconnecting Account vs Entity Connections
+
+- **Your account's connection**: Provide only `connected_account_id`
+- **An entity's connection**: Provide both `connected_account_id` and `entity_id`
+
+The `connected_account_id` is returned in the [List Connectors](/api-reference/connectors/list) response for each connected service.

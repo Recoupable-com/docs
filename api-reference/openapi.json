@@ -3127,7 +3127,7 @@
           {
             "name": "entity_id",
             "in": "query",
-            "description": "Optional entity ID (e.g., artist ID) to get connectors for that entity instead of the authenticated account. Requires access to the entity.",
+            "description": "Optional entity ID to get connectors for a different entity (e.g., an artist) instead of the authenticated account. When provided, returns connectors for that entity. The authenticated account must have access to the entity. Omit this parameter to get your own account's connectors.",
             "required": false,
             "schema": {
               "type": "string",
@@ -3362,7 +3362,7 @@
           "entity_id": {
             "type": "string",
             "format": "uuid",
-            "description": "Optional entity ID (e.g., artist ID) to connect for that entity instead of the authenticated account"
+            "description": "Optional entity ID to connect a service for a different entity (e.g., an artist) instead of the authenticated account. Use this when connecting an artist's TikTok or other service. The authenticated account must have access to the entity. Omit to connect for your own account."
           }
         }
       },
@@ -3401,7 +3401,7 @@
           "entity_id": {
             "type": "string",
             "format": "uuid",
-            "description": "Optional entity ID for ownership verification when disconnecting an entity's connection"
+            "description": "Optional entity ID when disconnecting a connection that belongs to a different entity (e.g., an artist). Required when the connection was created for an entity rather than your own account. The authenticated account must have access to the entity."
           }
         }
       },
