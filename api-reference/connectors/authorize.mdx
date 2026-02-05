@@ -5,13 +5,14 @@ openapi: 'POST /api/connectors/authorize'
 
 ## Overview
 
-Start the OAuth flow to connect a third-party service. This endpoint returns a URL that you should redirect the user to in order to complete authorization.
+Start the OAuth flow to connect a third-party service. This endpoint returns a URL that you should redirect to in order to complete authorization.
 
-### Connecting for Yourself vs an Entity
+### Connecting for Yourself vs an Account
 
-- **For your account**: Omit `entity_id` - the connection will be stored under your account
-- **For an entity**: Provide `entity_id` (e.g., artist ID) - the connection will be stored under that entity
+- **For your account**: Omit `account_id` - the connection will be stored under your account
+- **For an account in your Org**: Provide `account_id` - the connection will be stored under that account
+- **For an Artist, Workspace or Organization**: Provide `account_id` (e.g., artist ID) - the connection will be stored under that account
 
 <Note>
-When connecting for an entity, some connectors may have restrictions. For example, only certain connectors (like TikTok) may be available for artist entities.
+When connecting for an artist, some connectors may have restrictions. For example, only certain connectors (like TikTok) may be available for artist accounts.
 </Note>

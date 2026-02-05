@@ -3125,9 +3125,9 @@
         "description": "List available connectors and their connection status. Returns all supported third-party integrations (e.g., Google Sheets, TikTok) along with whether they are currently connected.",
         "parameters": [
           {
-            "name": "entity_id",
+            "name": "account_id",
             "in": "query",
-            "description": "Optional entity ID to get connectors for a different entity (e.g., an artist) instead of the authenticated account. When provided, returns connectors for that entity. The authenticated account must have access to the entity. Omit this parameter to get your own account's connectors.",
+            "description": "Optional account ID to get connectors for a different account (e.g., an artist, workspace, or organization). The authenticated account must have access to the specified account. Omit to get your own account's connectors.",
             "required": false,
             "schema": {
               "type": "string",
@@ -3157,7 +3157,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - no access to the specified entity",
+            "description": "Forbidden - no access to the specified account",
             "content": {
               "application/json": {
                 "schema": {
@@ -3213,7 +3213,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - no access to the specified entity or connection",
+            "description": "Forbidden - no access to the specified account or connection",
             "content": {
               "application/json": {
                 "schema": {
@@ -3271,7 +3271,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - no access to the specified entity",
+            "description": "Forbidden - no access to the specified account",
             "content": {
               "application/json": {
                 "schema": {
@@ -3359,10 +3359,10 @@
             "format": "uri",
             "description": "Optional custom callback URL after OAuth completion"
           },
-          "entity_id": {
+          "account_id": {
             "type": "string",
             "format": "uuid",
-            "description": "Optional entity ID to connect a service for a different entity (e.g., an artist) instead of the authenticated account. Use this when connecting an artist's TikTok or other service. The authenticated account must have access to the entity. Omit to connect for your own account."
+            "description": "Optional account ID to connect a service for a different account (e.g., an artist, workspace, or organization). Use this when connecting an artist's TikTok or other service. The authenticated account must have access. Omit to connect for your own account."
           }
         }
       },
@@ -3398,10 +3398,10 @@
             "type": "string",
             "description": "The connected account ID to disconnect (from ConnectorInfo.connectedAccountId)"
           },
-          "entity_id": {
+          "account_id": {
             "type": "string",
             "format": "uuid",
-            "description": "Optional entity ID when disconnecting a connection that belongs to a different entity (e.g., an artist). Required when the connection was created for an entity rather than your own account. The authenticated account must have access to the entity."
+            "description": "Optional account ID when disconnecting a connection that belongs to a different account (e.g., an artist). Required when the connection was created for another account rather than your own. The authenticated account must have access."
           }
         }
       },
