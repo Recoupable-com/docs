@@ -7326,7 +7326,7 @@
       },
       "UpdateSnapshotRequest": {
         "type": "object",
-        "required": ["snapshotId"],
+        "required": [],
         "properties": {
           "snapshotId": {
             "type": "string",
