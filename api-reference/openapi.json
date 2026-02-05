@@ -7348,7 +7348,7 @@
       },
       "UpdateSnapshotResponse": {
         "type": "object",
-        "required": ["account_id", "snapshot_id", "expires_at"],
+        "required": ["account_id", "snapshot_id", "expires_at", "github_repo", "created_at"],
         "properties": {
           "account_id": {
             "type": "string",
