@@ -3119,6 +3119,169 @@
           }
         }
       }
+    },
+    "/api/connectors": {
+      "get": {
+        "description": "List available connectors and their connection status. Returns all supported third-party integrations (e.g., Google Sheets, TikTok) along with whether they are currently connected.",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "query",
+            "description": "Optional entity ID (e.g., artist ID) to get connectors for that entity instead of the authenticated account. Requires access to the entity.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connectors retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectorsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - no access to the specified entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Disconnect a connected account from a third-party service. This revokes the OAuth connection and removes stored credentials.",
+        "requestBody": {
+          "description": "Connection to disconnect",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisconnectConnectorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connector disconnected successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisconnectConnectorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing or invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - no access to the specified entity or connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/connectors/authorize": {
+      "post": {
+        "description": "Generate an OAuth authorization URL for connecting a third-party service. Redirect the user to the returned URL to complete the OAuth flow.",
+        "requestBody": {
+          "description": "Authorization request details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthorizeConnectorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authorization URL generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizeConnectorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid connector or parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - no access to the specified entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3136,6 +3299,122 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      },
+      "ConnectorInfo": {
+        "type": "object",
+        "required": ["slug", "name", "isConnected"],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Unique identifier for the connector (e.g., 'googlesheets', 'tiktok')"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name of the connector"
+          },
+          "isConnected": {
+            "type": "boolean",
+            "description": "Whether the connector is currently connected"
+          },
+          "connectedAccountId": {
+            "type": "string",
+            "description": "The connected account ID (only present when isConnected is true)"
+          }
+        }
+      },
+      "ConnectorsResponse": {
+        "type": "object",
+        "required": ["success", "data"],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "required": ["connectors"],
+            "properties": {
+              "connectors": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ConnectorInfo"
+                },
+                "description": "List of available connectors with connection status"
+              }
+            }
+          }
+        }
+      },
+      "AuthorizeConnectorRequest": {
+        "type": "object",
+        "required": ["connector"],
+        "properties": {
+          "connector": {
+            "type": "string",
+            "description": "The connector slug to authorize (e.g., 'googlesheets', 'tiktok')"
+          },
+          "callback_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional custom callback URL after OAuth completion"
+          },
+          "entity_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Optional entity ID (e.g., artist ID) to connect for that entity instead of the authenticated account"
+          }
+        }
+      },
+      "AuthorizeConnectorResponse": {
+        "type": "object",
+        "required": ["success", "data"],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "required": ["connector", "redirectUrl"],
+            "properties": {
+              "connector": {
+                "type": "string",
+                "description": "The connector slug being authorized"
+              },
+              "redirectUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL to redirect the user to for OAuth authorization"
+              }
+            }
+          }
+        }
+      },
+      "DisconnectConnectorRequest": {
+        "type": "object",
+        "required": ["connected_account_id"],
+        "properties": {
+          "connected_account_id": {
+            "type": "string",
+            "description": "The connected account ID to disconnect (from ConnectorInfo.connectedAccountId)"
+          },
+          "entity_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Optional entity ID for ownership verification when disconnecting an entity's connection"
+          }
+        }
+      },
+      "DisconnectConnectorResponse": {
+        "type": "object",
+        "required": ["success"],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "description": "Status message"
           }
         }
       },

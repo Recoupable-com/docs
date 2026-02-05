@@ -199,6 +199,14 @@
               "api-reference/sandboxes/create",
               "api-reference/sandboxes/snapshot"
             ]
+          },
+          {
+            "group": "Connectors",
+            "pages": [
+              "api-reference/connectors/list",
+              "api-reference/connectors/authorize",
+              "api-reference/connectors/disconnect"
+            ]
           }
         ]
       }
