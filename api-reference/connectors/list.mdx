@@ -10,8 +10,25 @@ Connectors are third-party services that can be linked to accounts. Once connect
 ### Your Account vs Other Accounts
 
 - **Your account**: Services connected to your own account (e.g., your Google Sheets)
-- **Other accounts**: Services connected to accounts you manage (e.g., an artist's TikTok)
+- **Artist accounts**: Services connected to artists you manage (e.g., an artist's TikTok)
 
 When calling this endpoint:
 - **Without `account_id`**: Returns connectors for your own account
 - **With `account_id`**: Returns connectors for that account (requires access)
+
+### Connector Availability
+
+Not all connectors are available for all account types:
+
+| Account Type | Available Connectors |
+|--------------|---------------------|
+| Your account | Google Sheets, Google Drive, Google Docs, TikTok |
+| Artist | TikTok only |
+
+<Info>
+**Why the difference?**
+
+This separation prevents tool collision in the AI agent. When you have an artist selected, the AI needs to know which credentials to use for each action. By keeping account tools (Google Suite) separate from artist tools (TikTok), the AI always knows whose connection to use.
+
+See [Authorize Connector](/api-reference/connectors/authorize) for more details.
+</Info>
