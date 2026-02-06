@@ -7307,6 +7307,14 @@
             "example": "https://github.com/username/repo",
             "nullable": true
           },
+          "filetree": {
+            "type": "array",
+            "nullable": true,
+            "description": "The recursive file tree of the account's GitHub repository. Null if no github_repo is set or if the fetch fails.",
+            "items": {
+              "$ref": "#/components/schemas/FileTreeEntry"
+            }
+          },
           "error": {
             "type": "string",
             "description": "Error message (only present if status is error)"
@@ -7495,6 +7503,33 @@
           "error": {
             "type": "string",
             "description": "Error message describing why the task run failed"
+          }
+        }
+      },
+      "FileTreeEntry": {
+        "type": "object",
+        "required": ["path", "type", "sha"],
+        "description": "A single entry in a GitHub repository file tree",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The file or directory path relative to the repository root",
+            "example": "src/index.ts"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["blob", "tree"],
+            "description": "The type of entry: blob for files, tree for directories"
+          },
+          "sha": {
+            "type": "string",
+            "description": "The SHA hash of the entry",
+            "example": "abc123def456"
+          },
+          "size": {
+            "type": "integer",
+            "description": "The size of the file in bytes. Only present for blob entries.",
+            "example": 1024
           }
         }
       }
