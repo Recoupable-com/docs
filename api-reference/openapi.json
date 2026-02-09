@@ -7407,6 +7407,11 @@
             "enum": ["success", "error"],
             "description": "Status of the delete operation"
           },
+          "deleted_snapshot": {
+            "nullable": true,
+            "description": "The snapshot record that was deleted. Null if no snapshot existed for the account.",
+            "$ref": "#/components/schemas/UpdateSnapshotResponse"
+          },
           "error": {
             "type": "string",
             "description": "Error message (only present if status is error)"
