@@ -2144,6 +2144,62 @@
             }
           }
         }
+      },
+      "delete": {
+        "description": "Delete a sandbox environment for the authenticated account. This permanently deletes the associated GitHub repository and removes the account's snapshot record from the database. For personal API keys, deletes the sandbox for the key owner's account. Organization API keys may specify account_id to target any account within their organization. Authentication is handled via the x-api-key header or Authorization Bearer token.",
+        "requestBody": {
+          "description": "Optional account targeting parameters",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteSandboxRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sandbox deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSandboxResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - failed to delete sandbox",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - account_id is not a member of the organization or personal key tried to use account_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/x/search": {
@@ -7329,6 +7385,31 @@
             "type": "string",
             "description": "Error message describing what went wrong",
             "example": "Failed to create sandbox"
+          }
+        }
+      },
+      "DeleteSandboxRequest": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the account to delete the sandbox for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, deletes the sandbox for the API key's own account."
+          }
+        }
+      },
+      "DeleteSandboxResponse": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Status of the delete operation"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (only present if status is error)"
           }
         }
       },
