@@ -1384,13 +1384,13 @@
     },
     "/api/organizations": {
       "get": {
-        "description": "Retrieve all organizations that an account belongs to. Used for organization selector dropdowns and access control.",
+        "description": "Retrieve all organizations that an account belongs to. For personal API keys, returns organizations for the key owner's account. For organization API keys, returns organizations for all accounts within the organization.",
         "parameters": [
           {
-            "name": "accountId",
+            "name": "account_id",
             "in": "query",
-            "description": "The unique identifier of the account",
-            "required": true,
+            "description": "Filter to a specific account. Only applicable for organization API keys - org keys can filter to any account within their organization. Personal keys cannot use this parameter.",
+            "required": false,
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1409,11 +1409,31 @@
             }
           },
           "400": {
-            "description": "Bad request - missing required parameters",
+            "description": "Bad request - invalid query parameters",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OrganizationsErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - account_id is not a member of the organization or personal key tried to filter by account_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
