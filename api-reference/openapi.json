@@ -3336,23 +3336,17 @@
       },
       "ConnectorsResponse": {
         "type": "object",
-        "required": ["success", "data"],
+        "required": ["success", "connectors"],
         "properties": {
           "success": {
             "type": "boolean"
           },
-          "data": {
-            "type": "object",
-            "required": ["connectors"],
-            "properties": {
-              "connectors": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/ConnectorInfo"
-                },
-                "description": "List of available connectors with connection status"
-              }
-            }
+          "connectors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConnectorInfo"
+            },
+            "description": "List of available connectors with connection status"
           }
         }
       },
