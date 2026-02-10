@@ -3146,6 +3146,16 @@
               }
             }
           },
+          "400": {
+            "description": "Bad request - invalid account_id format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized - invalid or missing API key",
             "content": {
@@ -3227,7 +3237,7 @@
     },
     "/api/connectors/authorize": {
       "post": {
-        "description": "Generate an OAuth authorization URL for connecting a third-party service. Redirect the user to the returned URL to complete the OAuth flow.",
+        "description": "Generate an OAuth authorization URL for connecting a third-party service. Redirect to the returned URL to complete the OAuth flow.",
         "requestBody": {
           "description": "Authorization request details",
           "required": true,
