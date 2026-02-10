@@ -2,20 +2,3 @@
 title: 'Disconnect Connector'
 openapi: 'DELETE /api/connectors'
 ---
-
-## Overview
-
-Revoke a **single** OAuth connection and remove its stored credentials. This only disconnects the specific service identified by `connected_account_id` — your other connections are not affected.
-
-### Disconnecting Your Account vs Other Accounts
-
-- **Your account's connection**: Provide only `connected_account_id`
-- **An Org, Artist or Workspace connection**: Provide both `connected_account_id` and `account_id`
-
-<Info>
-**Why is `connected_account_id` required?**
-
-An account can have multiple connected services (e.g., Google Sheets and TikTok). The `connected_account_id` is a unique identifier for each individual OAuth connection — it tells the API exactly which one to revoke. Without it, the API wouldn't know which service you want to disconnect.
-
-You can find the `connected_account_id` for each connected service in the [List Connectors](/api-reference/connectors/list) response (`connectedAccountId` field).
-</Info>
