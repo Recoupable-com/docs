@@ -433,22 +433,12 @@
     },
     "/api/artists": {
       "get": {
-        "description": "Retrieve artists accessible to an account. Supports filtering by organization or showing only personal (non-organization) artists.",
+        "description": "Retrieve artists accessible to the authenticated account. Requires an API key via x-api-key header or Authorization bearer token.\n\nFor personal API keys: Returns only the key owner's personal artists (not in any organization). The account_id parameter cannot be used.\n\nFor organization API keys: With no filters, returns the key owner's personal artists. Use organization_id to get that organization's artists. Use account_id to filter to a specific member's artists.\n\nFor Recoup admin keys: Same behavior, but account_id can target any account.",
         "parameters": [
           {
-            "name": "accountId",
+            "name": "account_id",
             "in": "query",
-            "description": "The account ID (required)",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "orgId",
-            "in": "query",
-            "description": "Filter to artists in a specific organization",
+            "description": "Filter to a specific account. Only applicable for organization API keys (filters to a member of the organization) or Recoup admin keys (can target any account). Personal API keys cannot use this parameter.",
             "required": false,
             "schema": {
               "type": "string",
@@ -456,13 +446,13 @@
             }
           },
           {
-            "name": "personal",
+            "name": "organization_id",
             "in": "query",
-            "description": "Set to \"true\" to show only personal (non-org) artists",
+            "description": "Filter to artists in a specific organization. When omitted, returns only personal (non-organization) artists.",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["true"]
+              "format": "uuid"
             }
           }
         ],
@@ -478,11 +468,31 @@
             }
           },
           "400": {
-            "description": "Bad request - missing required parameters",
+            "description": "Bad request - invalid query parameters",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ArtistsErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - account_id is not a member of the organization or personal key tried to filter by account_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
