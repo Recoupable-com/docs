@@ -7,11 +7,6 @@ openapi: 'GET /api/connectors'
 
 Connectors are third-party services that can be linked to accounts. Once connected, the AI agent can access and interact with these services on your behalf.
 
-### Your Account vs Other Accounts
-
-- **Your account**: Services connected to your own account (e.g., your Google Sheets)
-- **Artist accounts**: Services connected to artists you manage (e.g., an artist's TikTok)
-
 When calling this endpoint:
 - **Without `account_id`**: Returns connectors for your own account
 - **With `account_id`**: Returns connectors for that account (requires access)
