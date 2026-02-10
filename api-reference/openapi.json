@@ -3388,7 +3388,7 @@
               "redirectUrl": {
                 "type": "string",
                 "format": "uri",
-                "description": "URL to redirect the user to for OAuth authorization"
+                "description": "URL to redirect to for OAuth authorization"
               }
             }
           }
