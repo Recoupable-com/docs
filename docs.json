@@ -198,7 +198,8 @@
               "api-reference/sandboxes/list",
               "api-reference/sandboxes/create",
               "api-reference/sandboxes/snapshot",
-              "api-reference/sandboxes/delete"
+              "api-reference/sandboxes/delete",
+              "api-reference/sandboxes/setup"
             ]
           }
         ]

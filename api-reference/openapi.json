@@ -2222,6 +2222,54 @@
         }
       }
     },
+    "/api/sandboxes/setup": {
+      "post": {
+        "description": "Triggers the setup-sandbox background task to create a personal sandbox, provision a GitHub repo, take a snapshot, and shut down. For personal API keys, sets up the sandbox for the key owner's account. Organization API keys may specify account_id to target any account within their organization. Authentication is handled via the x-api-key header or Authorization Bearer token.",
+        "requestBody": {
+          "description": "Optional account targeting parameters",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetupSandboxRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Setup task triggered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupSandboxResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid account_id format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/x/search": {
       "get": {
         "servers": [
@@ -7405,6 +7453,32 @@
             "type": "string",
             "description": "Error message describing what went wrong",
             "example": "Failed to create sandbox"
+          }
+        }
+      },
+      "SetupSandboxRequest": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the account to set up the sandbox for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, sets up the sandbox for the API key's own account."
+          }
+        }
+      },
+      "SetupSandboxResponse": {
+        "type": "object",
+        "required": ["status", "runId"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the setup operation"
+          },
+          "runId": {
+            "type": "string",
+            "description": "The Trigger.dev run ID for the setup-sandbox background task. Can be used to track task progress.",
+            "example": "run_abc123def456"
           }
         }
       },
