@@ -7477,7 +7477,7 @@
           },
           "runId": {
             "type": "string",
-            "description": "The Trigger.dev run ID for the setup-sandbox background task. Can be used to track task progress.",
+            "description": "The Trigger.dev run ID for the setup-sandbox background task. Use this with [GET /api/tasks/runs](/api-reference/tasks/runs) to check the status and retrieve results.",
             "example": "run_abc123def456"
           }
         }
