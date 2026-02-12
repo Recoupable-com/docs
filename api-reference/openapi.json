@@ -3233,9 +3233,7 @@
             }
           }
         }
-      }
-    },
-    "/api/connectors/authorize": {
+      },
       "post": {
         "description": "Generate an OAuth authorization URL for connecting a third-party service. Redirect to the returned URL to complete the OAuth flow.",
         "requestBody": {
