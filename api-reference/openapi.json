@@ -433,20 +433,20 @@
     },
     "/api/artists": {
       "get": {
-        "description": "Retrieve artists accessible to an account. Supports filtering by organization or showing only personal (non-organization) artists.",
+        "description": "Retrieve artists accessible to the authenticated account. The account is derived from the API key or Bearer token. Supports filtering by organization or showing only personal (non-organization) artists. Organization API keys can optionally filter by account_id to view a specific member's artists.",
         "parameters": [
           {
-            "name": "accountId",
+            "name": "account_id",
             "in": "query",
-            "description": "The account ID (required)",
-            "required": true,
+            "description": "Filter to a specific account's artists. Only usable by organization API keys to view a member's artists. Personal API keys and Bearer tokens derive the account automatically.",
+            "required": false,
             "schema": {
               "type": "string",
               "format": "uuid"
             }
           },
           {
-            "name": "orgId",
+            "name": "org_id",
             "in": "query",
             "description": "Filter to artists in a specific organization",
             "required": false,
@@ -478,7 +478,7 @@
             }
           },
           "400": {
-            "description": "Bad request - missing required parameters",
+            "description": "Bad request - invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -486,6 +486,12 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid authentication"
+          },
+          "403": {
+            "description": "Forbidden - account_id is not accessible with the provided credentials"
           }
         }
       },
