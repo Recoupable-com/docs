@@ -433,7 +433,7 @@
     },
     "/api/artists": {
       "get": {
-        "description": "Retrieve artists accessible to the authenticated account. The account is derived from the API key or Bearer token. Supports filtering by organization or showing only personal (non-organization) artists. Organization API keys can optionally filter by account_id to view a specific member's artists.",
+        "description": "Retrieve artists accessible to the authenticated account. The account is derived from the API key or Bearer token. When org_id is omitted, returns only personal (non-organization) artists. Pass org_id to view artists in a specific organization. Organization API keys can optionally filter by account_id to view a specific member's artists.",
         "parameters": [
           {
             "name": "account_id",
@@ -448,21 +448,11 @@
           {
             "name": "org_id",
             "in": "query",
-            "description": "Filter to artists in a specific organization",
+            "description": "Filter to artists in a specific organization. When omitted, returns only personal (non-organization) artists.",
             "required": false,
             "schema": {
               "type": "string",
               "format": "uuid"
-            }
-          },
-          {
-            "name": "personal",
-            "in": "query",
-            "description": "Set to \"true\" to show only personal (non-org) artists",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["true"]
             }
           }
         ],
