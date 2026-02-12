@@ -86,7 +86,18 @@ Documentation pages use MDX (Markdown + JSX). Key conventions:
 
 API endpoints are documented in `api-reference/` with:
 - OpenAPI spec in `openapi.json` for auto-generated endpoint docs
-- Manual MDX pages for additional context and examples
+- MDX pages in `api-reference/[category]/` that reference the OpenAPI spec
+
+**CRITICAL: API reference MDX pages should be frontmatter-only.** Do NOT add custom sections (Overview, Availability, etc.) — let Mintlify auto-generate everything from the OpenAPI spec. All descriptions, parameter docs, and response schemas belong in `openapi.json`.
+
+```mdx
+---
+title: 'List Items'
+openapi: 'GET /api/items'
+---
+```
+
+This is the correct pattern. Nothing else should go in the file.
 
 ## Code Principles
 

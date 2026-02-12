@@ -201,6 +201,14 @@
               "api-reference/sandboxes/delete",
               "api-reference/sandboxes/setup"
             ]
+          },
+          {
+            "group": "Connectors",
+            "pages": [
+              "api-reference/connectors/list",
+              "api-reference/connectors/authorize",
+              "api-reference/connectors/disconnect"
+            ]
           }
         ]
       }
