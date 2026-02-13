@@ -3413,9 +3413,9 @@
     },
     "/api/video/render": {
       "post": {
-        "description": "Trigger a server-side video render using a Remotion composition. Returns a run ID that can be polled via [GET /api/tasks/runs](/api-reference/tasks/runs) to check status and retrieve the rendered video URL when complete. Authentication is handled via the x-api-key header or Authorization Bearer token.",
+        "description": "Trigger a server-side video render. Returns a run ID that can be polled via [GET /api/tasks/runs](/api-reference/tasks/runs) to check status and retrieve the rendered video URL when complete. Authentication is handled via the x-api-key header or Authorization Bearer token.",
         "requestBody": {
-          "description": "Video render configuration including the Remotion composition ID, input props, and output settings",
+          "description": "Video render configuration including the composition ID, input props, and output settings",
           "required": true,
           "content": {
             "application/json": {
@@ -8054,13 +8054,13 @@
         "properties": {
           "compositionId": {
             "type": "string",
-            "description": "The Remotion composition ID to render (e.g., \"SocialPost\", \"UpdatesAnnouncement\", \"CommitShowcase\")",
+            "description": "The composition ID to render (e.g., \"SocialPost\", \"UpdatesAnnouncement\", \"CommitShowcase\")",
             "example": "SocialPost"
           },
           "inputProps": {
             "type": "object",
             "additionalProperties": true,
-            "description": "Input props to pass to the Remotion composition. Structure depends on the composition being rendered.",
+            "description": "Input props to pass to the composition. Structure depends on the composition being rendered.",
             "default": {},
             "example": {
               "videoUrl": "https://fal.media/example.mp4",
