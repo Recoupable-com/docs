@@ -162,6 +162,12 @@
             ]
           },
           {
+            "group": "Video",
+            "pages": [
+              "api-reference/video/render"
+            ]
+          },
+          {
             "group": "Transcribe",
             "pages": [
               "api-reference/transcribe/audio"
