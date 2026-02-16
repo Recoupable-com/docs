@@ -206,17 +206,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/TaskRunPendingResponse"
-                    },
-                    {
-                      "$ref": "#/components/schemas/TaskRunCompleteResponse"
-                    },
-                    {
-                      "$ref": "#/components/schemas/TaskRunFailedResponse"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/TaskRunResponse"
                 }
               }
             }
@@ -7923,43 +7913,64 @@
           }
         }
       },
-      "TaskRunPendingResponse": {
+      "TaskRunResponse": {
         "type": "object",
-        "required": ["status"],
+        "required": ["status", "taskIdentifier", "createdAt"],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["pending"],
-            "description": "Indicates the task run is still in progress"
-          }
-        }
-      },
-      "TaskRunCompleteResponse": {
-        "type": "object",
-        "required": ["status", "data"],
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": ["complete"],
-            "description": "Indicates the task run completed successfully"
+            "enum": ["pending", "complete", "failed"],
+            "description": "The current status of the task run"
           },
           "data": {
-            "description": "The response data from the completed task. Structure varies based on the task type."
-          }
-        }
-      },
-      "TaskRunFailedResponse": {
-        "type": "object",
-        "required": ["status", "error"],
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": ["failed"],
-            "description": "Indicates the task run failed"
+            "description": "The response data from the completed task. Only present when status is `complete`. Structure varies based on the task type.",
+            "nullable": true
           },
           "error": {
             "type": "string",
-            "description": "Error message describing why the task run failed"
+            "description": "Error message describing why the task run failed. Only present when status is `failed`."
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "description": "Structured metadata emitted by the task during execution. Contains `currentStep` (string) and `logs` (string array) for real-time progress tracking.",
+            "properties": {
+              "currentStep": {
+                "type": "string",
+                "description": "The current step the task is executing"
+              },
+              "logs": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Array of log messages emitted during task execution"
+              }
+            }
+          },
+          "taskIdentifier": {
+            "type": "string",
+            "description": "The task type identifier (e.g. 'setup-sandbox', 'run-sandbox-command')"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the task run was created"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the task run started executing"
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the task run finished (null if still running)"
+          },
+          "durationMs": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total duration in milliseconds (null if still running)"
           }
         }
       },
