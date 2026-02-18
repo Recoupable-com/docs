@@ -2050,9 +2050,9 @@
         }
       },
       "post": {
-        "description": "Create a new ephemeral sandbox environment. Optionally executes a command if provided. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. If no command is provided, the sandbox is created without triggering any background task. Authentication is handled via the x-api-key header.",
+        "description": "Create a new ephemeral sandbox environment. Optionally executes a command or an OpenCode prompt if provided. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. If no command or prompt is provided, the sandbox is created without triggering any background task. Use the prompt parameter as a shortcut to run `opencode run \"<prompt>\"` in the sandbox. Authentication is handled via the x-api-key header.",
         "requestBody": {
-          "description": "Optional command execution parameters. If command is omitted, sandbox is created without running any command.",
+          "description": "Optional command execution parameters. If command and prompt are both omitted, sandbox is created without running any command. Use prompt as a shortcut for running OpenCode.",
           "required": true,
           "content": {
             "application/json": {
@@ -7670,7 +7670,7 @@
       },
       "CreateSandboxRequest": {
         "type": "object",
-        "description": "Request body for creating a new sandbox. All fields are optional - if no command is provided, sandbox is created without triggering a command execution task.",
+        "description": "Request body for creating a new sandbox. All fields are optional - if no command or prompt is provided, sandbox is created without triggering a command execution task. Use prompt as a shortcut to run OpenCode with a given prompt instead of specifying command/args manually.",
         "properties": {
           "command": {
             "type": "string",
@@ -7690,6 +7690,12 @@
             "type": "string",
             "description": "Optional working directory for command execution.",
             "example": "/home/user"
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A prompt to pass to OpenCode in the sandbox. When provided, the sandbox will execute `opencode run \"<prompt>\"`. Cannot be used together with command.",
+            "example": "create a hello world index.html"
           }
         }
       },
