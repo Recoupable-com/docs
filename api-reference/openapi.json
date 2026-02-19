@@ -3461,7 +3461,7 @@
     },
     "/api/content/create": {
       "post": {
-        "description": "Trigger the content creation pipeline for an artist. Provide either `artist_account_id` or `artist_slug` to identify the target artist. Validates the artist has all required files (face guide, songs, config), then triggers a background task that generates a short-form video. Returns a run ID that can be polled via [GET /api/content/status](/api-reference/content/status) to check progress and retrieve the output video path when complete. Authentication is handled via the x-api-key header.",
+        "description": "Trigger the content creation pipeline for an artist. Provide either `artist_account_id` or `artist_slug` to identify the target artist. Validates the artist has all required files (face guide, songs, config), then triggers a background task that generates a short-form video. Returns a run ID that can be polled via [GET /api/tasks/runs](/api-reference/tasks/runs) to check progress and retrieve the output video path when complete. Authentication is handled via the x-api-key header.",
         "requestBody": {
           "description": "Content creation parameters including the target artist and optional template/workflow settings",
           "required": true,
@@ -3475,7 +3475,7 @@
         },
         "responses": {
           "202": {
-            "description": "Pipeline triggered successfully. Use the returned runId with [GET /api/content/status](/api-reference/content/status) to poll for progress.",
+            "description": "Pipeline triggered successfully. Use the returned runId with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for progress.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3516,65 +3516,6 @@
           },
           "404": {
             "description": "Artist not found — the provided artist_account_id or artist_slug does not match any artist for this account",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ContentErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/content/status": {
-      "get": {
-        "description": "Poll the status of a content creation pipeline run. Returns the current step, progress, and — when complete — the output video path in the account's GitHub repository.",
-        "parameters": [
-          {
-            "name": "run_id",
-            "in": "query",
-            "description": "The run ID returned by [POST /api/content/create](/api-reference/content/create).",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "run_abc123def456"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Run status retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ContentStatusResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request — missing run_id parameter",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ContentErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized — invalid or missing API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ContentErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Run not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3705,19 +3646,43 @@
       }
     },
     "/api/content/estimate": {
-      "post": {
+      "get": {
         "description": "Estimate the cost of running the content creation pipeline. Fetches live pricing from fal.ai and calculates per-step and per-video costs. Supports comparing multiple workflow profiles (e.g., premium vs. budget) and projecting batch costs. This endpoint is informational only — it does not trigger any pipeline execution or spend credits.",
-        "requestBody": {
-          "description": "Optional parameters to control which workflow to estimate and how many videos to project",
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ContentEstimateRequest"
-              }
+        "parameters": [
+          {
+            "name": "lipsync",
+            "in": "query",
+            "description": "Which workflow to estimate. `false` for image-to-video, `true` for audio-to-video. If omitted, estimates the default image-to-video workflow.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          },
+          {
+            "name": "batch",
+            "in": "query",
+            "description": "Number of videos to project costs for. Use this to answer questions like \"how much would 30 videos cost?\"",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "compare",
+            "in": "query",
+            "description": "When `true`, returns estimates for all available workflow profiles (premium, budget, mid) for side-by-side comparison.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": false
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Cost estimate calculated successfully",
@@ -8483,7 +8448,7 @@
         "properties": {
           "runId": {
             "type": "string",
-            "description": "The run ID for the background pipeline task. Use this with [GET /api/content/status](/api-reference/content/status) to poll for progress and retrieve the output video path when complete.",
+            "description": "The run ID for the background pipeline task. Use this with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for progress and retrieve the output video path when complete.",
             "example": "run_abc123def456"
           },
           "status": {
@@ -8548,80 +8513,6 @@
             "type": "string",
             "description": "Error message describing what went wrong",
             "example": "Unauthorized"
-          }
-        }
-      },
-      "ContentStatusResponse": {
-        "type": "object",
-        "required": ["runId", "status"],
-        "description": "Current status of a content creation pipeline run.",
-        "properties": {
-          "runId": {
-            "type": "string",
-            "description": "The run ID being queried",
-            "example": "run_abc123def456"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["queued", "running", "completed", "failed"],
-            "description": "Current state of the pipeline run",
-            "example": "running"
-          },
-          "step": {
-            "type": "string",
-            "description": "Human-readable description of the current pipeline step. Only present when status is `running`.",
-            "example": "Generating video..."
-          },
-          "progress": {
-            "type": "string",
-            "description": "Step progress indicator (e.g., `4/7`). Only present when status is `running`.",
-            "example": "4/7"
-          },
-          "video": {
-            "description": "Output video details. Only present when status is `completed`.",
-            "$ref": "#/components/schemas/ContentVideoOutput"
-          },
-          "error": {
-            "type": "string",
-            "description": "Error message. Only present when status is `failed`.",
-            "example": "Image generation failed: fal.ai returned 429 Too Many Requests"
-          },
-          "failedStep": {
-            "type": "string",
-            "description": "The pipeline step that failed. Only present when status is `failed`.",
-            "example": "Generate Image"
-          }
-        }
-      },
-      "ContentVideoOutput": {
-        "type": "object",
-        "required": ["path", "template", "song", "duration"],
-        "description": "Details about the generated video.",
-        "properties": {
-          "path": {
-            "type": "string",
-            "description": "File path in the account's GitHub repository where the video was saved",
-            "example": "artists/gatsby-grace/content/videos/shortform/gatsby-post-2026-02-19.mp4"
-          },
-          "template": {
-            "type": "string",
-            "description": "The template that was used",
-            "example": "artist-caption-bedroom"
-          },
-          "song": {
-            "type": "string",
-            "description": "The song title used for the audio clip",
-            "example": "Butterflies"
-          },
-          "duration": {
-            "type": "string",
-            "description": "Duration of the output video",
-            "example": "8s"
-          },
-          "lipsync": {
-            "type": "boolean",
-            "description": "Whether lip-sync mode was used",
-            "example": false
           }
         }
       },
@@ -8771,30 +8662,6 @@
             "type": "string",
             "description": "Actionable instructions for creating or adding the missing file",
             "example": "Generate a face guide using fal-ai/nano-banana-pro/edit with 2-3 reference photos of the artist"
-          }
-        }
-      },
-      "ContentEstimateRequest": {
-        "type": "object",
-        "description": "Optional parameters for cost estimation. All fields have defaults — an empty body returns the cost for the default image-to-video workflow for a single video.",
-        "properties": {
-          "lipsync": {
-            "type": "boolean",
-            "description": "Which workflow to estimate. `false` for image-to-video, `true` for audio-to-video. If omitted, estimates the default image-to-video workflow.",
-            "example": false
-          },
-          "batch": {
-            "type": "integer",
-            "minimum": 1,
-            "default": 1,
-            "description": "Number of videos to project costs for. Use this to answer questions like \"how much would 30 videos cost?\"",
-            "example": 1
-          },
-          "compare": {
-            "type": "boolean",
-            "default": false,
-            "description": "When `true`, returns estimates for all available workflow profiles (premium, budget, mid) for side-by-side comparison.",
-            "example": false
           }
         }
       },

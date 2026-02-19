@@ -220,7 +220,6 @@
             "group": "Content",
             "pages": [
               "api-reference/content/create",
-              "api-reference/content/status",
               "api-reference/content/templates",
               "api-reference/content/validate",
               "api-reference/content/estimate"
