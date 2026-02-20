@@ -205,7 +205,8 @@
               "api-reference/sandboxes/create",
               "api-reference/sandboxes/snapshot",
               "api-reference/sandboxes/delete",
-              "api-reference/sandboxes/setup"
+              "api-reference/sandboxes/setup",
+              "api-reference/sandboxes/file"
             ]
           },
           {
