@@ -3458,6 +3458,254 @@
           }
         }
       }
+    },
+    "/api/content/create": {
+      "post": {
+        "description": "Trigger the content creation pipeline for an artist. Provide either `artist_account_id` or `artist_slug` to identify the target artist. Validates the artist has all required files (face guide, songs, config), then triggers a background task that generates a short-form video. Returns a run ID that can be polled via [GET /api/tasks/runs](/api-reference/tasks/runs) to check progress and retrieve the output video path when complete. Authentication is handled via the x-api-key header.",
+        "requestBody": {
+          "description": "Content creation parameters including the target artist and optional template/workflow settings",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContentCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Pipeline triggered successfully. Use the returned runId with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for progress.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed — missing artist identifier, artist is missing required files, or template not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentCreateErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — account_id is not a member of the organization or personal key tried to use account_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Artist not found — the provided artist_account_id or artist_slug does not match any artist for this account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/templates": {
+      "get": {
+        "description": "List all available content creation templates. Templates define the visual style, scene composition, and default workflow settings for generated videos. Each template includes reference images, style guides, caption rules, and prompt configurations.",
+        "responses": {
+          "200": {
+            "description": "Templates retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentTemplatesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/validate": {
+      "get": {
+        "description": "Check whether an artist has all the required files to run the content creation pipeline. Returns a structured report of each required and recommended file with its status. Required files must be present or the pipeline will fail. Recommended files improve output quality but are not strictly necessary. Provide either `artist_account_id` or `artist_slug` — at least one is required.",
+        "parameters": [
+          {
+            "name": "artist_account_id",
+            "in": "query",
+            "description": "UUID of the artist account to validate. Use [GET /api/artists](/api-reference/artists/list) to find artist account IDs.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "1873859c-dd37-4e9a-9bac-80d3558527a9"
+            }
+          },
+          {
+            "name": "artist_slug",
+            "in": "query",
+            "description": "The artist directory name (slug) as an alternative to `artist_account_id`. Must match a directory under `artists/` in the account's GitHub repository.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "gatsby-grace"
+            }
+          },
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "UUID of the account that owns the artist. Only applicable for organization API keys — org keys can specify an account_id for any account within their organization. If not provided, uses the API key's own account.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "550e8400-e29b-41d4-a716-446655440000"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Validation completed. Check the `ready` field to determine if the artist can run the pipeline.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentValidateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — must provide either artist_account_id or artist_slug",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — account_id is not a member of the organization or personal key tried to use account_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Artist not found — the provided artist_account_id or artist_slug does not match any artist for this account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/content/estimate": {
+      "get": {
+        "description": "Estimate the cost of running the content creation pipeline. Fetches live pricing from fal.ai and calculates per-step and per-video costs. Supports comparing multiple workflow profiles (e.g., premium vs. budget) and projecting batch costs. This endpoint is informational only — it does not trigger any pipeline execution or spend credits.",
+        "parameters": [
+          {
+            "name": "lipsync",
+            "in": "query",
+            "description": "Which workflow to estimate. `false` for image-to-video, `true` for audio-to-video. If omitted, estimates the default image-to-video workflow.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          },
+          {
+            "name": "batch",
+            "in": "query",
+            "description": "Number of videos to project costs for. Use this to answer questions like \"how much would 30 videos cost?\"",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "compare",
+            "in": "query",
+            "description": "When `true`, returns estimates for all available workflow profiles (premium, budget, mid) for side-by-side comparison.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cost estimate calculated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentEstimateResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContentErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -8162,6 +8410,419 @@
               "type": "string"
             },
             "description": "List of missing or invalid fields, if applicable"
+          }
+        }
+      },
+      "ContentCreateRequest": {
+        "type": "object",
+        "description": "Parameters for triggering the content creation pipeline. Provide either `artist_account_id` or `artist_slug` to identify the artist — at least one is required. If both are provided, `artist_account_id` takes precedence.",
+        "properties": {
+          "artist_account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the artist account to create content for. Use [GET /api/artists](/api-reference/artists/list) to find artist account IDs.",
+            "example": "1873859c-dd37-4e9a-9bac-80d3558527a9"
+          },
+          "artist_slug": {
+            "type": "string",
+            "description": "The artist directory name (slug) as an alternative to `artist_account_id`. Must match a directory under `artists/` in the account's GitHub repository. Convenient when calling from a sandbox where the directory name is already known.",
+            "example": "gatsby-grace"
+          },
+          "template": {
+            "type": "string",
+            "description": "The template to use for content generation. Defines the visual style, scene, and prompt configuration. If omitted, defaults to `artist-caption-bedroom`. See [GET /api/content/templates](/api-reference/content/templates) for available options.",
+            "example": "artist-caption-stage",
+            "default": "artist-caption-bedroom"
+          },
+          "lipsync": {
+            "type": "boolean",
+            "description": "Whether to generate video with lip-synced audio. When `true`, uses an audio-to-video model that bakes audio into the video for lip movement. When `false`, generates video from the image alone and overlays audio in post. If omitted, the template's default workflow is used.",
+            "example": false
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the account that owns the artist. Only applicable for organization API keys — org keys can specify an account_id for any account within their organization. If not provided, uses the API key's own account.",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        }
+      },
+      "ContentCreateResponse": {
+        "type": "object",
+        "required": ["runId", "status", "artist", "template"],
+        "description": "Confirmation that the content creation pipeline has been triggered.",
+        "properties": {
+          "runId": {
+            "type": "string",
+            "description": "The run ID for the background pipeline task. Use this with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for progress and retrieve the output video path when complete.",
+            "example": "run_abc123def456"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["triggered"],
+            "description": "Indicates the pipeline has been triggered and is starting"
+          },
+          "artist": {
+            "type": "string",
+            "description": "The artist slug the pipeline is running for",
+            "example": "gatsby-grace"
+          },
+          "template": {
+            "type": "string",
+            "description": "The template being used for this run",
+            "example": "artist-caption-stage"
+          },
+          "lipsync": {
+            "type": "boolean",
+            "description": "Whether lip-sync mode is enabled for this run",
+            "example": false
+          }
+        }
+      },
+      "ContentCreateErrorResponse": {
+        "type": "object",
+        "required": ["error"],
+        "description": "Returned when the artist is missing required files or the template is not found. Includes actionable instructions for resolving each issue.",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable error summary",
+            "example": "Artist 'new-artist' is not ready for content creation"
+          },
+          "ready": {
+            "type": "boolean",
+            "description": "Always `false` when this error is returned",
+            "example": false
+          },
+          "missing": {
+            "type": "array",
+            "description": "List of missing files with severity and fix instructions. Only present when the artist fails validation.",
+            "items": {
+              "$ref": "#/components/schemas/ContentMissingFile"
+            }
+          },
+          "available_templates": {
+            "type": "array",
+            "description": "List of valid template names. Only present when the requested template was not found.",
+            "items": {
+              "type": "string"
+            },
+            "example": ["artist-caption-bedroom", "artist-caption-outside", "artist-caption-stage"]
+          }
+        }
+      },
+      "ContentErrorResponse": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "Unauthorized"
+          }
+        }
+      },
+      "ContentTemplatesResponse": {
+        "type": "object",
+        "required": ["templates"],
+        "description": "List of available content creation templates.",
+        "properties": {
+          "templates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentTemplate"
+            }
+          }
+        }
+      },
+      "ContentTemplate": {
+        "type": "object",
+        "required": ["name", "description", "defaultLipsync"],
+        "description": "A content creation template that defines the visual style and composition for generated videos.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Template identifier. Pass this as the `template` field in [POST /api/content/create](/api-reference/content/create).",
+            "example": "artist-caption-bedroom"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of the template's visual style",
+            "example": "Moody purple bedroom setting with caption overlay"
+          },
+          "defaultLipsync": {
+            "type": "boolean",
+            "description": "Whether this template defaults to lip-sync mode when the `lipsync` flag is not explicitly set",
+            "example": false
+          }
+        }
+      },
+      "ContentValidateResponse": {
+        "type": "object",
+        "required": ["ready", "artist"],
+        "description": "Validation report for an artist's content creation readiness.",
+        "properties": {
+          "ready": {
+            "type": "boolean",
+            "description": "`true` if the artist has all required files and the pipeline can run. `false` if required files are missing.",
+            "example": true
+          },
+          "artist": {
+            "type": "string",
+            "description": "The artist slug that was validated",
+            "example": "gatsby-grace"
+          },
+          "songs": {
+            "type": "integer",
+            "description": "Number of songs found in the artist's `songs/` directory",
+            "example": 17
+          },
+          "templates": {
+            "type": "array",
+            "description": "Available templates that can be used with this artist",
+            "items": {
+              "type": "string"
+            },
+            "example": ["artist-caption-bedroom", "artist-caption-outside", "artist-caption-stage"]
+          },
+          "checks": {
+            "type": "object",
+            "description": "Per-file validation results. Only present when `ready` is `true`.",
+            "properties": {
+              "face_guide": {
+                "$ref": "#/components/schemas/ContentValidationCheck"
+              },
+              "artist_context": {
+                "$ref": "#/components/schemas/ContentValidationCheck"
+              },
+              "audience_context": {
+                "$ref": "#/components/schemas/ContentValidationCheck"
+              },
+              "era_config": {
+                "$ref": "#/components/schemas/ContentValidationCheck"
+              },
+              "pipeline_config": {
+                "$ref": "#/components/schemas/ContentValidationCheck"
+              },
+              "songs": {
+                "allOf": [
+                  { "$ref": "#/components/schemas/ContentValidationCheck" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "count": {
+                        "type": "integer",
+                        "description": "Number of songs found",
+                        "example": 17
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "missing": {
+            "type": "array",
+            "description": "List of missing files with severity and fix instructions. Only present when `ready` is `false`.",
+            "items": {
+              "$ref": "#/components/schemas/ContentMissingFile"
+            }
+          }
+        }
+      },
+      "ContentValidationCheck": {
+        "type": "object",
+        "required": ["status"],
+        "description": "Status of a single validation check.",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["ok", "missing", "warning"],
+            "description": "Whether the file was found",
+            "example": "ok"
+          }
+        }
+      },
+      "ContentMissingFile": {
+        "type": "object",
+        "required": ["file", "severity", "description", "fix"],
+        "description": "A missing file that prevents or degrades content creation.",
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "Relative path of the missing file within the artist directory",
+            "example": "context/images/face-guide.png"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["required", "recommended"],
+            "description": "`required` means the pipeline will fail without this file. `recommended` means the pipeline will run but output quality is degraded.",
+            "example": "required"
+          },
+          "description": {
+            "type": "string",
+            "description": "What this file is used for in the pipeline",
+            "example": "Face guide image used for AI image generation"
+          },
+          "fix": {
+            "type": "string",
+            "description": "Actionable instructions for creating or adding the missing file",
+            "example": "Generate a face guide using fal-ai/nano-banana-pro/edit with 2-3 reference photos of the artist"
+          }
+        }
+      },
+      "ContentEstimateResponse": {
+        "type": "object",
+        "required": ["workflows"],
+        "description": "Cost estimates based on live fal.ai pricing. When `compare` is `false`, the `workflows` array contains a single entry. When `true`, it contains all available profiles.",
+        "properties": {
+          "workflows": {
+            "type": "array",
+            "description": "One or more workflow cost breakdowns",
+            "items": {
+              "$ref": "#/components/schemas/ContentWorkflowEstimate"
+            }
+          },
+          "comparison": {
+            "description": "Side-by-side summary. Only present when `compare` is `true` and multiple workflows are returned.",
+            "$ref": "#/components/schemas/ContentEstimateComparison"
+          },
+          "batch": {
+            "type": "object",
+            "description": "Batch cost projection. Only present when `batch` > 1.",
+            "properties": {
+              "count": {
+                "type": "integer",
+                "description": "Number of videos in the batch",
+                "example": 30
+              },
+              "cheapestTotal": {
+                "type": "number",
+                "format": "float",
+                "description": "Total cost for the batch using the cheapest workflow",
+                "example": 5.40
+              },
+              "mostExpensiveTotal": {
+                "type": "number",
+                "format": "float",
+                "description": "Total cost for the batch using the most expensive workflow",
+                "example": 28.50
+              }
+            }
+          }
+        }
+      },
+      "ContentWorkflowEstimate": {
+        "type": "object",
+        "required": ["name", "perVideo", "steps"],
+        "description": "Cost breakdown for a single workflow profile.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Workflow profile name",
+            "example": "Current (image-to-video)"
+          },
+          "perVideo": {
+            "type": "number",
+            "format": "float",
+            "description": "Total estimated cost per video in USD",
+            "example": 0.82
+          },
+          "steps": {
+            "type": "array",
+            "description": "Per-step cost breakdown showing where the money goes",
+            "items": {
+              "$ref": "#/components/schemas/ContentStepEstimate"
+            }
+          },
+          "costBreakdown": {
+            "type": "object",
+            "description": "Summary of the biggest cost driver",
+            "properties": {
+              "mostExpensiveStep": {
+                "type": "string",
+                "description": "Name of the step that costs the most",
+                "example": "Generate Video"
+              },
+              "mostExpensivePercent": {
+                "type": "integer",
+                "description": "Percentage of total cost from the most expensive step",
+                "example": 68
+              }
+            }
+          }
+        }
+      },
+      "ContentStepEstimate": {
+        "type": "object",
+        "required": ["name", "model", "cost", "note"],
+        "description": "Cost details for a single pipeline step.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Pipeline step name",
+            "example": "Generate Image"
+          },
+          "model": {
+            "type": "string",
+            "description": "The AI model or service used for this step",
+            "example": "fal-ai/nano-banana-pro/edit"
+          },
+          "cost": {
+            "type": "number",
+            "format": "float",
+            "description": "Estimated cost for this step in USD",
+            "example": 0.04
+          },
+          "unit": {
+            "type": "string",
+            "description": "Billing unit type (e.g., `images`, `seconds`, `megapixels`). Not present for free steps.",
+            "example": "images"
+          },
+          "unitPrice": {
+            "type": "number",
+            "format": "float",
+            "description": "Price per billing unit in USD. Not present for free steps.",
+            "example": 0.04
+          },
+          "note": {
+            "type": "string",
+            "description": "Human-readable calculation detail",
+            "example": "1 call"
+          }
+        }
+      },
+      "ContentEstimateComparison": {
+        "type": "object",
+        "required": ["cheapest", "cheapestPerVideo", "mostExpensive", "mostExpensivePerVideo", "savingsPercent"],
+        "description": "Summary comparing the cheapest and most expensive workflow options.",
+        "properties": {
+          "cheapest": {
+            "type": "string",
+            "description": "Name of the cheapest workflow profile",
+            "example": "Budget (no upscale, LTX video)"
+          },
+          "cheapestPerVideo": {
+            "type": "number",
+            "format": "float",
+            "description": "Cost per video for the cheapest workflow",
+            "example": 0.18
+          },
+          "mostExpensive": {
+            "type": "string",
+            "description": "Name of the most expensive workflow profile",
+            "example": "Current (audio-to-video)"
+          },
+          "mostExpensivePerVideo": {
+            "type": "number",
+            "format": "float",
+            "description": "Cost per video for the most expensive workflow",
+            "example": 0.95
+          },
+          "savingsPercent": {
+            "type": "integer",
+            "description": "Percentage savings between the cheapest and most expensive workflows",
+            "example": 81
           }
         }
       }

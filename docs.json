@@ -215,6 +215,15 @@
               "api-reference/connectors/authorize",
               "api-reference/connectors/disconnect"
             ]
+          },
+          {
+            "group": "Content",
+            "pages": [
+              "api-reference/content/create",
+              "api-reference/content/templates",
+              "api-reference/content/validate",
+              "api-reference/content/estimate"
+            ]
           }
         ]
       }
