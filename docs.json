@@ -168,6 +168,13 @@
             ]
           },
           {
+            "group": "Music",
+            "pages": [
+              "api-reference/music/analyze",
+              "api-reference/music/presets"
+            ]
+          },
+          {
             "group": "Transcribe",
             "pages": [
               "api-reference/transcribe/audio"
