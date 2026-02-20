@@ -2258,7 +2258,7 @@
     },
     "/api/sandboxes/file": {
       "get": {
-        "description": "Retrieve the raw contents of a file from the authenticated account's sandbox GitHub repository. Resolves the github_repo from the account's snapshot, then fetches the file at the specified path from the repository's main branch. Authentication is handled via the x-api-key header or Authorization Bearer token.",
+        "description": "Retrieve the raw contents of a file from the authenticated account's sandbox GitHub repository. Resolves the github_repo from the [account's snapshot](/api-reference/sandboxes/list), then fetches the file at the specified path from the repository's main branch. Authentication is handled via the x-api-key header or Authorization Bearer token.",
         "parameters": [
           {
             "name": "path",
