@@ -2050,7 +2050,19 @@
         }
       },
       "post": {
-        "description": "Create a new ephemeral sandbox environment. Optionally executes a command or an OpenCode prompt if provided. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. If no command or prompt is provided, the sandbox is created without triggering any background task. Use the prompt parameter as a shortcut to run `opencode run \"<prompt>\"` in the sandbox. Authentication is handled via the x-api-key header.",
+        "description": "Create a new ephemeral sandbox environment. Optionally executes a command or an OpenCode prompt if provided. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. If no command or prompt is provided, the sandbox is created without triggering any background task. Use the prompt parameter as a shortcut to run `opencode run \"<prompt>\"` in the sandbox. For personal API keys, creates a sandbox for the key owner's account. For organization API keys, creates a sandbox for the authenticated account unless account_id is specified. Authentication is handled via the x-api-key header or Authorization Bearer token.",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "query",
+            "description": "Create the sandbox for a specific account. Only applicable for organization API keys - org keys can target any account within their organization. Personal keys cannot use this parameter.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "description": "Optional command execution parameters. If command and prompt are both omitted, sandbox is created without running any command. Use prompt as a shortcut for running OpenCode.",
           "required": true,
@@ -2085,6 +2097,16 @@
           },
           "401": {
             "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - account_id is not a member of the organization or personal key tried to use account_id",
             "content": {
               "application/json": {
                 "schema": {
