@@ -188,31 +188,50 @@
     },
     "/api/tasks/runs": {
       "get": {
-        "description": "Check the status of a triggered task run. Returns the current status and, if complete, the task response data.",
+        "description": "Retrieve a single task run by ID, or list recent task runs for the authenticated account. When `runId` is provided, returns the detailed status of that specific run. When omitted, returns a list of recent runs tagged with the caller's account.",
         "parameters": [
           {
             "name": "runId",
             "in": "query",
-            "description": "The unique identifier of the task run to check",
-            "required": true,
+            "description": "The unique identifier of a specific task run to retrieve. If omitted, returns a list of recent runs for the authenticated account.",
+            "required": false,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of runs to return when listing (ignored when runId is provided). Default 20, max 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1,
+              "maximum": 100
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Task run status retrieved successfully",
+            "description": "Task run(s) retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TaskRunResponse"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/TaskRunResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TaskRunListResponse"
+                    }
+                  ]
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request - missing or invalid runId",
+            "description": "Bad request - invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -222,7 +241,7 @@
             }
           },
           "404": {
-            "description": "Task run not found",
+            "description": "Task run not found (only when runId is provided)",
             "content": {
               "application/json": {
                 "schema": {
@@ -8506,6 +8525,71 @@
             "type": "number",
             "nullable": true,
             "description": "Total duration in milliseconds (null if still running)"
+          }
+        }
+      },
+      "TaskRunListResponse": {
+        "type": "object",
+        "required": ["status", "runs"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Indicates the request was successful"
+          },
+          "runs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskRunListItem"
+            },
+            "description": "List of recent task runs for the authenticated account"
+          }
+        }
+      },
+      "TaskRunListItem": {
+        "type": "object",
+        "required": ["id", "status", "taskIdentifier", "createdAt"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the task run"
+          },
+          "status": {
+            "type": "string",
+            "description": "The current status of the task run (e.g. COMPLETED, FAILED, EXECUTING, QUEUED)"
+          },
+          "taskIdentifier": {
+            "type": "string",
+            "description": "The task type identifier (e.g. 'run-sandbox-command', 'customer-prompt-task')"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the task run was created"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the task run started executing"
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the task run finished"
+          },
+          "durationMs": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total duration in milliseconds"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags associated with the task run"
           }
         }
       },
