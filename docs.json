@@ -194,6 +194,12 @@
             ]
           },
           {
+            "group": "Notifications",
+            "pages": [
+              "api-reference/notifications/create"
+            ]
+          },
+          {
             "group": "Apify",
             "pages": [
               "api-reference/apify/scraper"
