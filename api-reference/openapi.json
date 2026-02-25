@@ -3788,7 +3788,7 @@
     },
     "/api/notifications": {
       "post": {
-        "description": "Send a notification email using the Resend API. Emails are sent from `Agent by Recoup <agent@recoupable.com>`. Supports plain text (rendered as Markdown) or raw HTML bodies, optional CC recipients, custom headers, and an optional room_id to include a chat link in the email footer.",
+        "description": "Send a notification email to the authenticated account's email address via the Resend API. Emails are sent from `Agent by Recoup <agent@recoupable.com>`. The recipient is automatically resolved from the API key or Bearer token. Supports plain text (rendered as Markdown) or raw HTML bodies, optional CC recipients, custom headers, and an optional room_id to include a chat link in the email footer.",
         "requestBody": {
           "description": "Notification email payload",
           "required": true,
@@ -3865,17 +3865,8 @@
       },
       "CreateNotificationRequest": {
         "type": "object",
-        "required": ["to", "subject"],
+        "required": ["subject"],
         "properties": {
-          "to": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "email"
-            },
-            "description": "Recipient email addresses",
-            "example": ["user@example.com"]
-          },
           "cc": {
             "type": "array",
             "items": {
