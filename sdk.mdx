@@ -43,6 +43,16 @@ recoup whoami
 recoup whoami --json
 ```
 
+## orgs
+
+Manage organizations. See [`GET /api/organizations`](/api-reference/organizations/list).
+
+```bash
+recoup orgs list
+recoup orgs list --account <accountId>
+recoup orgs list --json
+```
+
 ## artists
 
 Manage artists. See [`GET /api/artists`](/api-reference/artists/list).
@@ -53,6 +63,26 @@ recoup artists list --org <orgId>
 recoup artists list --account <accountId>
 recoup artists list --json
 ```
+
+## notifications
+
+Send a notification email to the authenticated account's email address. The recipient is automatically resolved from your API key — no need to specify a `to` address.
+
+```bash
+recoup notifications --subject "Pulse Report" --text "Here's your weekly summary."
+recoup notifications --subject "Update" --cc manager@example.com --text "New release scheduled."
+recoup notifications --subject "Weekly Pulse" --html "<h1>Pulse Report</h1><p>BVB release planning is <strong>active</strong>.</p>"
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--subject <text>` | Yes | Email subject line |
+| `--text <body>` | No | Plain text or Markdown body (rendered as HTML) |
+| `--html <body>` | No | Raw HTML body (takes precedence over `--text`) |
+| `--cc <email>` | No | CC recipient (repeatable) |
+| `--room-id <id>` | No | Room ID for a chat link in the email footer |
+
+This command wraps [`POST /api/notifications`](/api-reference/notifications/create).
 
 ## chats
 
@@ -75,33 +105,3 @@ recoup sandboxes create
 recoup sandboxes create --command "ls -la"
 recoup sandboxes list --json
 ```
-
-## orgs
-
-Manage organizations. See [`GET /api/organizations`](/api-reference/organizations/list).
-
-```bash
-recoup orgs list
-recoup orgs list --account <accountId>
-recoup orgs list --json
-```
-
-## notifications
-
-Send a notification email to the authenticated account's email address. The recipient is automatically resolved from your API key — no need to specify a `to` address.
-
-```bash
-recoup notifications --subject "Pulse Report" --text "Here's your weekly summary."
-recoup notifications --subject "Update" --cc manager@example.com --text "New release scheduled."
-recoup notifications --subject "Weekly Pulse" --html "<h1>Pulse Report</h1><p>BVB release planning is <strong>active</strong>.</p>"
-```
-
-| Flag | Required | Description |
-|------|----------|-------------|
-| `--subject <text>` | Yes | Email subject line |
-| `--text <body>` | No | Plain text or Markdown body (rendered as HTML) |
-| `--html <body>` | No | Raw HTML body (takes precedence over `--text`) |
-| `--cc <email>` | No | CC recipient (repeatable) |
-| `--room-id <id>` | No | Room ID for a chat link in the email footer |
-
-This command wraps [`POST /api/notifications`](/api-reference/notifications/create).
