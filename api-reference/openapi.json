@@ -3901,6 +3901,11 @@
           "room_id": {
             "type": "string",
             "description": "Room ID to include a chat link in the email footer"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the account to send the notification to. Only applicable for organization API keys. If not provided, sends to the API key's own account."
           }
         }
       },
