@@ -1,0 +1,107 @@
+---
+title: "CLI"
+description: "Install and use the Recoup CLI to interact with the platform from your terminal."
+---
+
+The Recoup CLI (`@recoupable/cli`) is a command-line wrapper around the Recoup API. It's available as a global npm package and is pre-installed in sandbox environments.
+
+## Installation
+
+```bash
+npm install -g @recoupable/cli
+```
+
+## Authentication
+
+Set your API key as an environment variable. You can get a key from the [API Keys page](https://chat.recoupable.com/keys).
+
+```bash
+export RECOUP_API_KEY=your-api-key
+```
+
+Verify it works:
+
+```bash
+recoup whoami
+```
+
+## Configuration
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `RECOUP_API_KEY` | Yes | — | Your Recoup API key |
+| `RECOUP_API_URL` | No | `https://recoup-api.vercel.app` | API base URL override |
+
+All commands support `--json` for machine-readable output and `--help` for usage info.
+
+## whoami
+
+Show the authenticated account. See [`GET /api/accounts/id`](/api-reference/accounts/id).
+
+```bash
+recoup whoami
+recoup whoami --json
+```
+
+## orgs
+
+Manage organizations. See [`GET /api/organizations`](/api-reference/organizations/list).
+
+```bash
+recoup orgs list
+recoup orgs list --account <accountId>
+recoup orgs list --json
+```
+
+## artists
+
+Manage artists. See [`GET /api/artists`](/api-reference/artists/list).
+
+```bash
+recoup artists list
+recoup artists list --org <orgId>
+recoup artists list --account <accountId>
+recoup artists list --json
+```
+
+## notifications
+
+Send a notification email to the authenticated account's email address. The recipient is automatically resolved from your API key — no need to specify a `to` address.
+
+```bash
+recoup notifications --subject "Pulse Report" --text "Here's your weekly summary."
+recoup notifications --subject "Update" --cc manager@example.com --text "New release scheduled."
+recoup notifications --subject "Weekly Pulse" --html "<h1>Pulse Report</h1><p>BVB release planning is <strong>active</strong>.</p>"
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--subject <text>` | Yes | Email subject line |
+| `--text <body>` | No | Plain text or Markdown body (rendered as HTML) |
+| `--html <body>` | No | Raw HTML body (takes precedence over `--text`) |
+| `--cc <email>` | No | CC recipient (repeatable) |
+| `--room-id <id>` | No | Room ID for a chat link in the email footer |
+
+This command wraps [`POST /api/notifications`](/api-reference/notifications/create).
+
+## chats
+
+Manage chats. See [`GET /api/chats`](/api-reference/chat/chats) and [`POST /api/chats`](/api-reference/chat/create).
+
+```bash
+recoup chats list
+recoup chats create --name "My Topic"
+recoup chats create --name "My Topic" --artist <artistId>
+recoup chats list --json
+```
+
+## sandboxes
+
+Manage sandboxes. See [`GET /api/sandboxes`](/api-reference/sandboxes/list) and [`POST /api/sandboxes`](/api-reference/sandboxes/create).
+
+```bash
+recoup sandboxes list
+recoup sandboxes create
+recoup sandboxes create --command "ls -la"
+recoup sandboxes list --json
+```

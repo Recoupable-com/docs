@@ -18,6 +18,7 @@
             "pages": [
               "index",
               "quickstart",
+              "sdk",
               "api-reference/sandboxes/create"
             ]
           }
@@ -191,6 +192,12 @@
             "group": "Subscriptions",
             "pages": [
               "api-reference/subscriptions/get"
+            ]
+          },
+          {
+            "group": "Notifications",
+            "pages": [
+              "api-reference/notifications/create"
             ]
           },
           {

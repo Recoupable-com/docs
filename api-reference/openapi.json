@@ -3785,6 +3785,64 @@
           }
         }
       }
+    },
+    "/api/notifications": {
+      "post": {
+        "description": "Send a notification email to the authenticated account's email address via the Resend API. Emails are sent from `Agent by Recoup <agent@recoupable.com>`. The recipient is automatically resolved from the API key or Bearer token. Supports plain text (rendered as Markdown) or raw HTML bodies, optional CC recipients, custom headers, and an optional room_id to include a chat link in the email footer.",
+        "requestBody": {
+          "description": "Notification email payload",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Email delivery failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3802,6 +3860,67 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      },
+      "CreateNotificationRequest": {
+        "type": "object",
+        "required": ["subject"],
+        "properties": {
+          "cc": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "Optional CC email addresses",
+            "example": ["cc@example.com"]
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line",
+            "example": "Weekly Pulse Report"
+          },
+          "text": {
+            "type": "string",
+            "description": "Plain text or Markdown body. Rendered as HTML via Markdown if no `html` is provided.",
+            "example": "# Pulse Report\n\nHere's your weekly summary."
+          },
+          "html": {
+            "type": "string",
+            "description": "Raw HTML body. Takes precedence over `text` when both are provided.",
+            "example": "<h1>Pulse Report</h1><p>Here's your weekly summary.</p>"
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Optional custom email headers"
+          },
+          "room_id": {
+            "type": "string",
+            "description": "Room ID to include a chat link in the email footer"
+          }
+        }
+      },
+      "NotificationResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the notification was sent successfully",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable result message",
+            "example": "Email sent successfully from Agent by Recoup <agent@recoupable.com> to user@example.com."
+          },
+          "id": {
+            "type": "string",
+            "description": "Resend email ID",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
           }
         }
       },
