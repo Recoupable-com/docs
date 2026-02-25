@@ -1,0 +1,68 @@
+---
+title: "CLI"
+description: "Send notifications and interact with the Recoup API from the command line."
+---
+
+The Recoup CLI is built into the [interactive terminal](https://bash.recoupable.com) and is available to agents running inside sandboxes. It provides commands that wrap the Recoup API, so agents can perform actions like sending emails without needing direct API access.
+
+## notifications
+
+Send a notification email to the authenticated account's email address. The recipient is automatically resolved from your credentials — no need to specify a `to` address.
+
+Emails are sent from `Agent by Recoup <agent@recoupable.com>`.
+
+### Usage
+
+```bash
+notifications --subject <text> [options]
+```
+
+### Options
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--subject <text>` | Yes | Email subject line |
+| `--text <body>` | No | Plain text or Markdown body (rendered as HTML) |
+| `--html <body>` | No | Raw HTML body (takes precedence over `--text`) |
+| `--cc <email>` | No | CC recipient (can be repeated for multiple) |
+| `--room-id <id>` | No | Room ID to include a chat link in the email footer |
+
+### Examples
+
+**Send a simple notification:**
+
+```bash
+notifications --subject "Pulse Report" --text "Here's your weekly summary."
+```
+
+**Send with Markdown formatting:**
+
+```bash
+notifications --subject "Weekly Update" --text "# Artist Highlights\n\n- **BVB**: Release planning active\n- **sweetman.eth**: nounish EP targeting Jul 4"
+```
+
+**Send with CC recipients:**
+
+```bash
+notifications --subject "Team Update" --cc manager@example.com --cc team@example.com --text "New release scheduled."
+```
+
+**Send with a room link in the footer:**
+
+```bash
+notifications --subject "Conversation Follow-up" --text "Check the latest updates." --room-id "abc-123-def"
+```
+
+### API equivalent
+
+The `notifications` command is a wrapper around [`POST /api/notifications`](/api-reference/notifications/create). You can also call the API directly:
+
+```bash
+curl -X POST "https://api.recoupable.com/api/notifications" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "subject": "Pulse Report",
+    "text": "Here'\''s your weekly summary."
+  }'
+```

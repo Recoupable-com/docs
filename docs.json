@@ -24,6 +24,17 @@
         ]
       },
       {
+        "tab": "SDK",
+        "groups": [
+          {
+            "group": "CLI",
+            "pages": [
+              "sdk"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API reference",
         "groups": [
           {
