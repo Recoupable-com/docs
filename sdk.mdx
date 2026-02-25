@@ -1,68 +1,106 @@
 ---
 title: "CLI"
-description: "Send notifications and interact with the Recoup API from the command line."
+description: "Install and use the Recoup CLI to interact with the platform from your terminal."
 ---
 
-The Recoup CLI is built into the [interactive terminal](https://bash.recoupable.com) and is available to agents running inside sandboxes. It provides commands that wrap the Recoup API, so agents can perform actions like sending emails without needing direct API access.
+The Recoup CLI (`@recoupable/cli`) is a command-line wrapper around the Recoup API. It's available as a global npm package and is pre-installed in sandbox environments.
+
+## Installation
+
+```bash
+npm install -g @recoupable/cli
+```
+
+## Authentication
+
+Set your API key as an environment variable. You can get a key from the [API Keys page](https://chat.recoupable.com/keys).
+
+```bash
+export RECOUP_API_KEY=your-api-key
+```
+
+Verify it works:
+
+```bash
+recoup whoami
+```
+
+## Configuration
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `RECOUP_API_KEY` | Yes | — | Your Recoup API key |
+| `RECOUP_API_URL` | No | `https://recoup-api.vercel.app` | API base URL override |
+
+All commands support `--json` for machine-readable output and `--help` for usage info.
+
+## whoami
+
+Show the authenticated account.
+
+```bash
+recoup whoami
+recoup whoami --json
+```
+
+## artists
+
+Manage artists.
+
+```bash
+recoup artists list
+recoup artists list --org <orgId>
+recoup artists list --account <accountId>
+recoup artists list --json
+```
+
+## chats
+
+Manage chats.
+
+```bash
+recoup chats list
+recoup chats create --name "My Topic"
+recoup chats create --name "My Topic" --artist <artistId>
+recoup chats list --json
+```
+
+## sandboxes
+
+Manage sandboxes.
+
+```bash
+recoup sandboxes list
+recoup sandboxes create
+recoup sandboxes create --command "ls -la"
+recoup sandboxes list --json
+```
+
+## orgs
+
+Manage organizations.
+
+```bash
+recoup orgs list
+recoup orgs list --account <accountId>
+recoup orgs list --json
+```
 
 ## notifications
 
-Send a notification email to the authenticated account's email address. The recipient is automatically resolved from your credentials — no need to specify a `to` address.
-
-Emails are sent from `Agent by Recoup <agent@recoupable.com>`.
-
-### Usage
+Send a notification email to the authenticated account's email address. The recipient is automatically resolved from your API key — no need to specify a `to` address.
 
 ```bash
-notifications --subject <text> [options]
+recoup notifications --subject "Pulse Report" --text "Here's your weekly summary."
+recoup notifications --subject "Update" --cc manager@example.com --text "New release scheduled."
 ```
-
-### Options
 
 | Flag | Required | Description |
 |------|----------|-------------|
 | `--subject <text>` | Yes | Email subject line |
 | `--text <body>` | No | Plain text or Markdown body (rendered as HTML) |
 | `--html <body>` | No | Raw HTML body (takes precedence over `--text`) |
-| `--cc <email>` | No | CC recipient (can be repeated for multiple) |
-| `--room-id <id>` | No | Room ID to include a chat link in the email footer |
+| `--cc <email>` | No | CC recipient (repeatable) |
+| `--room-id <id>` | No | Room ID for a chat link in the email footer |
 
-### Examples
-
-**Send a simple notification:**
-
-```bash
-notifications --subject "Pulse Report" --text "Here's your weekly summary."
-```
-
-**Send with Markdown formatting:**
-
-```bash
-notifications --subject "Weekly Update" --text "# Artist Highlights\n\n- **BVB**: Release planning active\n- **sweetman.eth**: nounish EP targeting Jul 4"
-```
-
-**Send with CC recipients:**
-
-```bash
-notifications --subject "Team Update" --cc manager@example.com --cc team@example.com --text "New release scheduled."
-```
-
-**Send with a room link in the footer:**
-
-```bash
-notifications --subject "Conversation Follow-up" --text "Check the latest updates." --room-id "abc-123-def"
-```
-
-### API equivalent
-
-The `notifications` command is a wrapper around [`POST /api/notifications`](/api-reference/notifications/create). You can also call the API directly:
-
-```bash
-curl -X POST "https://api.recoupable.com/api/notifications" \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: YOUR_API_KEY" \
-  -d '{
-    "subject": "Pulse Report",
-    "text": "Here'\''s your weekly summary."
-  }'
-```
+This command wraps [`POST /api/notifications`](/api-reference/notifications/create).
