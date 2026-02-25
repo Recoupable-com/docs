@@ -18,18 +18,8 @@
             "pages": [
               "index",
               "quickstart",
+              "sdk",
               "api-reference/sandboxes/create"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "SDK",
-        "groups": [
-          {
-            "group": "CLI",
-            "pages": [
-              "sdk"
             ]
           }
         ]
