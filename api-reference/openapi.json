@@ -8470,16 +8470,15 @@
           },
           "status": {
             "type": "string",
-            "enum": ["pending", "complete", "failed"],
-            "description": "The current status of the task run"
+            "description": "Raw Trigger.dev run status. Common values: COMPLETED, FAILED, CRASHED, CANCELED, EXECUTING, QUEUED, SYSTEM_FAILURE, TIMED_OUT, EXPIRED, WAITING, DELAYED"
           },
           "data": {
-            "description": "The response data from the completed task. Only present when status is `complete`. Structure varies based on the task type.",
+            "description": "The response data from the completed task. Only present when status is `COMPLETED`. Structure varies based on the task type.",
             "nullable": true
           },
           "error": {
             "type": "string",
-            "description": "Error message describing why the task run failed. Only present when status is `failed`."
+            "description": "Error message describing why the task run failed. Only present when status is `FAILED`."
           },
           "metadata": {
             "type": "object",
