@@ -188,7 +188,7 @@
     },
     "/api/tasks/runs": {
       "get": {
-        "description": "Retrieve a single task run by ID, or list recent task runs for the authenticated account. When `runId` is provided, returns the detailed status of that specific run. When omitted, returns a list of recent runs tagged with the caller's account.",
+        "description": "Returns an array of task runs. When `runId` is provided, the array contains that single run. When omitted, returns recent runs for the authenticated account.",
         "parameters": [
           {
             "name": "runId",
@@ -214,18 +214,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Task run(s) retrieved successfully",
+            "description": "Task runs retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/TaskRunResponse"
-                    },
-                    {
-                      "$ref": "#/components/schemas/TaskRunListResponse"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/TaskRunListResponse"
                 }
               }
             }
