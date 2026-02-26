@@ -8471,6 +8471,10 @@
         "type": "object",
         "required": ["status", "taskIdentifier", "createdAt"],
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the task run. Present when listing runs."
+          },
           "status": {
             "type": "string",
             "enum": ["pending", "complete", "failed"],
@@ -8540,56 +8544,9 @@
           "runs": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TaskRunListItem"
+              "$ref": "#/components/schemas/TaskRunResponse"
             },
-            "description": "List of recent task runs for the authenticated account"
-          }
-        }
-      },
-      "TaskRunListItem": {
-        "type": "object",
-        "required": ["id", "status", "taskIdentifier", "createdAt"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The unique identifier of the task run"
-          },
-          "status": {
-            "type": "string",
-            "description": "The current status of the task run (e.g. COMPLETED, FAILED, EXECUTING, QUEUED)"
-          },
-          "taskIdentifier": {
-            "type": "string",
-            "description": "The task type identifier (e.g. 'run-sandbox-command', 'customer-prompt-task')"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "When the task run was created"
-          },
-          "startedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true,
-            "description": "When the task run started executing"
-          },
-          "finishedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true,
-            "description": "When the task run finished"
-          },
-          "durationMs": {
-            "type": "number",
-            "nullable": true,
-            "description": "Total duration in milliseconds"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Tags associated with the task run"
+            "description": "List of recent task runs for the authenticated account. Each item has the same shape as a single TaskRunResponse, with an added `id` field."
           }
         }
       },
