@@ -8462,39 +8462,16 @@
       },
       "TaskRunResponse": {
         "type": "object",
-        "required": ["status", "taskIdentifier", "createdAt"],
+        "description": "Raw Trigger.dev SDK run object. The API passes through the SDK response without field mapping. When listing runs, `output` and `error` are not included.",
+        "required": ["id", "status", "taskIdentifier", "createdAt", "updatedAt", "durationMs", "costInCents", "baseCostInCents", "tags", "isTest", "runCount"],
         "properties": {
           "id": {
             "type": "string",
-            "description": "The unique identifier of the task run. Present when listing runs."
+            "description": "The unique run identifier"
           },
           "status": {
             "type": "string",
-            "description": "Raw Trigger.dev run status. Common values: COMPLETED, FAILED, CRASHED, CANCELED, EXECUTING, QUEUED, SYSTEM_FAILURE, TIMED_OUT, EXPIRED, WAITING, DELAYED"
-          },
-          "data": {
-            "description": "The response data from the completed task. Only present when status is `COMPLETED`. Structure varies based on the task type.",
-            "nullable": true
-          },
-          "error": {
-            "type": "string",
-            "description": "Error message describing why the task run failed. Only present when status is `FAILED`."
-          },
-          "metadata": {
-            "type": "object",
-            "nullable": true,
-            "description": "Structured metadata emitted by the task during execution. Contains `currentStep` (string) and `logs` (string array) for real-time progress tracking.",
-            "properties": {
-              "currentStep": {
-                "type": "string",
-                "description": "The current step the task is executing"
-              },
-              "logs": {
-                "type": "array",
-                "items": { "type": "string" },
-                "description": "Array of log messages emitted during task execution"
-              }
-            }
+            "description": "Raw Trigger.dev run status. Possible values: COMPLETED, FAILED, CRASHED, CANCELED, EXECUTING, QUEUED, SYSTEM_FAILURE, TIMED_OUT, EXPIRED, WAITING, DELAYED, RESCHEDULED, FROZEN, INTERRUPTED, PENDING_VERSION, DEQUEUED"
           },
           "taskIdentifier": {
             "type": "string",
@@ -8503,13 +8480,18 @@
           "createdAt": {
             "type": "string",
             "format": "date-time",
-            "description": "When the task run was created"
+            "description": "When the task run was created (ISO 8601)"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the task run was last updated (ISO 8601)"
           },
           "startedAt": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "When the task run started executing"
+            "description": "When the task run started executing (null if not yet started)"
           },
           "finishedAt": {
             "type": "string",
@@ -8517,10 +8499,103 @@
             "nullable": true,
             "description": "When the task run finished (null if still running)"
           },
+          "delayedUntil": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "If the run is delayed, when it will be eligible to execute"
+          },
+          "queuedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the run was placed in the queue"
+          },
           "durationMs": {
             "type": "number",
+            "description": "Total execution duration in milliseconds"
+          },
+          "costInCents": {
+            "type": "number",
+            "description": "Total cost of the run in cents"
+          },
+          "baseCostInCents": {
+            "type": "number",
+            "description": "Base cost of the run in cents (before any adjustments)"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags associated with this run"
+          },
+          "idempotencyKey": {
+            "type": "string",
             "nullable": true,
-            "description": "Total duration in milliseconds (null if still running)"
+            "description": "Idempotency key used to deduplicate trigger requests"
+          },
+          "ttl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Time-to-live duration string. If the run is not started within this duration, it expires."
+          },
+          "expiredAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the run expired (null if it has not expired)"
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "description": "JSON metadata attached to the run. Structure varies by task; commonly contains `currentStep` (string) and `logs` (string array) for progress tracking."
+          },
+          "output": {
+            "description": "Task output data. Only present when retrieving a single run by runId (not included in list responses). Structure varies by task type.",
+            "nullable": true
+          },
+          "error": {
+            "type": "object",
+            "nullable": true,
+            "description": "Error details if the run failed. Only present when retrieving a single run by runId (not included in list responses).",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Human-readable error message"
+              },
+              "name": {
+                "type": "string",
+                "description": "Error name or type"
+              },
+              "stackTrace": {
+                "type": "string",
+                "description": "Stack trace of the error"
+              }
+            }
+          },
+          "isTest": {
+            "type": "boolean",
+            "description": "Whether this is a test run"
+          },
+          "runCount": {
+            "type": "number",
+            "description": "Number of retry attempts for this run"
+          },
+          "maxAttempts": {
+            "type": "number",
+            "nullable": true,
+            "description": "Maximum number of retry attempts configured for this run"
+          },
+          "version": {
+            "type": "string",
+            "nullable": true,
+            "description": "The deployment version"
+          },
+          "taskVersion": {
+            "type": "string",
+            "nullable": true,
+            "description": "The task code version"
           }
         }
       },
@@ -8538,7 +8613,7 @@
             "items": {
               "$ref": "#/components/schemas/TaskRunResponse"
             },
-            "description": "List of recent task runs for the authenticated account. Each item has the same shape as a single TaskRunResponse, with an added `id` field."
+            "description": "List of recent task runs for the authenticated account. Each item is a raw Trigger.dev SDK run object (same shape as TaskRunResponse, but without `output` and `error` fields)."
           }
         }
       },
