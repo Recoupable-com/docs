@@ -188,31 +188,43 @@
     },
     "/api/tasks/runs": {
       "get": {
-        "description": "Check the status of a triggered task run. Returns the current status and, if complete, the task response data.",
+        "description": "Returns an array of task runs. When `runId` is provided, the array contains that single run. When omitted, returns recent runs for the authenticated account.",
         "parameters": [
           {
             "name": "runId",
             "in": "query",
-            "description": "The unique identifier of the task run to check",
-            "required": true,
+            "description": "The unique identifier of a specific task run to retrieve. If omitted, returns a list of recent runs for the authenticated account.",
+            "required": false,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of runs to return when listing (ignored when runId is provided). Default 20, max 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1,
+              "maximum": 100
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Task run status retrieved successfully",
+            "description": "Task runs retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TaskRunResponse"
+                  "$ref": "#/components/schemas/TaskRunListResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request - missing or invalid runId",
+            "description": "Bad request - invalid parameters",
             "content": {
               "application/json": {
                 "schema": {
@@ -222,7 +234,7 @@
             }
           },
           "404": {
-            "description": "Task run not found",
+            "description": "Task run not found (only when runId is provided)",
             "content": {
               "application/json": {
                 "schema": {
@@ -2050,7 +2062,7 @@
         }
       },
       "post": {
-        "description": "Create a new ephemeral sandbox environment. Optionally executes a command or an OpenCode prompt if provided. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. If no command or prompt is provided, the sandbox is created without triggering any background task. Use the prompt parameter as a shortcut to run `opencode run \"<prompt>\"` in the sandbox. Authentication is handled via the x-api-key header.",
+        "description": "Create a new ephemeral sandbox environment. Optionally executes a command or an OpenCode prompt if provided. Sandboxes are isolated Linux microVMs that can be used to evaluate account-generated code, run AI agent output safely, or execute reproducible tasks. The sandbox will automatically stop after the timeout period. If no command or prompt is provided, the sandbox is created without triggering any background task. Use the prompt parameter as a shortcut to run `opencode run \"<prompt>\"` in the sandbox. For personal API keys, creates a sandbox for the key owner's account. For organization API keys, creates a sandbox for the authenticated account unless account_id is specified. Authentication is handled via the x-api-key header or Authorization Bearer token.",
         "requestBody": {
           "description": "Optional command execution parameters. If command and prompt are both omitted, sandbox is created without running any command. Use prompt as a shortcut for running OpenCode.",
           "required": true,
@@ -2085,6 +2097,16 @@
           },
           "401": {
             "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - account_id is not a member of the organization or personal key tried to use account_id",
             "content": {
               "application/json": {
                 "schema": {
@@ -2245,6 +2267,75 @@
           },
           "401": {
             "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sandboxes/file": {
+      "get": {
+        "description": "Retrieve the raw contents of a file from the authenticated account's sandbox GitHub repository. Resolves the github_repo from the [account's snapshot](/api-reference/sandboxes/list), then fetches the file at the specified path from the repository's main branch. Authentication is handled via the x-api-key header or Authorization Bearer token.",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "description": "The file path within the repository (e.g. \"src/index.ts\" or \"README.md\").",
+            "schema": {
+              "type": "string",
+              "example": "src/index.ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File contents retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxFileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing or invalid path parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - account does not have access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - no snapshot, no github_repo, or file not found in repository",
             "content": {
               "application/json": {
                 "schema": {
@@ -3816,6 +3907,71 @@
           }
         }
       }
+    },
+    "/api/notifications": {
+      "post": {
+        "description": "Send a notification email to the authenticated account's email address via the Resend API. Emails are sent from `Agent by Recoup <agent@recoupable.com>`. The recipient is automatically resolved from the API key or Bearer token. Supports plain text (rendered as Markdown) or raw HTML bodies, optional CC recipients, custom headers, and an optional room_id to include a chat link in the email footer.",
+        "requestBody": {
+          "description": "Notification email payload",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Email delivery failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3833,6 +3989,72 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      },
+      "CreateNotificationRequest": {
+        "type": "object",
+        "required": ["subject"],
+        "properties": {
+          "cc": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "Optional CC email addresses",
+            "example": ["cc@example.com"]
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line",
+            "example": "Weekly Pulse Report"
+          },
+          "text": {
+            "type": "string",
+            "description": "Plain text or Markdown body. Rendered as HTML via Markdown if no `html` is provided.",
+            "example": "# Pulse Report\n\nHere's your weekly summary."
+          },
+          "html": {
+            "type": "string",
+            "description": "Raw HTML body. Takes precedence over `text` when both are provided.",
+            "example": "<h1>Pulse Report</h1><p>Here's your weekly summary.</p>"
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Optional custom email headers"
+          },
+          "room_id": {
+            "type": "string",
+            "description": "Room ID to include a chat link in the email footer"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the account to send the notification for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, sends the notification for the API key's own account."
+          }
+        }
+      },
+      "NotificationResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the notification was sent successfully",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable result message",
+            "example": "Email sent successfully from Agent by Recoup <agent@recoupable.com> to user@example.com."
+          },
+          "id": {
+            "type": "string",
+            "description": "Resend email ID",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
           }
         }
       },
@@ -8054,6 +8276,11 @@
             "minLength": 1,
             "description": "A prompt to pass to OpenCode in the sandbox. When provided, the sandbox will execute `opencode run \"<prompt>\"`. Cannot be used together with command.",
             "example": "create a hello world index.html"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the account to create the sandbox for. Only applicable for organization API keys - org keys can specify an account_id for any account within their organization. If not provided, creates the sandbox for the API key's own account."
           }
         }
       },
@@ -8142,6 +8369,21 @@
             "type": "string",
             "description": "Error message describing what went wrong",
             "example": "Failed to create sandbox"
+          }
+        }
+      },
+      "SandboxFileResponse": {
+        "type": "object",
+        "required": ["status", "content"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Status of the operation"
+          },
+          "content": {
+            "type": "string",
+            "description": "The raw text content of the file"
           }
         }
       },
@@ -8337,62 +8579,198 @@
       },
       "TaskRunResponse": {
         "type": "object",
-        "required": ["status", "taskIdentifier", "createdAt"],
+        "description": "Raw Trigger.dev SDK run object. The API passes through the SDK response without field mapping. See https://trigger.dev/docs/management/runs/retrieve for the full reference. When listing runs, `output`, `error`, `payload`, and `attempts` are not included.",
+        "required": ["id", "status", "taskIdentifier", "createdAt", "updatedAt"],
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique run identifier, prefixed with `run_`"
+          },
           "status": {
             "type": "string",
-            "enum": ["pending", "complete", "failed"],
-            "description": "The current status of the task run"
-          },
-          "data": {
-            "description": "The response data from the completed task. Only present when status is `complete`. Structure varies based on the task type.",
-            "nullable": true
-          },
-          "error": {
-            "type": "string",
-            "description": "Error message describing why the task run failed. Only present when status is `failed`."
-          },
-          "metadata": {
-            "type": "object",
-            "nullable": true,
-            "description": "Structured metadata emitted by the task during execution. Contains `currentStep` (string) and `logs` (string array) for real-time progress tracking.",
-            "properties": {
-              "currentStep": {
-                "type": "string",
-                "description": "The current step the task is executing"
-              },
-              "logs": {
-                "type": "array",
-                "items": { "type": "string" },
-                "description": "Array of log messages emitted during task execution"
-              }
-            }
+            "enum": ["PENDING_VERSION", "DELAYED", "QUEUED", "EXECUTING", "REATTEMPTING", "FROZEN", "COMPLETED", "CANCELED", "FAILED", "CRASHED", "INTERRUPTED", "SYSTEM_FAILURE"],
+            "description": "Current run status"
           },
           "taskIdentifier": {
             "type": "string",
             "description": "The task type identifier (e.g. 'setup-sandbox', 'run-sandbox-command')"
           },
+          "idempotencyKey": {
+            "type": "string",
+            "nullable": true,
+            "description": "Idempotency key used to deduplicate trigger requests"
+          },
+          "version": {
+            "type": "string",
+            "description": "The worker version that executed the run"
+          },
+          "isTest": {
+            "type": "boolean",
+            "description": "Whether this is a test run"
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
-            "description": "When the task run was created"
+            "description": "When the run was created (ISO 8601)"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the run was last updated (ISO 8601)"
           },
           "startedAt": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "When the task run started executing"
+            "description": "When execution started (null if not yet started)"
           },
           "finishedAt": {
             "type": "string",
             "format": "date-time",
             "nullable": true,
-            "description": "When the task run finished (null if still running)"
+            "description": "When the run finished (null if still running)"
+          },
+          "delayedUntil": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "If delayed, when the run becomes eligible to execute"
+          },
+          "ttl": {
+            "description": "Time-to-live. If the run is not started within this duration, it expires.",
+            "nullable": true
+          },
+          "expiredAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the run expired (null if not expired)"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags associated with this run (max 10)"
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "description": "JSON metadata attached to the run"
+          },
+          "costInCents": {
+            "type": "number",
+            "description": "Compute cost of the run in cents"
+          },
+          "baseCostInCents": {
+            "type": "number",
+            "description": "Base invocation cost in cents"
           },
           "durationMs": {
             "type": "number",
+            "description": "Compute duration in milliseconds"
+          },
+          "env": {
+            "type": "object",
+            "description": "Environment the run executed in",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "user": { "type": "string", "nullable": true }
+            }
+          },
+          "depth": {
+            "type": "integer",
+            "description": "Nesting depth for child runs"
+          },
+          "batchId": {
+            "type": "string",
             "nullable": true,
-            "description": "Total duration in milliseconds (null if still running)"
+            "description": "Batch ID if triggered as part of a batch"
+          },
+          "triggerFunction": {
+            "type": "string",
+            "enum": ["trigger", "triggerAndWait", "batchTrigger", "batchTriggerAndWait"],
+            "description": "The function used to trigger this run"
+          },
+          "payload": {
+            "description": "Input payload for the task. Only present when retrieving by runId.",
+            "nullable": true
+          },
+          "output": {
+            "description": "Task output data. Only present when retrieving by runId.",
+            "nullable": true
+          },
+          "error": {
+            "type": "object",
+            "nullable": true,
+            "description": "Error details if the run failed. Only present when retrieving by runId.",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Human-readable error message"
+              },
+              "name": {
+                "type": "string",
+                "description": "Error name or type"
+              },
+              "stackTrace": {
+                "type": "string",
+                "description": "Stack trace"
+              }
+            }
+          },
+          "attempts": {
+            "type": "array",
+            "description": "Attempt history. Only present when retrieving by runId.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "description": "Attempt ID, prefixed with `attempt_`" },
+                "status": { "type": "string", "enum": ["PENDING", "EXECUTING", "PAUSED", "COMPLETED", "FAILED", "CANCELED"] },
+                "createdAt": { "type": "string", "format": "date-time" },
+                "updatedAt": { "type": "string", "format": "date-time" },
+                "startedAt": { "type": "string", "format": "date-time", "nullable": true },
+                "completedAt": { "type": "string", "format": "date-time", "nullable": true },
+                "error": {
+                  "type": "object",
+                  "nullable": true,
+                  "properties": {
+                    "message": { "type": "string" },
+                    "name": { "type": "string" },
+                    "stackTrace": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "schedule": {
+            "type": "object",
+            "nullable": true,
+            "description": "Schedule information if triggered by a schedule. Only present when retrieving by runId."
+          },
+          "relatedRuns": {
+            "type": "object",
+            "nullable": true,
+            "description": "Related run references (root, parent, children). Only present when retrieving by runId."
+          }
+        }
+      },
+      "TaskRunListResponse": {
+        "type": "object",
+        "required": ["status", "runs"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Indicates the request was successful"
+          },
+          "runs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskRunResponse"
+            },
+            "description": "List of recent task runs for the authenticated account. Each item is a raw Trigger.dev SDK run object (same shape as TaskRunResponse, but without `output` and `error` fields)."
           }
         }
       },

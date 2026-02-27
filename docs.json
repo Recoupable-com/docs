@@ -17,7 +17,10 @@
             "group": "Getting started",
             "pages": [
               "index",
-              "quickstart"
+              "quickstart",
+              "mcp",
+              "sdk",
+              "api-reference/sandboxes/create"
             ]
           }
         ]
@@ -195,6 +198,12 @@
             ]
           },
           {
+            "group": "Notifications",
+            "pages": [
+              "api-reference/notifications/create"
+            ]
+          },
+          {
             "group": "Apify",
             "pages": [
               "api-reference/apify/scraper"
@@ -207,7 +216,8 @@
               "api-reference/sandboxes/create",
               "api-reference/sandboxes/snapshot",
               "api-reference/sandboxes/delete",
-              "api-reference/sandboxes/setup"
+              "api-reference/sandboxes/setup",
+              "api-reference/sandboxes/file"
             ]
           },
           {
