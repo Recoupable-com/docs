@@ -3707,7 +3707,7 @@
         }
       }
     },
-    "/api/music/presets": {
+    "/api/songs/analyze/presets": {
       "get": {
         "description": "Lists all available music analysis presets. Each preset is a curated prompt with optimized generation parameters for a specific use case (e.g. catalog metadata enrichment, sync licensing analysis, audience profiling). No authentication required.",
         "responses": {
@@ -3759,16 +3759,16 @@
         }
       }
     },
-    "/api/music/analyze": {
+    "/api/songs/analyze": {
       "post": {
-        "description": "Analyze music using a state-of-the-art Audio Language Model that listens directly to the audio waveform. Unlike text-based AI, this model processes the actual sound — identifying harmony, structure, timbre, lyrics, and cultural context through deep music understanding. Supports audio up to 20 minutes (MP3, WAV, FLAC). Two modes: (1) **Presets** — pass a `preset` name like `catalog_metadata`, `mood_tags`, or `full_report` for structured, optimized output. (2) **Custom prompt** — pass a `prompt` for free-form questions. The `full_report` preset runs all 13 presets in parallel and returns a comprehensive music intelligence report. Use `GET /api/music/presets` to list available presets.",
+        "description": "Analyze music using a state-of-the-art Audio Language Model that listens directly to the audio waveform. Unlike text-based AI, this model processes the actual sound — identifying harmony, structure, timbre, lyrics, and cultural context through deep music understanding. Supports audio up to 20 minutes (MP3, WAV, FLAC). Two modes: (1) **Presets** — pass a `preset` name like `catalog_metadata`, `mood_tags`, or `full_report` for structured, optimized output. (2) **Custom prompt** — pass a `prompt` for free-form questions. The `full_report` preset runs all 13 presets in parallel and returns a comprehensive music intelligence report. Use `GET /api/songs/analyze/presets` to list available presets.",
         "requestBody": {
           "description": "Music analysis request",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/MusicAnalyzeRequest"
+                "$ref": "#/components/schemas/SongAnalyzeRequest"
               }
             }
           }
@@ -3779,7 +3779,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MusicAnalyzeResponse"
+                  "$ref": "#/components/schemas/SongAnalyzeResponse"
                 }
               }
             }
@@ -3789,7 +3789,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MusicErrorResponse"
+                  "$ref": "#/components/schemas/SongAnalyzeErrorResponse"
                 }
               }
             }
@@ -3799,7 +3799,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MusicErrorResponse"
+                  "$ref": "#/components/schemas/SongAnalyzeErrorResponse"
                 }
               }
             }
@@ -3809,7 +3809,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MusicErrorResponse"
+                  "$ref": "#/components/schemas/SongAnalyzeErrorResponse"
                 }
               }
             }
@@ -8936,7 +8936,7 @@
           }
         }
       },
-      "MusicAnalyzeRequest": {
+      "SongAnalyzeRequest": {
         "type": "object",
         "properties": {
           "preset": {
@@ -8990,7 +8990,7 @@
           }
         }
       },
-      "MusicAnalyzeResponse": {
+      "SongAnalyzeResponse": {
         "type": "object",
         "properties": {
           "status": {
@@ -9009,7 +9009,7 @@
           }
         }
       },
-      "MusicErrorResponse": {
+      "SongAnalyzeErrorResponse": {
         "type": "object",
         "properties": {
           "status": {
