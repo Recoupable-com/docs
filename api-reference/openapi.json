@@ -3798,6 +3798,116 @@
         }
       }
     },
+    "/api/songs/analyze/presets": {
+      "get": {
+        "description": "Lists all available music analysis presets. Each preset is a curated prompt with optimized generation parameters for a specific use case (e.g. catalog metadata enrichment, sync licensing analysis, audience profiling). No authentication required.",
+        "responses": {
+          "200": {
+            "description": "Presets listed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["success"]
+                    },
+                    "presets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "Preset identifier to pass in the analyze request"
+                          },
+                          "label": {
+                            "type": "string",
+                            "description": "Human-readable preset name"
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "What this preset does"
+                          },
+                          "requiresAudio": {
+                            "type": "boolean",
+                            "description": "Whether this preset needs an audio_url"
+                          },
+                          "responseFormat": {
+                            "type": "string",
+                            "enum": ["json", "text"],
+                            "description": "Expected response format"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/songs/analyze": {
+      "post": {
+        "description": "Analyze music using a state-of-the-art Audio Language Model that listens directly to the audio waveform. Unlike text-based AI, this model processes the actual sound — identifying harmony, structure, timbre, lyrics, and cultural context through deep music understanding. Supports audio up to 20 minutes (MP3, WAV, FLAC). Two modes: (1) **Presets** — pass a `preset` name like `catalog_metadata`, `mood_tags`, or `full_report` for structured, optimized output. (2) **Custom prompt** — pass a `prompt` for free-form questions. The `full_report` preset runs all 13 presets in parallel and returns a comprehensive music intelligence report. Use `GET /api/songs/analyze/presets` to list available presets.",
+        "requestBody": {
+          "description": "Music analysis request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SongAnalyzeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Music analysis completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongAnalyzeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — missing or invalid fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongAnalyzeErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — invalid or missing API key / Bearer token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongAnalyzeErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error — upstream model unavailable or inference failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongAnalyzeErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/notifications": {
       "post": {
         "description": "Send a notification email to the authenticated account's email address via the Resend API. Emails are sent from `Agent by Recoup <agent@recoupable.com>`. The recipient is automatically resolved from the API key or Bearer token. Supports plain text (rendered as Markdown) or raw HTML bodies, optional CC recipients, custom headers, and an optional room_id to include a chat link in the email footer.",
@@ -3849,6 +3959,13 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
                 }
               }
             }
@@ -9194,6 +9311,93 @@
             "type": "integer",
             "description": "Percentage savings between the cheapest and most expensive workflows",
             "example": 81
+          }
+        }
+      },
+      "SongAnalyzeRequest": {
+        "type": "object",
+        "properties": {
+          "preset": {
+            "type": "string",
+            "enum": ["catalog_metadata", "mood_tags", "lyric_transcription", "mix_feedback", "song_description", "music_theory", "similar_artists", "sample_detection", "sync_brief_match", "audience_profile", "content_advisory", "playlist_pitch", "artist_development_notes", "full_report"],
+            "description": "Name of a curated analysis preset. Use instead of prompt for structured, optimized output. The 'full_report' preset runs all 13 presets in parallel and returns a comprehensive report.",
+            "example": "catalog_metadata"
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 24000,
+            "description": "Text prompt or question about the music",
+            "example": "Describe the genre, tempo, and mood of this track."
+          },
+          "audio_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public URL to an audio file (MP3, WAV, or FLAC — up to 20 minutes)",
+            "example": "https://example.com/song.mp3"
+          },
+          "max_new_tokens": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2048,
+            "default": 512,
+            "description": "Maximum number of tokens to generate",
+            "example": 512
+          },
+          "temperature": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2,
+            "default": 1.0,
+            "description": "Controls output creativity — higher values produce more varied responses",
+            "example": 0.7
+          },
+          "top_p": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 1.0,
+            "description": "Nucleus sampling probability cutoff",
+            "example": 0.9
+          },
+          "do_sample": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable sampling (set true when using temperature or top_p)",
+            "example": false
+          }
+        }
+      },
+      "SongAnalyzeResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["success"],
+            "description": "Request status"
+          },
+          "response": {
+            "type": "string",
+            "description": "The model's text response about the music"
+          },
+          "elapsed_seconds": {
+            "type": "number",
+            "format": "float",
+            "description": "Inference time in seconds"
+          }
+        }
+      },
+      "SongAnalyzeErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Error status"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
           }
         }
       }
