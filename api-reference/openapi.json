@@ -9324,7 +9324,7 @@
           "preset": {
             "type": "string",
             "enum": ["catalog_metadata", "mood_tags", "lyric_transcription", "mix_feedback", "song_description", "music_theory", "similar_artists", "sample_detection", "sync_brief_match", "audience_profile", "content_advisory", "playlist_pitch", "artist_development_notes", "full_report"],
-            "description": "Name of a curated analysis preset. Use instead of prompt for structured, optimized output. The 'full_report' preset runs all 13 presets in parallel and returns a comprehensive report.",
+            "description": "Name of a curated analysis preset. Use instead of prompt for structured, optimized output. The 'full_report' preset runs all 13 presets in parallel and returns a comprehensive report. See [List Analyze Presets](/api-reference/songs/analyze-presets) for the full list of available presets.",
             "example": "catalog_metadata"
           },
           "prompt": {
