@@ -9319,20 +9319,7 @@
       },
       "SongAnalyzeRequest": {
         "type": "object",
-        "oneOf": [
-          {
-            "required": ["preset"],
-            "not": {
-              "required": ["prompt"]
-            }
-          },
-          {
-            "required": ["prompt"],
-            "not": {
-              "required": ["preset"]
-            }
-          }
-        ],
+        "description": "Provide exactly one of `preset` or `prompt`. Use `preset` for structured analysis workflows, or `prompt` for free-form questions.",
         "properties": {
           "preset": {
             "type": "string",
