@@ -3800,8 +3800,7 @@
     },
     "/api/songs/analyze/presets": {
       "get": {
-        "description": "Lists all available music analysis presets. Each preset is a curated prompt with optimized generation parameters for a specific use case (e.g. catalog metadata enrichment, sync licensing analysis, audience profiling). No authentication required.",
-        "security": [],
+        "description": "Lists all available music analysis presets. Each preset is a curated prompt with optimized generation parameters for a specific use case (e.g. catalog metadata enrichment, sync licensing analysis, audience profiling). Requires authentication via API key or Bearer token.",
         "responses": {
           "200": {
             "description": "Presets listed successfully",
@@ -3844,6 +3843,16 @@
                       }
                     }
                   }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — invalid or missing API key / Bearer token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SongAnalyzeErrorResponse"
                 }
               }
             }
