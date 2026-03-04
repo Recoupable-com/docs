@@ -3801,6 +3801,14 @@
     "/api/songs/analyze/presets": {
       "get": {
         "description": "Lists all available music analysis presets. Each preset is a curated prompt with optimized generation parameters for a specific use case (e.g. catalog metadata enrichment, sync licensing analysis, audience profiling). Requires authentication via API key or Bearer token.",
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Presets listed successfully",
@@ -3863,6 +3871,14 @@
     "/api/songs/analyze": {
       "post": {
         "description": "Analyze music using a state-of-the-art Audio Language Model that listens directly to the audio waveform. Unlike text-based AI, this model processes the actual sound — identifying harmony, structure, timbre, lyrics, and cultural context through deep music understanding. Supports audio up to 20 minutes (MP3, WAV, FLAC). Two modes: (1) **Presets** — pass a `preset` name like `catalog_metadata`, `mood_tags`, or `full_report` for structured, optimized output. (2) **Custom prompt** — pass a `prompt` for free-form questions. The `full_report` preset runs all 13 presets in parallel and returns a comprehensive music intelligence report. Use `GET /api/songs/analyze/presets` to list available presets.",
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "description": "Music analysis request",
           "required": true,
@@ -9406,6 +9422,13 @@
             "type": "string",
             "enum": ["error"],
             "description": "Error status"
+          },
+          "missing_fields": {
+            "type": "array",
+            "description": "Path to the first invalid or missing field when validation fails",
+            "items": {
+              "type": "string"
+            }
           },
           "error": {
             "type": "string",
