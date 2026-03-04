@@ -9380,9 +9380,17 @@
             "enum": ["success"],
             "description": "Request status"
           },
-          "response": {
+          "preset": {
             "type": "string",
-            "description": "The model's text response about the music"
+            "description": "Preset used for analysis, when applicable",
+            "example": "catalog_metadata"
+          },
+          "response": {
+            "description": "Model output for single-preset or custom-prompt analysis. May be plain text or structured JSON depending on the preset."
+          },
+          "report": {
+            "type": "object",
+            "description": "Full report payload returned only when using the `full_report` preset"
           },
           "elapsed_seconds": {
             "type": "number",
