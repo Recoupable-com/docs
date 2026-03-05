@@ -3492,67 +3492,9 @@
         }
       }
     },
-    "/api/video/render": {
-      "post": {
-        "description": "Trigger a server-side video render. Returns a run ID that can be polled via [GET /api/tasks/runs](/api-reference/tasks/runs) to check status and retrieve the rendered video URL when complete. Authentication is handled via the x-api-key header or Authorization Bearer token.",
-        "requestBody": {
-          "description": "Video render configuration including the composition ID, input props, and output settings",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RenderVideoRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Render task triggered successfully. Use the returned runId with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for completion.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RenderVideoResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - missing or invalid fields",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RenderVideoErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - invalid or missing API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RenderVideoErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error - failed to trigger render task",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RenderVideoErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/content/create": {
       "post": {
-        "description": "Trigger the content creation pipeline for an artist. Provide either `artist_account_id` or `artist_slug` to identify the target artist. Validates the artist has all required files (face guide, songs, config), then triggers a background task that generates a short-form video. Returns a run ID that can be polled via [GET /api/tasks/runs](/api-reference/tasks/runs) to check progress and retrieve the output video path when complete. Authentication is handled via the x-api-key header.",
+        "description": "Trigger the content creation pipeline for an artist. Provide either `artist_account_id` or `artist_slug` to identify the target artist. Validates the artist has all required files (face guide, songs, config), then triggers a background task that generates a short-form video. Returns `runIds` — an array of run IDs that can each be polled via [GET /api/tasks/runs](/api-reference/tasks/runs) to check progress and retrieve the output video path when complete. Authentication is handled via the x-api-key header.",
         "requestBody": {
           "description": "Content creation parameters including the target artist and optional template/workflow settings",
           "required": true,
@@ -3566,7 +3508,7 @@
         },
         "responses": {
           "202": {
-            "description": "Pipeline triggered successfully. Use the returned runId with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for progress.",
+            "description": "Pipeline triggered successfully. Returns `runIds` — an array of run IDs. Poll each via [GET /api/tasks/runs](/api-reference/tasks/runs) to check progress.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8820,106 +8762,6 @@
           }
         }
       },
-      "RenderVideoRequest": {
-        "type": "object",
-        "required": ["compositionId"],
-        "properties": {
-          "compositionId": {
-            "type": "string",
-            "description": "The composition ID to render (e.g., \"SocialPost\", \"UpdatesAnnouncement\", \"CommitShowcase\")",
-            "example": "SocialPost"
-          },
-          "inputProps": {
-            "type": "object",
-            "additionalProperties": true,
-            "description": "Input props to pass to the composition. Structure depends on the composition being rendered.",
-            "default": {},
-            "example": {
-              "videoUrl": "https://fal.media/example.mp4",
-              "captionText": "my brain has 100 tabs open",
-              "hasAudio": false
-            }
-          },
-          "width": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 3840,
-            "default": 720,
-            "description": "Output video width in pixels",
-            "example": 720
-          },
-          "height": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 3840,
-            "default": 1280,
-            "description": "Output video height in pixels",
-            "example": 1280
-          },
-          "fps": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 60,
-            "default": 30,
-            "description": "Frames per second for the output video",
-            "example": 30
-          },
-          "durationInFrames": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 1800,
-            "default": 240,
-            "description": "Total number of frames to render. At 30 fps, 240 frames = 8 seconds.",
-            "example": 240
-          },
-          "codec": {
-            "type": "string",
-            "enum": ["h264", "h265", "vp8", "vp9"],
-            "default": "h264",
-            "description": "Video codec for the output file",
-            "example": "h264"
-          }
-        }
-      },
-      "RenderVideoResponse": {
-        "type": "object",
-        "required": ["status", "runId"],
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": ["processing"],
-            "description": "Indicates the render task has been triggered and is processing"
-          },
-          "runId": {
-            "type": "string",
-            "description": "The Trigger.dev run ID for the render task. Use this with [GET /api/tasks/runs](/api-reference/tasks/runs) to check the status and retrieve the rendered video URL when complete.",
-            "example": "run_abc123def456"
-          }
-        }
-      },
-      "RenderVideoErrorResponse": {
-        "type": "object",
-        "required": ["status", "error"],
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": ["error"],
-            "description": "Indicates the request failed"
-          },
-          "error": {
-            "type": "string",
-            "description": "Error message describing what went wrong",
-            "example": "compositionId is required"
-          },
-          "missing_fields": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "List of missing or invalid fields, if applicable"
-          }
-        }
-      },
       "ContentCreateRequest": {
         "type": "object",
         "description": "Parameters for triggering the content creation pipeline. Provide either `artist_account_id` or `artist_slug` to identify the artist — at least one is required. If both are provided, `artist_account_id` takes precedence.",
@@ -8946,6 +8788,27 @@
             "description": "Whether to generate video with lip-synced audio. When `true`, uses an audio-to-video model that bakes audio into the video for lip movement. When `false`, generates video from the image alone and overlays audio in post. If omitted, the template's default workflow is used.",
             "example": false
           },
+          "caption_length": {
+            "type": "string",
+            "enum": ["short", "medium", "long"],
+            "description": "Controls the length of the generated caption text. `short` produces 1-2 lines (punchy, minimal). `medium` produces 1-2 sentences. `long` produces a paragraph (stream of consciousness style). Defaults to `short`.",
+            "default": "short",
+            "example": "short"
+          },
+          "upscale": {
+            "type": "boolean",
+            "description": "Whether to upscale the generated image and video using fal.ai SeedVR2 for higher resolution and detail. Adds approximately 2 minutes to the pipeline. Defaults to `false`.",
+            "default": false,
+            "example": false
+          },
+          "batch": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "Number of videos to generate in parallel. Each video independently selects a random reference image, song clip, and mood variation. The response always returns `runIds` as an array. Defaults to `1`.",
+            "default": 1,
+            "example": 1
+          },
           "account_id": {
             "type": "string",
             "format": "uuid",
@@ -8956,18 +8819,19 @@
       },
       "ContentCreateResponse": {
         "type": "object",
-        "required": ["runId", "status", "artist", "template"],
-        "description": "Confirmation that the content creation pipeline has been triggered.",
+        "required": ["runIds", "status", "artist", "template"],
+        "description": "Confirmation that the content creation pipeline has been triggered. Always returns `runIds` as an array — even for a single run, it contains one element.",
         "properties": {
-          "runId": {
-            "type": "string",
-            "description": "The run ID for the background pipeline task. Use this with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for progress and retrieve the output video path when complete.",
-            "example": "run_abc123def456"
+          "runIds": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Array of run IDs. Poll each via [GET /api/tasks/runs](/api-reference/tasks/runs). For single runs this contains one element.",
+            "example": ["run_abc123def456"]
           },
           "status": {
             "type": "string",
             "enum": ["triggered"],
-            "description": "Indicates the pipeline has been triggered and is starting"
+            "description": "Indicates the pipeline has been triggered"
           },
           "artist": {
             "type": "string",
@@ -8976,13 +8840,18 @@
           },
           "template": {
             "type": "string",
-            "description": "The template being used for this run",
-            "example": "artist-caption-stage"
+            "description": "The template being used",
+            "example": "artist-caption-bedroom"
           },
           "lipsync": {
             "type": "boolean",
-            "description": "Whether lip-sync mode is enabled for this run",
+            "description": "Whether lip-sync mode is enabled",
             "example": false
+          },
+          "failed": {
+            "type": "integer",
+            "description": "Number of triggers that failed. Only present when some triggers failed.",
+            "example": 0
           }
         }
       },
