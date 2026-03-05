@@ -8818,57 +8818,89 @@
         }
       },
       "ContentCreateResponse": {
-        "type": "object",
-        "required": ["status", "artist", "template"],
-        "description": "Confirmation that the content creation pipeline has been triggered. Single mode returns `runId` (string). Batch mode (`batch` > 1) returns `runIds` (array), `batch`, and `triggered` instead.",
-        "properties": {
-          "runId": {
-            "type": "string",
-            "description": "The run ID for a single pipeline task. Use this with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for progress. Only present when `batch` is 1.",
-            "example": "run_abc123def456"
+        "description": "Confirmation that the content creation pipeline has been triggered. Single mode returns `runId`. Batch mode returns `runIds`, `batch`, and `triggered`.",
+        "oneOf": [
+          {
+            "title": "Single Run Response",
+            "type": "object",
+            "required": ["runId", "status", "artist", "template"],
+            "properties": {
+              "runId": {
+                "type": "string",
+                "description": "The run ID for the pipeline task. Use with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for progress.",
+                "example": "run_abc123def456"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["triggered"],
+                "description": "Indicates the pipeline has been triggered"
+              },
+              "artist": {
+                "type": "string",
+                "description": "The artist slug",
+                "example": "gatsby-grace"
+              },
+              "template": {
+                "type": "string",
+                "description": "The template used",
+                "example": "artist-caption-bedroom"
+              },
+              "lipsync": {
+                "type": "boolean",
+                "description": "Whether lip-sync mode is enabled",
+                "example": false
+              }
+            }
           },
-          "runIds": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "Array of run IDs for batch mode. Each ID can be polled individually via [GET /api/tasks/runs](/api-reference/tasks/runs). Only present when `batch` > 1.",
-            "example": ["run_abc123", "run_def456", "run_ghi789"]
-          },
-          "status": {
-            "type": "string",
-            "enum": ["triggered"],
-            "description": "Indicates the pipeline has been triggered and is starting"
-          },
-          "batch": {
-            "type": "integer",
-            "description": "Number of videos requested. Only present when `batch` > 1.",
-            "example": 3
-          },
-          "triggered": {
-            "type": "integer",
-            "description": "Number of videos successfully triggered. May be less than `batch` if some triggers failed. Only present when `batch` > 1.",
-            "example": 3
-          },
-          "failed": {
-            "type": "integer",
-            "description": "Number of triggers that failed. Only present when `batch` > 1 and some triggers failed.",
-            "example": 0
-          },
-          "artist": {
-            "type": "string",
-            "description": "The artist slug the pipeline is running for",
-            "example": "gatsby-grace"
-          },
-          "template": {
-            "type": "string",
-            "description": "The template being used for this run",
-            "example": "artist-caption-stage"
-          },
-          "lipsync": {
-            "type": "boolean",
-            "description": "Whether lip-sync mode is enabled for this run",
-            "example": false
+          {
+            "title": "Batch Run Response",
+            "type": "object",
+            "required": ["runIds", "status", "batch", "triggered", "artist", "template"],
+            "properties": {
+              "runIds": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Array of run IDs. Each can be polled individually via [GET /api/tasks/runs](/api-reference/tasks/runs).",
+                "example": ["run_abc123", "run_def456", "run_ghi789"]
+              },
+              "status": {
+                "type": "string",
+                "enum": ["triggered"],
+                "description": "Indicates the pipeline has been triggered"
+              },
+              "batch": {
+                "type": "integer",
+                "description": "Number of videos requested",
+                "example": 3
+              },
+              "triggered": {
+                "type": "integer",
+                "description": "Number of videos successfully triggered",
+                "example": 3
+              },
+              "failed": {
+                "type": "integer",
+                "description": "Number of triggers that failed. Only present when some triggers failed.",
+                "example": 0
+              },
+              "artist": {
+                "type": "string",
+                "description": "The artist slug",
+                "example": "gatsby-grace"
+              },
+              "template": {
+                "type": "string",
+                "description": "The template used",
+                "example": "artist-caption-bedroom"
+              },
+              "lipsync": {
+                "type": "boolean",
+                "description": "Whether lip-sync mode is enabled",
+                "example": false
+              }
+            }
           }
-        }
+        ]
       },
       "ContentCreateErrorResponse": {
         "type": "object",
