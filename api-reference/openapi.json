@@ -3508,7 +3508,7 @@
         },
         "responses": {
           "202": {
-            "description": "Pipeline triggered successfully. Use the returned runId with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for progress.",
+            "description": "Pipeline triggered successfully. For single runs, use the returned `runId` with [GET /api/tasks/runs](/api-reference/tasks/runs) to poll for progress. For batch runs (`batch` > 1), use each `runIds` entry to poll individually.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8820,7 +8820,7 @@
       "ContentCreateResponse": {
         "type": "object",
         "required": ["status", "artist", "template"],
-        "description": "Confirmation that the content creation pipeline has been triggered. For single runs, `runId` is returned. For batch runs (`batch` > 1), `runIds` is returned instead.",
+        "description": "Confirmation that the content creation pipeline has been triggered. Single mode returns `runId` (string). Batch mode (`batch` > 1) returns `runIds` (array), `batch`, and `triggered` instead.",
         "properties": {
           "runId": {
             "type": "string",
