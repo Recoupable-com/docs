@@ -8805,7 +8805,7 @@
             "type": "integer",
             "minimum": 1,
             "maximum": 30,
-            "description": "Number of videos to generate in parallel. Each video independently selects a random reference image, song clip, and mood variation. When `batch` > 1, the response returns `runIds` (array) instead of `runId` (string). Defaults to `1`.",
+            "description": "Number of videos to generate in parallel. Each video independently selects a random reference image, song clip, and mood variation. The response always returns `runIds` as an array. Defaults to `1`.",
             "default": 1,
             "example": 1
           },
