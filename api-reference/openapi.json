@@ -2381,7 +2381,13 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["Top", "Latest", "Photos", "Videos", "Users"],
+              "enum": [
+                "Top",
+                "Latest",
+                "Photos",
+                "Videos",
+                "Users"
+              ],
               "default": "Latest"
             }
           }
@@ -3227,7 +3233,10 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["true", "false"]
+              "enum": [
+                "true",
+                "false"
+              ]
             }
           }
         ],
@@ -3761,7 +3770,9 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "enum": ["success"]
+                      "enum": [
+                        "success"
+                      ]
                     },
                     "presets": {
                       "type": "array",
@@ -3786,7 +3797,10 @@
                           },
                           "responseFormat": {
                             "type": "string",
-                            "enum": ["json", "text"],
+                            "enum": [
+                              "json",
+                              "text"
+                            ],
                             "description": "Expected response format"
                           }
                         }
@@ -3933,6 +3947,42 @@
           }
         }
       }
+    },
+    "/api/admins": {
+      "get": {
+        "description": "Check if the authenticated account is a Recoup admin. An account is considered an admin if it is a member of the Recoup organization. No input parameters required — authentication is performed via the x-api-key or Authorization header.",
+        "parameters": [],
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Admin status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckAdminResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3955,7 +4005,9 @@
       },
       "CreateNotificationRequest": {
         "type": "object",
-        "required": ["subject"],
+        "required": [
+          "subject"
+        ],
         "properties": {
           "cc": {
             "type": "array",
@@ -3964,7 +4016,9 @@
               "format": "email"
             },
             "description": "Optional CC email addresses",
-            "example": ["cc@example.com"]
+            "example": [
+              "cc@example.com"
+            ]
           },
           "subject": {
             "type": "string",
@@ -4021,7 +4075,11 @@
       },
       "ConnectorInfo": {
         "type": "object",
-        "required": ["slug", "name", "isConnected"],
+        "required": [
+          "slug",
+          "name",
+          "isConnected"
+        ],
         "properties": {
           "slug": {
             "type": "string",
@@ -4043,7 +4101,10 @@
       },
       "ConnectorsResponse": {
         "type": "object",
-        "required": ["success", "connectors"],
+        "required": [
+          "success",
+          "connectors"
+        ],
         "properties": {
           "success": {
             "type": "boolean"
@@ -4059,7 +4120,9 @@
       },
       "AuthorizeConnectorRequest": {
         "type": "object",
-        "required": ["connector"],
+        "required": [
+          "connector"
+        ],
         "properties": {
           "connector": {
             "type": "string",
@@ -4079,14 +4142,20 @@
       },
       "AuthorizeConnectorResponse": {
         "type": "object",
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "properties": {
           "success": {
             "type": "boolean"
           },
           "data": {
             "type": "object",
-            "required": ["connector", "redirectUrl"],
+            "required": [
+              "connector",
+              "redirectUrl"
+            ],
             "properties": {
               "connector": {
                 "type": "string",
@@ -4103,7 +4172,9 @@
       },
       "DisconnectConnectorRequest": {
         "type": "object",
-        "required": ["connected_account_id"],
+        "required": [
+          "connected_account_id"
+        ],
         "properties": {
           "connected_account_id": {
             "type": "string",
@@ -4118,7 +4189,9 @@
       },
       "DisconnectConnectorResponse": {
         "type": "object",
-        "required": ["success"],
+        "required": [
+          "success"
+        ],
         "properties": {
           "success": {
             "type": "boolean"
@@ -4131,7 +4204,9 @@
       },
       "CompactChatsRequest": {
         "type": "object",
-        "required": ["chatId"],
+        "required": [
+          "chatId"
+        ],
         "properties": {
           "chatId": {
             "type": "array",
@@ -4150,7 +4225,9 @@
       },
       "CompactChatsResponse": {
         "type": "object",
-        "required": ["chats"],
+        "required": [
+          "chats"
+        ],
         "properties": {
           "chats": {
             "type": "array",
@@ -4163,7 +4240,10 @@
       },
       "CompactedChat": {
         "type": "object",
-        "required": ["chatId", "compacted"],
+        "required": [
+          "chatId",
+          "compacted"
+        ],
         "properties": {
           "chatId": {
             "type": "string",
@@ -4178,11 +4258,17 @@
       },
       "TasksResponse": {
         "type": "object",
-        "required": ["status", "tasks"],
+        "required": [
+          "status",
+          "tasks"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the request"
           },
           "tasks": {
@@ -4242,7 +4328,13 @@
       },
       "CreateTaskRequest": {
         "type": "object",
-        "required": ["title", "prompt", "schedule", "account_id", "artist_account_id"],
+        "required": [
+          "title",
+          "prompt",
+          "schedule",
+          "account_id",
+          "artist_account_id"
+        ],
         "properties": {
           "title": {
             "type": "string",
@@ -4275,7 +4367,9 @@
       },
       "UpdateTaskRequest": {
         "type": "object",
-        "required": ["id"],
+        "required": [
+          "id"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -4320,7 +4414,9 @@
       },
       "DeleteTaskRequest": {
         "type": "object",
-        "required": ["id"],
+        "required": [
+          "id"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -4332,11 +4428,16 @@
       },
       "DeleteTaskResponse": {
         "type": "object",
-        "required": ["status"],
+        "required": [
+          "status"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the delete operation"
           },
           "error": {
@@ -4406,11 +4507,16 @@
       },
       "GetAccountResponse": {
         "type": "object",
-        "required": ["status", "account"],
+        "required": [
+          "status",
+          "account"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "account": {
@@ -4421,11 +4527,16 @@
       },
       "GetAccountIdResponse": {
         "type": "object",
-        "required": ["status", "accountId"],
+        "required": [
+          "status",
+          "accountId"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "accountId": {
@@ -4437,11 +4548,16 @@
       },
       "AccountErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -4467,7 +4583,9 @@
       },
       "UpdateAccountRequest": {
         "type": "object",
-        "required": ["accountId"],
+        "required": [
+          "accountId"
+        ],
         "properties": {
           "accountId": {
             "type": "string",
@@ -4514,7 +4632,10 @@
       },
       "AddArtistToAccountRequest": {
         "type": "object",
-        "required": ["email", "artistId"],
+        "required": [
+          "email",
+          "artistId"
+        ],
         "properties": {
           "email": {
             "type": "string",
@@ -4530,7 +4651,9 @@
       },
       "AccountDataResponse": {
         "type": "object",
-        "required": ["data"],
+        "required": [
+          "data"
+        ],
         "properties": {
           "data": {
             "$ref": "#/components/schemas/AccountData",
@@ -4600,11 +4723,15 @@
       },
       "AddArtistSuccessResponse": {
         "type": "object",
-        "required": ["success"],
+        "required": [
+          "success"
+        ],
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true],
+            "enum": [
+              true
+            ],
             "description": "Indicates the artist was successfully added"
           }
         }
@@ -4663,11 +4790,17 @@
       },
       "ArtistsResponse": {
         "type": "object",
-        "required": ["status", "artists"],
+        "required": [
+          "status",
+          "artists"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the request"
           },
           "artists": {
@@ -4685,11 +4818,16 @@
       },
       "ArtistsErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -4700,7 +4838,9 @@
       },
       "CreateArtistRequest": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -4721,7 +4861,9 @@
       },
       "CreateArtistResponse": {
         "type": "object",
-        "required": ["artist"],
+        "required": [
+          "artist"
+        ],
         "properties": {
           "artist": {
             "$ref": "#/components/schemas/CreatedArtist"
@@ -4824,7 +4966,9 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "missing_fields": {
@@ -4900,11 +5044,17 @@
       },
       "ArtistSegmentsResponse": {
         "type": "object",
-        "required": ["status", "segments", "pagination"],
+        "required": [
+          "status",
+          "segments",
+          "pagination"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "segments": {
@@ -4922,11 +5072,16 @@
       },
       "ArtistSegmentsErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -5011,11 +5166,17 @@
       },
       "ArtistSocialsResponse": {
         "type": "object",
-        "required": ["status", "socials", "pagination"],
+        "required": [
+          "status",
+          "socials",
+          "pagination"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "socials": {
@@ -5033,11 +5194,16 @@
       },
       "ArtistSocialsErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -5048,7 +5214,9 @@
       },
       "ArtistSocialsScrapeRequest": {
         "type": "object",
-        "required": ["artist_account_id"],
+        "required": [
+          "artist_account_id"
+        ],
         "properties": {
           "artist_account_id": {
             "type": "string",
@@ -5081,7 +5249,9 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -5092,7 +5262,10 @@
       },
       "ApifyScraperInProgressResponse": {
         "type": "object",
-        "required": ["status", "datasetId"],
+        "required": [
+          "status",
+          "datasetId"
+        ],
         "description": "Response when the Apify run is still in progress",
         "properties": {
           "status": {
@@ -5109,7 +5282,11 @@
       },
       "ApifyScraperCompletedResponse": {
         "type": "object",
-        "required": ["status", "datasetId", "data"],
+        "required": [
+          "status",
+          "datasetId",
+          "data"
+        ],
         "description": "Response when the Apify run has completed successfully",
         "properties": {
           "status": {
@@ -5145,12 +5322,17 @@
       },
       "ApifyScraperErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "description": "Error response from the Apify scraper results endpoint",
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status indicating an error occurred"
           },
           "message": {
@@ -5254,11 +5436,16 @@
       },
       "ArtistProfileResponse": {
         "type": "object",
-        "required": ["status", "profile"],
+        "required": [
+          "status",
+          "profile"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "profile": {
@@ -5269,11 +5456,16 @@
       },
       "ArtistProfileErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -5316,11 +5508,16 @@
       },
       "GetChatsResponse": {
         "type": "object",
-        "required": ["status", "chats"],
+        "required": [
+          "status",
+          "chats"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "chats": {
@@ -5334,11 +5531,16 @@
       },
       "GetChatsErrorResponse": {
         "type": "object",
-        "required": ["status", "error"],
+        "required": [
+          "status",
+          "error"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "error": {
@@ -5373,11 +5575,16 @@
       },
       "CreateChatResponse": {
         "type": "object",
-        "required": ["status", "chat"],
+        "required": [
+          "status",
+          "chat"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "chat": {
@@ -5388,11 +5595,16 @@
       },
       "CreateChatErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -5403,7 +5615,10 @@
       },
       "UpdateChatRequest": {
         "type": "object",
-        "required": ["chatId", "topic"],
+        "required": [
+          "chatId",
+          "topic"
+        ],
         "properties": {
           "chatId": {
             "type": "string",
@@ -5420,11 +5635,16 @@
       },
       "UpdateChatResponse": {
         "type": "object",
-        "required": ["status", "chat"],
+        "required": [
+          "status",
+          "chat"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "chat": {
@@ -5435,11 +5655,16 @@
       },
       "UpdateChatErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -5458,7 +5683,11 @@
           },
           "role": {
             "type": "string",
-            "enum": ["user", "assistant", "system"],
+            "enum": [
+              "user",
+              "assistant",
+              "system"
+            ],
             "description": "The role of the message sender"
           },
           "content": {
@@ -5498,7 +5727,9 @@
               "type": "string"
             },
             "description": "Array of tool names to exclude from execution",
-            "example": ["create_scheduled_actions"]
+            "example": [
+              "create_scheduled_actions"
+            ]
           },
           "roomId": {
             "type": "string",
@@ -5517,7 +5748,11 @@
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["text", "tool-call", "tool-result"],
+            "enum": [
+              "text",
+              "tool-call",
+              "tool-result"
+            ],
             "description": "The type of content part"
           },
           "text": {
@@ -5613,11 +5848,16 @@
       },
       "ChatGenerateErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -5657,7 +5897,9 @@
               "type": "string"
             },
             "description": "Array of tool names to exclude from execution",
-            "example": ["create_scheduled_actions"]
+            "example": [
+              "create_scheduled_actions"
+            ]
           },
           "roomId": {
             "type": "string",
@@ -5672,11 +5914,16 @@
       },
       "ChatStreamErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -5711,11 +5958,16 @@
       },
       "GetOrganizationsResponse": {
         "type": "object",
-        "required": ["status", "organizations"],
+        "required": [
+          "status",
+          "organizations"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "organizations": {
@@ -5729,11 +5981,16 @@
       },
       "OrganizationsErrorResponse": {
         "type": "object",
-        "required": ["status", "message"],
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -5744,7 +6001,10 @@
       },
       "CreateOrganizationRequest": {
         "type": "object",
-        "required": ["name", "accountId"],
+        "required": [
+          "name",
+          "accountId"
+        ],
         "properties": {
           "name": {
             "type": "string",
@@ -5775,11 +6035,16 @@
       },
       "CreateOrganizationResponse": {
         "type": "object",
-        "required": ["status", "organization"],
+        "required": [
+          "status",
+          "organization"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "organization": {
@@ -5809,7 +6074,9 @@
       },
       "CreateWorkspaceResponse": {
         "type": "object",
-        "required": ["workspace"],
+        "required": [
+          "workspace"
+        ],
         "properties": {
           "workspace": {
             "type": "object",
@@ -5834,7 +6101,10 @@
       },
       "AddArtistToOrganizationRequest": {
         "type": "object",
-        "required": ["artistId", "organizationId"],
+        "required": [
+          "artistId",
+          "organizationId"
+        ],
         "properties": {
           "artistId": {
             "type": "string",
@@ -5852,11 +6122,16 @@
       },
       "AddArtistToOrganizationResponse": {
         "type": "object",
-        "required": ["status", "id"],
+        "required": [
+          "status",
+          "id"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "id": {
@@ -5949,7 +6224,9 @@
           },
           "type": {
             "type": "string",
-            "enum": ["artist"],
+            "enum": [
+              "artist"
+            ],
             "description": "The object type, always 'artist'"
           },
           "uri": {
@@ -5978,7 +6255,9 @@
           },
           "type": {
             "type": "string",
-            "enum": ["artist"],
+            "enum": [
+              "artist"
+            ],
             "description": "The object type, always 'artist'"
           },
           "uri": {
@@ -6066,7 +6345,11 @@
         "properties": {
           "album_type": {
             "type": "string",
-            "enum": ["album", "single", "compilation"],
+            "enum": [
+              "album",
+              "single",
+              "compilation"
+            ],
             "description": "The type of the album"
           },
           "total_tracks": {
@@ -6108,7 +6391,11 @@
           },
           "release_date_precision": {
             "type": "string",
-            "enum": ["year", "month", "day"],
+            "enum": [
+              "year",
+              "month",
+              "day"
+            ],
             "description": "The precision with which release_date value is known"
           },
           "restrictions": {
@@ -6123,7 +6410,9 @@
           },
           "type": {
             "type": "string",
-            "enum": ["album"],
+            "enum": [
+              "album"
+            ],
             "description": "The object type, always 'album'"
           },
           "uri": {
@@ -6139,7 +6428,12 @@
           },
           "album_group": {
             "type": "string",
-            "enum": ["album", "single", "compilation", "appears_on"],
+            "enum": [
+              "album",
+              "single",
+              "compilation",
+              "appears_on"
+            ],
             "description": "The field to distinguish albums by various groups"
           }
         }
@@ -6281,7 +6575,9 @@
           },
           "type": {
             "type": "string",
-            "enum": ["track"],
+            "enum": [
+              "track"
+            ],
             "description": "The object type, always 'track'"
           },
           "uri": {
@@ -6377,7 +6673,9 @@
           },
           "type": {
             "type": "string",
-            "enum": ["track"]
+            "enum": [
+              "track"
+            ]
           },
           "uri": {
             "type": "string",
@@ -6445,7 +6743,11 @@
         "properties": {
           "album_type": {
             "type": "string",
-            "enum": ["album", "single", "compilation"],
+            "enum": [
+              "album",
+              "single",
+              "compilation"
+            ],
             "description": "The type of the album"
           },
           "total_tracks": {
@@ -6487,7 +6789,11 @@
           },
           "release_date_precision": {
             "type": "string",
-            "enum": ["year", "month", "day"],
+            "enum": [
+              "year",
+              "month",
+              "day"
+            ],
             "description": "The precision with which release_date value is known"
           },
           "restrictions": {
@@ -6501,7 +6807,9 @@
           },
           "type": {
             "type": "string",
-            "enum": ["album"],
+            "enum": [
+              "album"
+            ],
             "description": "The object type, always 'album'"
           },
           "uri": {
@@ -6698,7 +7006,10 @@
           "status": {
             "type": "string",
             "description": "Status of the request",
-            "enum": ["success", "error"]
+            "enum": [
+              "success",
+              "error"
+            ]
           },
           "tweets": {
             "type": "array",
@@ -6715,7 +7026,10 @@
           "status": {
             "type": "string",
             "description": "Status of the request",
-            "enum": ["success", "error"]
+            "enum": [
+              "success",
+              "error"
+            ]
           },
           "trends": {
             "type": "array",
@@ -6731,7 +7045,9 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -6742,7 +7058,9 @@
       },
       "SocialScrapeRequest": {
         "type": "object",
-        "required": ["social_id"],
+        "required": [
+          "social_id"
+        ],
         "properties": {
           "social_id": {
             "type": "string",
@@ -6806,7 +7124,10 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the request"
           },
           "posts": {
@@ -6826,7 +7147,9 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "message": {
@@ -7023,7 +7346,11 @@
       },
       "TranscribeAudioRequest": {
         "type": "object",
-        "required": ["audio_url", "account_id", "artist_account_id"],
+        "required": [
+          "audio_url",
+          "account_id",
+          "artist_account_id"
+        ],
         "properties": {
           "audio_url": {
             "type": "string",
@@ -7074,7 +7401,12 @@
       },
       "TranscribeAudioResponse": {
         "type": "object",
-        "required": ["success", "audioFile", "transcriptFile", "text"],
+        "required": [
+          "success",
+          "audioFile",
+          "transcriptFile",
+          "text"
+        ],
         "properties": {
           "success": {
             "type": "boolean",
@@ -7100,7 +7432,9 @@
       },
       "TranscribeAudioErrorResponse": {
         "type": "object",
-        "required": ["error"],
+        "required": [
+          "error"
+        ],
         "properties": {
           "error": {
             "type": "string",
@@ -7169,7 +7503,10 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the request"
           },
           "songs": {
@@ -7190,7 +7527,9 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "error": {
@@ -7201,7 +7540,9 @@
       },
       "CreateSongInput": {
         "type": "object",
-        "required": ["isrc"],
+        "required": [
+          "isrc"
+        ],
         "properties": {
           "isrc": {
             "type": "string",
@@ -7230,7 +7571,9 @@
       },
       "CreateSongsRequest": {
         "type": "object",
-        "required": ["songs"],
+        "required": [
+          "songs"
+        ],
         "properties": {
           "songs": {
             "type": "array",
@@ -7272,7 +7615,10 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the request"
           },
           "catalogs": {
@@ -7293,7 +7639,9 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "error": {
@@ -7304,7 +7652,9 @@
       },
       "CreateCatalogInput": {
         "type": "object",
-        "required": ["account_id"],
+        "required": [
+          "account_id"
+        ],
         "properties": {
           "account_id": {
             "type": "string",
@@ -7324,7 +7674,9 @@
       },
       "CreateCatalogsRequest": {
         "type": "object",
-        "required": ["catalogs"],
+        "required": [
+          "catalogs"
+        ],
         "properties": {
           "catalogs": {
             "type": "array",
@@ -7337,7 +7689,10 @@
       },
       "DeleteCatalogInput": {
         "type": "object",
-        "required": ["catalog_id", "account_id"],
+        "required": [
+          "catalog_id",
+          "account_id"
+        ],
         "properties": {
           "catalog_id": {
             "type": "string",
@@ -7353,7 +7708,9 @@
       },
       "DeleteCatalogsRequest": {
         "type": "object",
-        "required": ["catalogs"],
+        "required": [
+          "catalogs"
+        ],
         "properties": {
           "catalogs": {
             "type": "array",
@@ -7431,7 +7788,10 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the request"
           },
           "songs": {
@@ -7456,7 +7816,9 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "error": {
@@ -7467,7 +7829,10 @@
       },
       "AddCatalogSongInput": {
         "type": "object",
-        "required": ["catalog_id", "isrc"],
+        "required": [
+          "catalog_id",
+          "isrc"
+        ],
         "properties": {
           "catalog_id": {
             "type": "string",
@@ -7501,7 +7866,9 @@
       },
       "AddCatalogSongsRequest": {
         "type": "object",
-        "required": ["songs"],
+        "required": [
+          "songs"
+        ],
         "properties": {
           "songs": {
             "type": "array",
@@ -7514,7 +7881,10 @@
       },
       "DeleteCatalogSongInput": {
         "type": "object",
-        "required": ["catalog_id", "isrc"],
+        "required": [
+          "catalog_id",
+          "isrc"
+        ],
         "properties": {
           "catalog_id": {
             "type": "string",
@@ -7529,7 +7899,9 @@
       },
       "DeleteCatalogSongsRequest": {
         "type": "object",
-        "required": ["songs"],
+        "required": [
+          "songs"
+        ],
         "properties": {
           "songs": {
             "type": "array",
@@ -7605,11 +7977,17 @@
       },
       "ArtistFansResponse": {
         "type": "object",
-        "required": ["status", "fans", "pagination"],
+        "required": [
+          "status",
+          "fans",
+          "pagination"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "fans": {
@@ -7627,11 +8005,16 @@
       },
       "ArtistFansErrorResponse": {
         "type": "object",
-        "required": ["status", "error"],
+        "required": [
+          "status",
+          "error"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "error": {
@@ -7739,11 +8122,17 @@
       },
       "ArtistPostsResponse": {
         "type": "object",
-        "required": ["status", "posts", "pagination"],
+        "required": [
+          "status",
+          "posts",
+          "pagination"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "posts": {
@@ -7761,11 +8150,16 @@
       },
       "ArtistPostsErrorResponse": {
         "type": "object",
-        "required": ["status", "error"],
+        "required": [
+          "status",
+          "error"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "error": {
@@ -7776,7 +8170,16 @@
       },
       "PostComment": {
         "type": "object",
-        "required": ["id", "post_id", "social_id", "comment", "commented_at", "username", "profile_url", "post_url"],
+        "required": [
+          "id",
+          "post_id",
+          "social_id",
+          "comment",
+          "commented_at",
+          "username",
+          "profile_url",
+          "post_url"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -7864,11 +8267,17 @@
       },
       "PostCommentsResponse": {
         "type": "object",
-        "required": ["status", "comments", "pagination"],
+        "required": [
+          "status",
+          "comments",
+          "pagination"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "comments": {
@@ -7886,11 +8295,16 @@
       },
       "PostCommentsErrorResponse": {
         "type": "object",
-        "required": ["status", "error"],
+        "required": [
+          "status",
+          "error"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "error": {
@@ -7951,11 +8365,17 @@
       },
       "CommentsResponse": {
         "type": "object",
-        "required": ["status", "comments", "pagination"],
+        "required": [
+          "status",
+          "comments",
+          "pagination"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "comments": {
@@ -7973,11 +8393,16 @@
       },
       "CommentsErrorResponse": {
         "type": "object",
-        "required": ["status", "error"],
+        "required": [
+          "status",
+          "error"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "error": {
@@ -8009,11 +8434,17 @@
       },
       "SegmentFansResponse": {
         "type": "object",
-        "required": ["status", "fans", "pagination"],
+        "required": [
+          "status",
+          "fans",
+          "pagination"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "fans": {
@@ -8031,11 +8462,16 @@
       },
       "SegmentFansErrorResponse": {
         "type": "object",
-        "required": ["status", "error"],
+        "required": [
+          "status",
+          "error"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "error": {
@@ -8054,7 +8490,9 @@
           },
           "object": {
             "type": "string",
-            "enum": ["subscription"],
+            "enum": [
+              "subscription"
+            ],
             "description": "String representing the object's type"
           },
           "customer": {
@@ -8063,7 +8501,15 @@
           },
           "status": {
             "type": "string",
-            "enum": ["active", "canceled", "incomplete", "incomplete_expired", "past_due", "trialing", "unpaid"],
+            "enum": [
+              "active",
+              "canceled",
+              "incomplete",
+              "incomplete_expired",
+              "past_due",
+              "trialing",
+              "unpaid"
+            ],
             "description": "The status of the subscription"
           },
           "currency": {
@@ -8092,7 +8538,9 @@
             "properties": {
               "object": {
                 "type": "string",
-                "enum": ["list"]
+                "enum": [
+                  "list"
+                ]
               },
               "data": {
                 "type": "array",
@@ -8104,7 +8552,9 @@
                     },
                     "object": {
                       "type": "string",
-                      "enum": ["subscription_item"]
+                      "enum": [
+                        "subscription_item"
+                      ]
                     },
                     "price": {
                       "type": "object",
@@ -8124,7 +8574,12 @@
                           "properties": {
                             "interval": {
                               "type": "string",
-                              "enum": ["day", "week", "month", "year"]
+                              "enum": [
+                                "day",
+                                "week",
+                                "month",
+                                "year"
+                              ]
                             },
                             "interval_count": {
                               "type": "integer"
@@ -8163,12 +8618,17 @@
       },
       "SubscriptionResponse": {
         "type": "object",
-        "required": ["status", "subscription"],
+        "required": [
+          "status",
+          "subscription"
+        ],
         "description": "Response for standard accounts with Stripe subscriptions",
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "subscription": {
@@ -8179,28 +8639,40 @@
       },
       "EnterpriseSubscriptionResponse": {
         "type": "object",
-        "required": ["status", "isEnterprise"],
+        "required": [
+          "status",
+          "isEnterprise"
+        ],
         "description": "Response for accounts with enterprise plans",
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the request"
           },
           "isEnterprise": {
             "type": "boolean",
-            "enum": [true],
+            "enum": [
+              true
+            ],
             "description": "Indicates that the account has an enterprise plan"
           }
         }
       },
       "SubscriptionErrorResponse": {
         "type": "object",
-        "required": ["status", "error"],
+        "required": [
+          "status",
+          "error"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Status of the request"
           },
           "error": {
@@ -8225,7 +8697,10 @@
               "type": "string"
             },
             "description": "Optional arguments to pass to the command.",
-            "example": ["-la", "/home"]
+            "example": [
+              "-la",
+              "/home"
+            ]
           },
           "cwd": {
             "type": "string",
@@ -8247,7 +8722,12 @@
       },
       "Sandbox": {
         "type": "object",
-        "required": ["sandboxId", "sandboxStatus", "timeout", "createdAt"],
+        "required": [
+          "sandboxId",
+          "sandboxStatus",
+          "timeout",
+          "createdAt"
+        ],
         "description": "A sandbox environment instance",
         "properties": {
           "sandboxId": {
@@ -8257,7 +8737,13 @@
           },
           "sandboxStatus": {
             "type": "string",
-            "enum": ["pending", "running", "stopping", "stopped", "failed"],
+            "enum": [
+              "pending",
+              "running",
+              "stopping",
+              "stopped",
+              "failed"
+            ],
             "description": "Current lifecycle state of the sandbox",
             "example": "running"
           },
@@ -8281,12 +8767,18 @@
       },
       "SandboxesResponse": {
         "type": "object",
-        "required": ["status", "sandboxes"],
+        "required": [
+          "status",
+          "sandboxes"
+        ],
         "description": "Response containing sandbox information",
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the request"
           },
           "sandboxes": {
@@ -8324,7 +8816,9 @@
       },
       "SandboxErrorResponse": {
         "type": "object",
-        "required": ["error"],
+        "required": [
+          "error"
+        ],
         "properties": {
           "error": {
             "type": "string",
@@ -8335,11 +8829,16 @@
       },
       "SandboxFileResponse": {
         "type": "object",
-        "required": ["status", "content"],
+        "required": [
+          "status",
+          "content"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the operation"
           },
           "content": {
@@ -8360,11 +8859,16 @@
       },
       "SetupSandboxResponse": {
         "type": "object",
-        "required": ["status", "runId"],
+        "required": [
+          "status",
+          "runId"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Status of the setup operation"
           },
           "runId": {
@@ -8386,11 +8890,16 @@
       },
       "DeleteSandboxResponse": {
         "type": "object",
-        "required": ["status"],
+        "required": [
+          "status"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the delete operation"
           },
           "deleted_snapshot": {
@@ -8428,7 +8937,13 @@
       },
       "UpdateSnapshotResponse": {
         "type": "object",
-        "required": ["account_id", "snapshot_id", "expires_at", "github_repo", "created_at"],
+        "required": [
+          "account_id",
+          "snapshot_id",
+          "expires_at",
+          "github_repo",
+          "created_at"
+        ],
         "properties": {
           "account_id": {
             "type": "string",
@@ -8483,11 +8998,17 @@
       },
       "PulseResponse": {
         "type": "object",
-        "required": ["status", "pulse"],
+        "required": [
+          "status",
+          "pulse"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the request"
           },
           "pulse": {
@@ -8502,11 +9023,17 @@
       },
       "PulsesResponse": {
         "type": "object",
-        "required": ["status", "pulses"],
+        "required": [
+          "status",
+          "pulses"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success", "error"],
+            "enum": [
+              "success",
+              "error"
+            ],
             "description": "Status of the request"
           },
           "pulses": {
@@ -8524,7 +9051,9 @@
       },
       "UpdatePulseRequest": {
         "type": "object",
-        "required": ["active"],
+        "required": [
+          "active"
+        ],
         "properties": {
           "active": {
             "type": "boolean",
@@ -8541,7 +9070,13 @@
       "TaskRunResponse": {
         "type": "object",
         "description": "Raw Trigger.dev SDK run object. The API passes through the SDK response without field mapping. See https://trigger.dev/docs/management/runs/retrieve for the full reference. When listing runs, `output`, `error`, `payload`, and `attempts` are not included.",
-        "required": ["id", "status", "taskIdentifier", "createdAt", "updatedAt"],
+        "required": [
+          "id",
+          "status",
+          "taskIdentifier",
+          "createdAt",
+          "updatedAt"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -8549,7 +9084,20 @@
           },
           "status": {
             "type": "string",
-            "enum": ["PENDING_VERSION", "DELAYED", "QUEUED", "EXECUTING", "REATTEMPTING", "FROZEN", "COMPLETED", "CANCELED", "FAILED", "CRASHED", "INTERRUPTED", "SYSTEM_FAILURE"],
+            "enum": [
+              "PENDING_VERSION",
+              "DELAYED",
+              "QUEUED",
+              "EXECUTING",
+              "REATTEMPTING",
+              "FROZEN",
+              "COMPLETED",
+              "CANCELED",
+              "FAILED",
+              "CRASHED",
+              "INTERRUPTED",
+              "SYSTEM_FAILURE"
+            ],
             "description": "Current run status"
           },
           "taskIdentifier": {
@@ -8635,9 +9183,16 @@
             "type": "object",
             "description": "Environment the run executed in",
             "properties": {
-              "id": { "type": "string" },
-              "name": { "type": "string" },
-              "user": { "type": "string", "nullable": true }
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "user": {
+                "type": "string",
+                "nullable": true
+              }
             }
           },
           "depth": {
@@ -8651,7 +9206,12 @@
           },
           "triggerFunction": {
             "type": "string",
-            "enum": ["trigger", "triggerAndWait", "batchTrigger", "batchTriggerAndWait"],
+            "enum": [
+              "trigger",
+              "triggerAndWait",
+              "batchTrigger",
+              "batchTriggerAndWait"
+            ],
             "description": "The function used to trigger this run"
           },
           "payload": {
@@ -8687,19 +9247,52 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": { "type": "string", "description": "Attempt ID, prefixed with `attempt_`" },
-                "status": { "type": "string", "enum": ["PENDING", "EXECUTING", "PAUSED", "COMPLETED", "FAILED", "CANCELED"] },
-                "createdAt": { "type": "string", "format": "date-time" },
-                "updatedAt": { "type": "string", "format": "date-time" },
-                "startedAt": { "type": "string", "format": "date-time", "nullable": true },
-                "completedAt": { "type": "string", "format": "date-time", "nullable": true },
+                "id": {
+                  "type": "string",
+                  "description": "Attempt ID, prefixed with `attempt_`"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "PENDING",
+                    "EXECUTING",
+                    "PAUSED",
+                    "COMPLETED",
+                    "FAILED",
+                    "CANCELED"
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "startedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                },
+                "completedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                },
                 "error": {
                   "type": "object",
                   "nullable": true,
                   "properties": {
-                    "message": { "type": "string" },
-                    "name": { "type": "string" },
-                    "stackTrace": { "type": "string" }
+                    "message": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "stackTrace": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -8719,11 +9312,16 @@
       },
       "TaskRunListResponse": {
         "type": "object",
-        "required": ["status", "runs"],
+        "required": [
+          "status",
+          "runs"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Indicates the request was successful"
           },
           "runs": {
@@ -8737,7 +9335,11 @@
       },
       "FileTreeEntry": {
         "type": "object",
-        "required": ["path", "type", "sha"],
+        "required": [
+          "path",
+          "type",
+          "sha"
+        ],
         "description": "A single entry in a GitHub repository file tree",
         "properties": {
           "path": {
@@ -8747,7 +9349,10 @@
           },
           "type": {
             "type": "string",
-            "enum": ["blob", "tree"],
+            "enum": [
+              "blob",
+              "tree"
+            ],
             "description": "The type of entry: blob for files, tree for directories"
           },
           "sha": {
@@ -8790,7 +9395,11 @@
           },
           "caption_length": {
             "type": "string",
-            "enum": ["short", "medium", "long"],
+            "enum": [
+              "short",
+              "medium",
+              "long"
+            ],
             "description": "Controls the length of the generated caption text. `short` produces 1-2 lines (punchy, minimal). `medium` produces 1-2 sentences. `long` produces a paragraph (stream of consciousness style). Defaults to `short`.",
             "default": "short",
             "example": "short"
@@ -8819,18 +9428,29 @@
       },
       "ContentCreateResponse": {
         "type": "object",
-        "required": ["runIds", "status", "artist", "template"],
+        "required": [
+          "runIds",
+          "status",
+          "artist",
+          "template"
+        ],
         "description": "Confirmation that the content creation pipeline has been triggered. Always returns `runIds` as an array — even for a single run, it contains one element.",
         "properties": {
           "runIds": {
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "description": "Array of run IDs. Poll each via [GET /api/tasks/runs](/api-reference/tasks/runs). For single runs this contains one element.",
-            "example": ["run_abc123def456"]
+            "example": [
+              "run_abc123def456"
+            ]
           },
           "status": {
             "type": "string",
-            "enum": ["triggered"],
+            "enum": [
+              "triggered"
+            ],
             "description": "Indicates the pipeline has been triggered"
           },
           "artist": {
@@ -8857,7 +9477,9 @@
       },
       "ContentCreateErrorResponse": {
         "type": "object",
-        "required": ["error"],
+        "required": [
+          "error"
+        ],
         "description": "Returned when the artist is missing required files or the template is not found. Includes actionable instructions for resolving each issue.",
         "properties": {
           "error": {
@@ -8883,13 +9505,19 @@
             "items": {
               "type": "string"
             },
-            "example": ["artist-caption-bedroom", "artist-caption-outside", "artist-caption-stage"]
+            "example": [
+              "artist-caption-bedroom",
+              "artist-caption-outside",
+              "artist-caption-stage"
+            ]
           }
         }
       },
       "ContentErrorResponse": {
         "type": "object",
-        "required": ["error"],
+        "required": [
+          "error"
+        ],
         "properties": {
           "error": {
             "type": "string",
@@ -8900,7 +9528,9 @@
       },
       "ContentTemplatesResponse": {
         "type": "object",
-        "required": ["templates"],
+        "required": [
+          "templates"
+        ],
         "description": "List of available content creation templates.",
         "properties": {
           "templates": {
@@ -8913,7 +9543,11 @@
       },
       "ContentTemplate": {
         "type": "object",
-        "required": ["name", "description", "defaultLipsync"],
+        "required": [
+          "name",
+          "description",
+          "defaultLipsync"
+        ],
         "description": "A content creation template that defines the visual style and composition for generated videos.",
         "properties": {
           "name": {
@@ -8935,7 +9569,10 @@
       },
       "ContentValidateResponse": {
         "type": "object",
-        "required": ["ready", "artist"],
+        "required": [
+          "ready",
+          "artist"
+        ],
         "description": "Validation report for an artist's content creation readiness.",
         "properties": {
           "ready": {
@@ -8959,7 +9596,11 @@
             "items": {
               "type": "string"
             },
-            "example": ["artist-caption-bedroom", "artist-caption-outside", "artist-caption-stage"]
+            "example": [
+              "artist-caption-bedroom",
+              "artist-caption-outside",
+              "artist-caption-stage"
+            ]
           },
           "checks": {
             "type": "object",
@@ -8982,7 +9623,9 @@
               },
               "songs": {
                 "allOf": [
-                  { "$ref": "#/components/schemas/ContentValidationCheck" },
+                  {
+                    "$ref": "#/components/schemas/ContentValidationCheck"
+                  },
                   {
                     "type": "object",
                     "properties": {
@@ -9008,12 +9651,18 @@
       },
       "ContentValidationCheck": {
         "type": "object",
-        "required": ["status"],
+        "required": [
+          "status"
+        ],
         "description": "Status of a single validation check.",
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["ok", "missing", "warning"],
+            "enum": [
+              "ok",
+              "missing",
+              "warning"
+            ],
             "description": "Whether the file was found",
             "example": "ok"
           }
@@ -9021,7 +9670,12 @@
       },
       "ContentMissingFile": {
         "type": "object",
-        "required": ["file", "severity", "description", "fix"],
+        "required": [
+          "file",
+          "severity",
+          "description",
+          "fix"
+        ],
         "description": "A missing file that prevents or degrades content creation.",
         "properties": {
           "file": {
@@ -9031,7 +9685,10 @@
           },
           "severity": {
             "type": "string",
-            "enum": ["required", "recommended"],
+            "enum": [
+              "required",
+              "recommended"
+            ],
             "description": "`required` means the pipeline will fail without this file. `recommended` means the pipeline will run but output quality is degraded.",
             "example": "required"
           },
@@ -9049,7 +9706,9 @@
       },
       "ContentEstimateResponse": {
         "type": "object",
-        "required": ["workflows"],
+        "required": [
+          "workflows"
+        ],
         "description": "Cost estimates based on live fal.ai pricing. When `compare` is `false`, the `workflows` array contains a single entry. When `true`, it contains all available profiles.",
         "properties": {
           "workflows": {
@@ -9076,13 +9735,13 @@
                 "type": "number",
                 "format": "float",
                 "description": "Total cost for the batch using the cheapest workflow",
-                "example": 5.40
+                "example": 5.4
               },
               "mostExpensiveTotal": {
                 "type": "number",
                 "format": "float",
                 "description": "Total cost for the batch using the most expensive workflow",
-                "example": 28.50
+                "example": 28.5
               }
             }
           }
@@ -9090,7 +9749,11 @@
       },
       "ContentWorkflowEstimate": {
         "type": "object",
-        "required": ["name", "perVideo", "steps"],
+        "required": [
+          "name",
+          "perVideo",
+          "steps"
+        ],
         "description": "Cost breakdown for a single workflow profile.",
         "properties": {
           "name": {
@@ -9131,7 +9794,12 @@
       },
       "ContentStepEstimate": {
         "type": "object",
-        "required": ["name", "model", "cost", "note"],
+        "required": [
+          "name",
+          "model",
+          "cost",
+          "note"
+        ],
         "description": "Cost details for a single pipeline step.",
         "properties": {
           "name": {
@@ -9170,7 +9838,13 @@
       },
       "ContentEstimateComparison": {
         "type": "object",
-        "required": ["cheapest", "cheapestPerVideo", "mostExpensive", "mostExpensivePerVideo", "savingsPercent"],
+        "required": [
+          "cheapest",
+          "cheapestPerVideo",
+          "mostExpensive",
+          "mostExpensivePerVideo",
+          "savingsPercent"
+        ],
         "description": "Summary comparing the cheapest and most expensive workflow options.",
         "properties": {
           "cheapest": {
@@ -9208,7 +9882,22 @@
         "properties": {
           "preset": {
             "type": "string",
-            "enum": ["catalog_metadata", "mood_tags", "lyric_transcription", "mix_feedback", "song_description", "music_theory", "similar_artists", "sample_detection", "sync_brief_match", "audience_profile", "content_advisory", "playlist_pitch", "artist_development_notes", "full_report"],
+            "enum": [
+              "catalog_metadata",
+              "mood_tags",
+              "lyric_transcription",
+              "mix_feedback",
+              "song_description",
+              "music_theory",
+              "similar_artists",
+              "sample_detection",
+              "sync_brief_match",
+              "audience_profile",
+              "content_advisory",
+              "playlist_pitch",
+              "artist_development_notes",
+              "full_report"
+            ],
             "description": "Name of a curated analysis preset. Use instead of prompt for structured, optimized output. The 'full_report' preset runs all 13 presets in parallel and returns a comprehensive report. See [List Analyze Presets](/api-reference/songs/analyze-presets) for the full list of available presets.",
             "example": "catalog_metadata"
           },
@@ -9237,7 +9926,7 @@
             "type": "number",
             "minimum": 0,
             "maximum": 2,
-            "default": 1.0,
+            "default": 1,
             "description": "Controls output creativity — higher values produce more varied responses",
             "example": 0.7
           },
@@ -9245,7 +9934,7 @@
             "type": "number",
             "minimum": 0,
             "maximum": 1,
-            "default": 1.0,
+            "default": 1,
             "description": "Nucleus sampling probability cutoff",
             "example": 0.9
           },
@@ -9262,7 +9951,9 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["success"],
+            "enum": [
+              "success"
+            ],
             "description": "Request status"
           },
           "preset": {
@@ -9289,7 +9980,9 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["error"],
+            "enum": [
+              "error"
+            ],
             "description": "Error status"
           },
           "missing_fields": {
@@ -9302,6 +9995,26 @@
           "error": {
             "type": "string",
             "description": "Error message describing what went wrong"
+          }
+        }
+      },
+      "CheckAdminResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "isAdmin"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ],
+            "description": "Status of the request"
+          },
+          "isAdmin": {
+            "type": "boolean",
+            "description": "Whether the authenticated account is a Recoup admin"
           }
         }
       }
