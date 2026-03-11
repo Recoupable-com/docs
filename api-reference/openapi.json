@@ -3503,7 +3503,7 @@
     },
     "/api/content/create": {
       "post": {
-        "description": "Trigger the content creation pipeline for an artist. Provide either `artist_account_id` or `artist_slug` to identify the target artist. Validates the artist has all required files (face guide, songs, config), then triggers a background task that generates a short-form video. Returns `runIds` — an array of run IDs that can each be polled via [GET /api/tasks/runs](/api-reference/tasks/runs) to check progress and retrieve the output video path when complete. Authentication is handled via the x-api-key header.",
+        "description": "Trigger the content creation pipeline for an artist. Provide either `artist_account_id` or `artist_slug` to identify the target artist. Validates the artist has all required files (face guide, songs, config), then triggers a background task that generates a short-form video. Returns `runIds` \u2014 an array of run IDs that can each be polled via [GET /api/tasks/runs](/api-reference/tasks/runs) to check progress and retrieve the output video path when complete. Authentication is handled via the x-api-key header.",
         "requestBody": {
           "description": "Content creation parameters including the target artist and optional template/workflow settings",
           "required": true,
@@ -3517,7 +3517,7 @@
         },
         "responses": {
           "202": {
-            "description": "Pipeline triggered successfully. Returns `runIds` — an array of run IDs. Poll each via [GET /api/tasks/runs](/api-reference/tasks/runs) to check progress.",
+            "description": "Pipeline triggered successfully. Returns `runIds` \u2014 an array of run IDs. Poll each via [GET /api/tasks/runs](/api-reference/tasks/runs) to check progress.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3527,7 +3527,7 @@
             }
           },
           "400": {
-            "description": "Validation failed — missing artist identifier, artist is missing required files, or template not found",
+            "description": "Validation failed \u2014 missing artist identifier, artist is missing required files, or template not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3537,7 +3537,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized — invalid or missing API key",
+            "description": "Unauthorized \u2014 invalid or missing API key",
             "content": {
               "application/json": {
                 "schema": {
@@ -3547,7 +3547,7 @@
             }
           },
           "403": {
-            "description": "Forbidden — account_id is not a member of the organization or personal key tried to use account_id",
+            "description": "Forbidden \u2014 account_id is not a member of the organization or personal key tried to use account_id",
             "content": {
               "application/json": {
                 "schema": {
@@ -3557,7 +3557,7 @@
             }
           },
           "404": {
-            "description": "Artist not found — the provided artist_account_id or artist_slug does not match any artist for this account",
+            "description": "Artist not found \u2014 the provided artist_account_id or artist_slug does not match any artist for this account",
             "content": {
               "application/json": {
                 "schema": {
@@ -3584,7 +3584,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized — invalid or missing API key",
+            "description": "Unauthorized \u2014 invalid or missing API key",
             "content": {
               "application/json": {
                 "schema": {
@@ -3598,7 +3598,7 @@
     },
     "/api/content/validate": {
       "get": {
-        "description": "Check whether an artist has all the required files to run the content creation pipeline. Returns a structured report of each required and recommended file with its status. Required files must be present or the pipeline will fail. Recommended files improve output quality but are not strictly necessary. Provide either `artist_account_id` or `artist_slug` — at least one is required.",
+        "description": "Check whether an artist has all the required files to run the content creation pipeline. Returns a structured report of each required and recommended file with its status. Required files must be present or the pipeline will fail. Recommended files improve output quality but are not strictly necessary. Provide either `artist_account_id` or `artist_slug` \u2014 at least one is required.",
         "parameters": [
           {
             "name": "artist_account_id",
@@ -3624,7 +3624,7 @@
           {
             "name": "account_id",
             "in": "query",
-            "description": "UUID of the account that owns the artist. Only applicable for organization API keys — org keys can specify an account_id for any account within their organization. If not provided, uses the API key's own account.",
+            "description": "UUID of the account that owns the artist. Only applicable for organization API keys \u2014 org keys can specify an account_id for any account within their organization. If not provided, uses the API key's own account.",
             "required": false,
             "schema": {
               "type": "string",
@@ -3645,7 +3645,7 @@
             }
           },
           "400": {
-            "description": "Bad request — must provide either artist_account_id or artist_slug",
+            "description": "Bad request \u2014 must provide either artist_account_id or artist_slug",
             "content": {
               "application/json": {
                 "schema": {
@@ -3655,7 +3655,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized — invalid or missing API key",
+            "description": "Unauthorized \u2014 invalid or missing API key",
             "content": {
               "application/json": {
                 "schema": {
@@ -3665,7 +3665,7 @@
             }
           },
           "403": {
-            "description": "Forbidden — account_id is not a member of the organization or personal key tried to use account_id",
+            "description": "Forbidden \u2014 account_id is not a member of the organization or personal key tried to use account_id",
             "content": {
               "application/json": {
                 "schema": {
@@ -3675,7 +3675,7 @@
             }
           },
           "404": {
-            "description": "Artist not found — the provided artist_account_id or artist_slug does not match any artist for this account",
+            "description": "Artist not found \u2014 the provided artist_account_id or artist_slug does not match any artist for this account",
             "content": {
               "application/json": {
                 "schema": {
@@ -3689,7 +3689,7 @@
     },
     "/api/content/estimate": {
       "get": {
-        "description": "Estimate the cost of running the content creation pipeline. Fetches live pricing from fal.ai and calculates per-step and per-video costs. Supports comparing multiple workflow profiles (e.g., premium vs. budget) and projecting batch costs. This endpoint is informational only — it does not trigger any pipeline execution or spend credits.",
+        "description": "Estimate the cost of running the content creation pipeline. Fetches live pricing from fal.ai and calculates per-step and per-video costs. Supports comparing multiple workflow profiles (e.g., premium vs. budget) and projecting batch costs. This endpoint is informational only \u2014 it does not trigger any pipeline execution or spend credits.",
         "parameters": [
           {
             "name": "lipsync",
@@ -3737,7 +3737,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized — invalid or missing API key",
+            "description": "Unauthorized \u2014 invalid or missing API key",
             "content": {
               "application/json": {
                 "schema": {
@@ -3812,7 +3812,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized — invalid or missing API key / Bearer token",
+            "description": "Unauthorized \u2014 invalid or missing API key / Bearer token",
             "content": {
               "application/json": {
                 "schema": {
@@ -3826,7 +3826,7 @@
     },
     "/api/songs/analyze": {
       "post": {
-        "description": "Analyze music using a state-of-the-art Audio Language Model that listens directly to the audio waveform. Unlike text-based AI, this model processes the actual sound — identifying harmony, structure, timbre, lyrics, and cultural context through deep music understanding. Supports audio up to 20 minutes (MP3, WAV, FLAC). Two modes: (1) **Presets** — pass a `preset` name like `catalog_metadata`, `mood_tags`, or `full_report` for structured, optimized output. (2) **Custom prompt** — pass a `prompt` for free-form questions. The `full_report` preset runs all 13 presets in parallel and returns a comprehensive music intelligence report. Use `GET /api/songs/analyze/presets` to list available presets.",
+        "description": "Analyze music using a state-of-the-art Audio Language Model that listens directly to the audio waveform. Unlike text-based AI, this model processes the actual sound \u2014 identifying harmony, structure, timbre, lyrics, and cultural context through deep music understanding. Supports audio up to 20 minutes (MP3, WAV, FLAC). Two modes: (1) **Presets** \u2014 pass a `preset` name like `catalog_metadata`, `mood_tags`, or `full_report` for structured, optimized output. (2) **Custom prompt** \u2014 pass a `prompt` for free-form questions. The `full_report` preset runs all 13 presets in parallel and returns a comprehensive music intelligence report. Use `GET /api/songs/analyze/presets` to list available presets.",
         "security": [
           {
             "apiKeyAuth": []
@@ -3858,7 +3858,7 @@
             }
           },
           "400": {
-            "description": "Bad request — missing or invalid fields",
+            "description": "Bad request \u2014 missing or invalid fields",
             "content": {
               "application/json": {
                 "schema": {
@@ -3868,7 +3868,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized — invalid or missing API key / Bearer token",
+            "description": "Unauthorized \u2014 invalid or missing API key / Bearer token",
             "content": {
               "application/json": {
                 "schema": {
@@ -3878,7 +3878,7 @@
             }
           },
           "500": {
-            "description": "Server error — upstream model unavailable or inference failed",
+            "description": "Server error \u2014 upstream model unavailable or inference failed",
             "content": {
               "application/json": {
                 "schema": {
@@ -3950,7 +3950,7 @@
     },
     "/api/admins": {
       "get": {
-        "description": "Check if the authenticated account is a Recoup admin. An account is considered an admin if it is a member of the Recoup organization. No input parameters required — authentication is performed via the x-api-key or Authorization header.",
+        "description": "Check if the authenticated account is a Recoup admin. An account is considered an admin if it is a member of the Recoup organization. No input parameters required \u2014 authentication is performed via the x-api-key or Authorization header.",
         "parameters": [],
         "security": [
           {
@@ -3986,7 +3986,7 @@
     },
     "/api/admins/sandboxes": {
       "get": {
-        "description": "Returns a list of all accounts and their sandbox usage statistics. Each item includes the account name, total number of sandboxes created, and the timestamp of the most recently created sandbox. Requires the authenticated account to be a Recoup admin. Authentication via x-api-key or Authorization Bearer token.",
+        "description": "Returns a list of all accounts and their sandbox usage statistics. Each item includes the account email, total number of sandboxes created, and the timestamp of the most recently created sandbox. Requires the authenticated account to be a Recoup admin. Authentication via x-api-key or Authorization Bearer token.",
         "parameters": [],
         "security": [
           {
@@ -9425,7 +9425,7 @@
       },
       "ContentCreateRequest": {
         "type": "object",
-        "description": "Parameters for triggering the content creation pipeline. Provide either `artist_account_id` or `artist_slug` to identify the artist — at least one is required. If both are provided, `artist_account_id` takes precedence.",
+        "description": "Parameters for triggering the content creation pipeline. Provide either `artist_account_id` or `artist_slug` to identify the artist \u2014 at least one is required. If both are provided, `artist_account_id` takes precedence.",
         "properties": {
           "artist_account_id": {
             "type": "string",
@@ -9477,7 +9477,7 @@
           "account_id": {
             "type": "string",
             "format": "uuid",
-            "description": "UUID of the account that owns the artist. Only applicable for organization API keys — org keys can specify an account_id for any account within their organization. If not provided, uses the API key's own account.",
+            "description": "UUID of the account that owns the artist. Only applicable for organization API keys \u2014 org keys can specify an account_id for any account within their organization. If not provided, uses the API key's own account.",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           }
         }
@@ -9490,7 +9490,7 @@
           "artist",
           "template"
         ],
-        "description": "Confirmation that the content creation pipeline has been triggered. Always returns `runIds` as an array — even for a single run, it contains one element.",
+        "description": "Confirmation that the content creation pipeline has been triggered. Always returns `runIds` as an array \u2014 even for a single run, it contains one element.",
         "properties": {
           "runIds": {
             "type": "array",
@@ -9967,7 +9967,7 @@
           "audio_url": {
             "type": "string",
             "format": "uri",
-            "description": "Public URL to an audio file (MP3, WAV, or FLAC — up to 20 minutes)",
+            "description": "Public URL to an audio file (MP3, WAV, or FLAC \u2014 up to 20 minutes)",
             "example": "https://example.com/song.mp3"
           },
           "max_new_tokens": {
@@ -9983,7 +9983,7 @@
             "minimum": 0,
             "maximum": 2,
             "default": 1,
-            "description": "Controls output creativity — higher values produce more varied responses",
+            "description": "Controls output creativity \u2014 higher values produce more varied responses",
             "example": 0.7
           },
           "top_p": {
@@ -10088,12 +10088,6 @@
             "description": "The unique identifier of the account",
             "example": "04e3aba9-c130-4fb8-8b92-34e95d43e66b"
           },
-          "account_name": {
-            "type": "string",
-            "nullable": true,
-            "description": "The display name of the account. Null if the account has no name set.",
-            "example": "Alice"
-          },
           "total_sandboxes": {
             "type": "integer",
             "description": "Total number of sandboxes created for this account",
@@ -10104,8 +10098,15 @@
             "format": "date-time",
             "description": "ISO 8601 timestamp of the most recently created sandbox for this account",
             "example": "2026-03-10T12:00:00Z"
+          },
+          "account_email": {
+            "type": "string",
+            "nullable": true,
+            "description": "The email address of the account. Null if the account has no email set.",
+            "example": "alice@example.com"
           }
-        }
+        },
+        "description": ""
       },
       "AdminSandboxesResponse": {
         "type": "object",
