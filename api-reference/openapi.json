@@ -3983,6 +3983,62 @@
           }
         }
       }
+    },
+    "/api/admins/sandboxes": {
+      "get": {
+        "description": "Returns a list of all accounts and their sandbox usage statistics. Each item includes the account name, total number of sandboxes created, and the timestamp of the most recently created sandbox. Requires the authenticated account to be a Recoup admin. Authentication via x-api-key or Authorization Bearer token.",
+        "parameters": [],
+        "security": [
+          {
+            "apiKeyAuth": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account sandbox statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSandboxesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - authenticated account is not a Recoup admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -10015,6 +10071,64 @@
           "isAdmin": {
             "type": "boolean",
             "description": "Whether the authenticated account is a Recoup admin"
+          }
+        }
+      },
+      "AccountSandboxRow": {
+        "type": "object",
+        "required": [
+          "account_id",
+          "total_sandboxes",
+          "last_created_at"
+        ],
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique identifier of the account",
+            "example": "04e3aba9-c130-4fb8-8b92-34e95d43e66b"
+          },
+          "account_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "The display name of the account. Null if the account has no name set.",
+            "example": "Alice"
+          },
+          "total_sandboxes": {
+            "type": "integer",
+            "description": "Total number of sandboxes created for this account",
+            "example": 5
+          },
+          "last_created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp of the most recently created sandbox for this account",
+            "example": "2026-03-10T12:00:00Z"
+          }
+        }
+      },
+      "AdminSandboxesResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "accounts"
+        ],
+        "description": "Response containing per-account sandbox statistics for admin use",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "error"
+            ],
+            "description": "Status of the request"
+          },
+          "accounts": {
+            "type": "array",
+            "description": "List of accounts with their sandbox statistics, ordered by most recently active first",
+            "items": {
+              "$ref": "#/components/schemas/AccountSandboxRow"
+            }
           }
         }
       }
