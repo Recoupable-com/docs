@@ -73,6 +73,13 @@
             ]
           },
           {
+            "group": "Admins",
+            "pages": [
+              "api-reference/admins/check",
+              "api-reference/admins/sandboxes"
+            ]
+          },
+          {
             "group": "Artists",
             "pages": [
               "api-reference/artists/list",
@@ -273,15 +280,15 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
