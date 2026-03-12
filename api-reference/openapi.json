@@ -9438,7 +9438,7 @@
         "required": [
           "runIds",
           "status",
-          "artist",
+          "artist_account_id",
           "template"
         ],
         "description": "Confirmation that the content creation pipeline has been triggered. Always returns `runIds` as an array \u2014 even for a single run, it contains one element.",
@@ -9460,10 +9460,11 @@
             ],
             "description": "Indicates the pipeline has been triggered"
           },
-          "artist": {
+          "artist_account_id": {
             "type": "string",
-            "description": "The artist slug the pipeline is running for",
-            "example": "gatsby-grace"
+            "format": "uuid",
+            "description": "UUID of the artist account the pipeline is running for",
+            "example": "1873859c-dd37-4e9a-9bac-80d3558527a9"
           },
           "template": {
             "type": "string",
@@ -9578,7 +9579,7 @@
         "type": "object",
         "required": [
           "ready",
-          "artist"
+          "artist_account_id"
         ],
         "description": "Validation report for an artist's content creation readiness.",
         "properties": {
@@ -9587,10 +9588,11 @@
             "description": "`true` if the artist has all required files and the pipeline can run. `false` if required files are missing.",
             "example": true
           },
-          "artist": {
+          "artist_account_id": {
             "type": "string",
-            "description": "The artist slug that was validated",
-            "example": "gatsby-grace"
+            "format": "uuid",
+            "description": "UUID of the artist account that was validated",
+            "example": "1873859c-dd37-4e9a-9bac-80d3558527a9"
           },
           "songs": {
             "type": "integer",
