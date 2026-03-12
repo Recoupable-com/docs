@@ -3503,7 +3503,7 @@
     },
     "/api/content/create": {
       "post": {
-        "description": "Trigger the content creation pipeline for an artist. Provide either `artist_account_id` or `artist_slug` to identify the target artist. Validates the artist has all required files (face guide, songs, config), then triggers a background task that generates a short-form video. Returns `runIds` \u2014 an array of run IDs that can each be polled via [GET /api/tasks/runs](/api-reference/tasks/runs) to check progress and retrieve the output video path when complete. Authentication is handled via the x-api-key header.",
+        "description": "Trigger the content creation pipeline for an artist. Provide `artist_account_id` to identify the target artist. Validates the artist has all required files (face guide, songs), then triggers a background task that generates a short-form video. Returns `runIds` \u2014 an array of run IDs that can each be polled via [GET /api/tasks/runs](/api-reference/tasks/runs). Authentication is handled via the x-api-key header.",
         "requestBody": {
           "description": "Content creation parameters including the target artist and optional template/workflow settings",
           "required": true,
@@ -3557,7 +3557,7 @@
             }
           },
           "404": {
-            "description": "Artist not found \u2014 the provided artist_account_id or artist_slug does not match any artist for this account",
+            "description": "Artist not found \u2014 the provided artist_account_id does not match any artist for this account",
             "content": {
               "application/json": {
                 "schema": {
@@ -3598,7 +3598,7 @@
     },
     "/api/content/validate": {
       "get": {
-        "description": "Check whether an artist has all the required files to run the content creation pipeline. Returns a structured report of each required and recommended file with its status. Required files must be present or the pipeline will fail. Recommended files improve output quality but are not strictly necessary. Provide either `artist_account_id` or `artist_slug` \u2014 at least one is required.",
+        "description": "Check whether an artist has all the required files to run the content creation pipeline. Returns a structured report of each required and recommended file with its status. Required files must be present or the pipeline will fail. Recommended files improve output quality but are not strictly necessary. Provide `artist_account_id` as a query parameter.",
         "parameters": [
           {
             "name": "artist_account_id",
@@ -3609,16 +3609,6 @@
               "type": "string",
               "format": "uuid",
               "example": "1873859c-dd37-4e9a-9bac-80d3558527a9"
-            }
-          },
-          {
-            "name": "artist_slug",
-            "in": "query",
-            "description": "The artist directory name (slug) as an alternative to `artist_account_id`. Must match a directory under `artists/` in the account's GitHub repository.",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "gatsby-grace"
             }
           },
           {
@@ -3645,7 +3635,7 @@
             }
           },
           "400": {
-            "description": "Bad request \u2014 must provide either artist_account_id or artist_slug",
+            "description": "Bad request \u2014 must provide either artist_account_id",
             "content": {
               "application/json": {
                 "schema": {
@@ -3675,7 +3665,7 @@
             }
           },
           "404": {
-            "description": "Artist not found \u2014 the provided artist_account_id or artist_slug does not match any artist for this account",
+            "description": "Artist not found \u2014 the provided artist_account_id does not match any artist for this account",
             "content": {
               "application/json": {
                 "schema": {
@@ -9425,18 +9415,13 @@
       },
       "ContentCreateRequest": {
         "type": "object",
-        "description": "Parameters for triggering the content creation pipeline. Provide either `artist_account_id` or `artist_slug` to identify the artist \u2014 at least one is required. If both are provided, `artist_account_id` takes precedence.",
+        "description": "Parameters for triggering the content creation pipeline.",
         "properties": {
           "artist_account_id": {
             "type": "string",
             "format": "uuid",
             "description": "UUID of the artist account to create content for. Use [GET /api/artists](/api-reference/artists/list) to find artist account IDs.",
             "example": "1873859c-dd37-4e9a-9bac-80d3558527a9"
-          },
-          "artist_slug": {
-            "type": "string",
-            "description": "The artist directory name (slug) as an alternative to `artist_account_id`. Must match a directory under `artists/` in the account's GitHub repository. Convenient when calling from a sandbox where the directory name is already known.",
-            "example": "gatsby-grace"
           },
           "template": {
             "type": "string",
@@ -9480,7 +9465,10 @@
             "description": "UUID of the account that owns the artist. Only applicable for organization API keys \u2014 org keys can specify an account_id for any account within their organization. If not provided, uses the API key's own account.",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           }
-        }
+        },
+        "required": [
+          "artist_account_id"
+        ]
       },
       "ContentCreateResponse": {
         "type": "object",
@@ -9982,7 +9970,7 @@
             "type": "number",
             "minimum": 0,
             "maximum": 2,
-            "default": 1,
+            "default": 1.0,
             "description": "Controls output creativity \u2014 higher values produce more varied responses",
             "example": 0.7
           },
