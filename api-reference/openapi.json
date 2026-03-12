@@ -3940,7 +3940,7 @@
     },
     "/api/admins": {
       "get": {
-        "description": "Check if the authenticated account is a Recoup admin. An account is considered an admin if it is a member of the Recoup organization. No input parameters required — authentication is performed via the x-api-key or Authorization header.",
+        "description": "Check if the authenticated account is a Recoup admin. An account is considered an admin if it is a member of the Recoup organization. No input parameters required \u2014 authentication is performed via the x-api-key or Authorization header.",
         "parameters": [],
         "security": [
           {
@@ -3976,7 +3976,7 @@
     },
     "/api/admins/sandboxes": {
       "get": {
-        "description": "Returns a list of all accounts and their sandbox usage statistics. Each item includes the account name, total number of sandboxes created, and the timestamp of the most recently created sandbox. Requires the authenticated account to be a Recoup admin. Authentication via x-api-key or Authorization Bearer token.",
+        "description": "Returns a list of all accounts and their sandbox usage statistics. Each item includes the account email, total number of sandboxes created, and the timestamp of the most recently created sandbox. Requires the authenticated account to be a Recoup admin. Authentication via x-api-key or Authorization Bearer token.",
         "parameters": [],
         "security": [
           {
@@ -10076,12 +10076,6 @@
             "description": "The unique identifier of the account",
             "example": "04e3aba9-c130-4fb8-8b92-34e95d43e66b"
           },
-          "account_name": {
-            "type": "string",
-            "nullable": true,
-            "description": "The display name of the account. Null if the account has no name set.",
-            "example": "Alice"
-          },
           "total_sandboxes": {
             "type": "integer",
             "description": "Total number of sandboxes created for this account",
@@ -10092,8 +10086,15 @@
             "format": "date-time",
             "description": "ISO 8601 timestamp of the most recently created sandbox for this account",
             "example": "2026-03-10T12:00:00Z"
+          },
+          "account_email": {
+            "type": "string",
+            "nullable": true,
+            "description": "The email address of the account. Null if the account has no email set.",
+            "example": "alice@example.com"
           }
-        }
+        },
+        "description": ""
       },
       "AdminSandboxesResponse": {
         "type": "object",
