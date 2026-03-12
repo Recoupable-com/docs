@@ -97,6 +97,81 @@ recoup chats create --name "My Topic" --artist <artistId>
 recoup chats list --json
 ```
 
+## content
+
+Content-creation pipeline commands. Generate AI-powered social videos for artists.
+
+### List templates
+
+List available content templates. See [`GET /api/content/templates`](/api-reference/content/templates).
+
+```bash
+recoup content templates
+recoup content templates --json
+```
+
+### Validate artist readiness
+
+Check whether an artist has the required files (face-guide, songs, context) for content creation. See [`GET /api/content/validate`](/api-reference/content/validate).
+
+```bash
+recoup content validate --artist <artistAccountId>
+recoup content validate --artist <artistAccountId> --json
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--artist <id>` | Yes | Artist account ID |
+
+### Estimate cost
+
+Estimate the cost of a content creation run. See [`GET /api/content/estimate`](/api-reference/content/estimate).
+
+```bash
+recoup content estimate
+recoup content estimate --lipsync --batch 3
+recoup content estimate --json
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--lipsync` | No | Enable lip-sync mode |
+| `--batch <n>` | No | Number of videos (default: 1) |
+| `--compare` | No | Compare lipsync vs non-lipsync costs |
+
+### Create content
+
+Trigger a content creation run. See [`POST /api/content/create`](/api-reference/content/create).
+
+```bash
+recoup content create --artist <artistAccountId>
+recoup content create --artist <artistAccountId> --template artist-caption-outside
+recoup content create --artist <artistAccountId> --caption-length long --upscale --batch 3
+recoup content create --artist <artistAccountId> --json
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--artist <id>` | Yes | Artist account ID |
+| `--template <name>` | No | Template name (default: `artist-caption-bedroom`) |
+| `--lipsync` | No | Enable lip-sync mode |
+| `--caption-length <len>` | No | `short`, `medium`, or `long` (default: `short`) |
+| `--upscale` | No | Upscale image and video |
+| `--batch <n>` | No | Number of videos (default: 1) |
+
+### Check run status
+
+Check the status of a content creation run. See [`GET /api/tasks/runs`](/api-reference/tasks/runs).
+
+```bash
+recoup content status --run <runId>
+recoup content status --run <runId> --json
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--run <id>` | Yes | Trigger.dev run ID |
+
 ## sandboxes
 
 Manage sandboxes. See [`GET /api/sandboxes`](/api-reference/sandboxes/list) and [`POST /api/sandboxes`](/api-reference/sandboxes/create).
