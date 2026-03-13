@@ -159,19 +159,6 @@ recoup content create --artist <artistAccountId> --json
 | `--upscale` | No | Upscale image and video |
 | `--batch <n>` | No | Number of videos (default: 1) |
 
-### Check run status
-
-Check the status of a content creation run. See [`GET /api/tasks/runs`](/api-reference/tasks/runs).
-
-```bash
-recoup content status --run <runId>
-recoup content status --run <runId> --json
-```
-
-| Flag | Required | Description |
-|------|----------|-------------|
-| `--run <id>` | Yes | Trigger.dev run ID |
-
 ## sandboxes
 
 Manage sandboxes. See [`GET /api/sandboxes`](/api-reference/sandboxes/list) and [`POST /api/sandboxes`](/api-reference/sandboxes/create).
@@ -182,3 +169,16 @@ recoup sandboxes create
 recoup sandboxes create --command "ls -la"
 recoup sandboxes list --json
 ```
+
+## tasks
+
+Check the status of background task runs. See [`GET /api/tasks/runs`](/api-reference/tasks/runs).
+
+```bash
+recoup tasks status --run <runId>
+recoup tasks status --run <runId> --json
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--run <id>` | Yes | Trigger.dev run ID |
