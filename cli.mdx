@@ -139,26 +139,26 @@ recoup content templates --json
 Check that an artist has the required assets (face-guide, songs, context files) before creating content. See [`POST /api/content/validate`](/api-reference/content/validate).
 
 ```bash
-recoup content validate --artist <artistSlug>
-recoup content validate --artist <artistSlug> --json
+recoup content validate --artist <artistAccountId>
+recoup content validate --artist <artistAccountId> --json
 ```
 
 | Flag | Required | Description |
 |------|----------|-------------|
-| `--artist <slug>` | Yes | Artist slug |
+| `--artist <id>` | Yes | Artist account ID |
 
 ### Estimate cost
 
 Preview the estimated cost and duration for a content run without starting it. See [`POST /api/content/estimate`](/api-reference/content/estimate).
 
 ```bash
-recoup content estimate --artist <artistSlug>
-recoup content estimate --artist <artistSlug> --template <name> --json
+recoup content estimate --artist <artistAccountId>
+recoup content estimate --artist <artistAccountId> --template <name> --json
 ```
 
 | Flag | Required | Description |
 |------|----------|-------------|
-| `--artist <slug>` | Yes | Artist slug |
+| `--artist <id>` | Yes | Artist account ID |
 | `--template <name>` | No | Template name (default: random) |
 | `--lipsync` | No | Enable lipsync mode |
 | `--upscale` | No | Enable upscaling |
@@ -168,14 +168,14 @@ recoup content estimate --artist <artistSlug> --template <name> --json
 Trigger the full content-creation pipeline. Returns a run ID you can check with `recoup tasks status`. See [`POST /api/content`](/api-reference/content/create).
 
 ```bash
-recoup content create --artist <artistSlug>
-recoup content create --artist <artistSlug> --template <name> --lipsync --upscale
-recoup content create --artist <artistSlug> --json
+recoup content create --artist <artistAccountId>
+recoup content create --artist <artistAccountId> --template <name> --lipsync --upscale
+recoup content create --artist <artistAccountId> --json
 ```
 
 | Flag | Required | Description |
 |------|----------|-------------|
-| `--artist <slug>` | Yes | Artist slug |
+| `--artist <id>` | Yes | Artist account ID |
 | `--template <name>` | No | Template name (default: random) |
 | `--lipsync` | No | Enable lipsync mode |
 | `--upscale` | No | Enable upscaling |
