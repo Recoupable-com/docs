@@ -127,7 +127,7 @@ Content-creation pipeline commands. Generate AI-powered social videos for artist
 
 ### List templates
 
-List available content templates.
+List available content templates. See [`GET /api/content/templates`](/api-reference/content/templates).
 
 ```bash
 recoup content templates
@@ -136,7 +136,7 @@ recoup content templates --json
 
 ### Validate artist
 
-Check that an artist has the required assets (face-guide, songs, context files) before creating content.
+Check that an artist has the required assets (face-guide, songs, context files) before creating content. See [`POST /api/content/validate`](/api-reference/content/validate).
 
 ```bash
 recoup content validate --artist <artistSlug>
@@ -149,7 +149,7 @@ recoup content validate --artist <artistSlug> --json
 
 ### Estimate cost
 
-Preview the estimated cost and duration for a content run without starting it.
+Preview the estimated cost and duration for a content run without starting it. See [`POST /api/content/estimate`](/api-reference/content/estimate).
 
 ```bash
 recoup content estimate --artist <artistSlug>
@@ -165,7 +165,7 @@ recoup content estimate --artist <artistSlug> --template <name> --json
 
 ### Create content
 
-Trigger the full content-creation pipeline. Returns a run ID you can check with `recoup tasks status`.
+Trigger the full content-creation pipeline. Returns a run ID you can check with `recoup tasks status`. See [`POST /api/content`](/api-reference/content/create).
 
 ```bash
 recoup content create --artist <artistSlug>
@@ -180,5 +180,3 @@ recoup content create --artist <artistSlug> --json
 | `--lipsync` | No | Enable lipsync mode |
 | `--upscale` | No | Enable upscaling |
 | `--caption-length <n>` | No | Max caption length in characters |
-
-This command wraps [`POST /api/content`](/api-reference/content/create).
